@@ -1,8 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -21,7 +23,16 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
+
+        User::insert([
+            'name' => 'Samuel Sarpong-Duah',
+            'email' => 'admin@acts.com',
+            'password' => Hash::make('sammie119'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 
     /**
