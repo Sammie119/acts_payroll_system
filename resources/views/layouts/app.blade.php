@@ -53,6 +53,10 @@
                             </li>
 
                             <li class="nav-item">
+                                <a class="nav-link {{ request()->is('reports') ? 'active' : '' }} {{ request()->is('reports/*') ? 'active' : '' }}" href="{{ route('reports') }}">{{ __('Reports') }}</a>
+                            </li>
+
+                            <li class="nav-item">
                                 <a class="nav-link {{ request()->is('staff') ? 'active' : '' }} {{ request()->is('staff/*') ? 'active' : '' }}" href="{{ route('staff') }}">{{ __('Staff') }}</a>
                             </li>
 

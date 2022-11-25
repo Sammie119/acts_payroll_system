@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SetupSalaryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -68,4 +69,9 @@ Route::controller(PayrollController::class)->group(function () {
     Route::post('generate_payroll', 'generatePayroll'); 
     Route::get('payroll/view_payslip/{pay_id}', 'viewPayslip')->name('view_payslip');
     Route::get('payroll/get_payslip/{pay_id}', 'getPaySlip')->name('get_payslip');        
+});
+
+Route::controller(ReportController::class)->group(function () {   
+    Route::get('reports', 'index')->name('reports');
+    Route::post('generate_report', 'GenerateReport');
 });

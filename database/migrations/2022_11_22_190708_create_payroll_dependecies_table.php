@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('payroll_dependecies', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('staff_id');
+            $table->json('loan_ids')->comment('loan paid ids')->nullable();
             $table->json('incomes')->comment('basic, allowance, ect')->nullable();
             $table->json('rate_incomes')->comment('amonut, percentage')->nullable();
             $table->json('amount_incomes')->comment('basic, allowance, ect')->nullable();

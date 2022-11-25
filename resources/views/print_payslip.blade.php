@@ -1,7 +1,7 @@
 <!DOCTYPE>
  <html>
 
-    <title>ACTS | Payslip</title>
+    <title>ACTS_Payslip_{{ $staff->staff_number }}</title>
     <link rel="shortcut icon" href="{{ asset('public/build/assets/images/smmie_logo.ico') }}" type="image/ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 
@@ -104,7 +104,7 @@
             </div>
         </header>
 
-        <div class = "data" style="margin-top: %">
+        <div class = "data">
             <div class="watermark"><img src="{{ asset('public/build/assets/images/acts_logo.jpg') }}" width="800px" height="400px"></div>
             <table class="table border-secondary table-sm mt-2">
                 <tr>
@@ -145,6 +145,7 @@
                 </tr>
                 @php
                     $allowances = \App\Models\PayrollDependecy::where('id', $pay->depend_id)->first();
+                    $total_paid_loan = 0;
                 @endphp
 
                 @if(!empty($allowances->incomes))            
@@ -201,12 +202,27 @@
                     </tr>
                     @endforeach
                 @endif
+
+                @if(!empty($allowances->loan_ids))
+                    @foreach ($allowances->loan_ids as $i => $loan_id)
+                        @php
+                        $paid_loan = \App\Models\LoanPayment::where('loan_pay_id', $loan_id)->first();
+                        $total_paid_loan += $paid_loan->amount_paid;
+                        @endphp
+                        <tr>
+                            <td style="width: 20%" nowrap colspan="2">{{ $paid_loan->loan->description }} &ensp; (Balance: {{ number_format($paid_loan->amount - $paid_loan->total_amount_paid, 2) }})</td>
+                            {{-- <td style="width: 40%"></td> --}}
+                            <td style="width: 20%;">{{ number_format($paid_loan->amount_paid, 2) }}</td>
+                            <td style="width: 20%;"></td>
+                        </tr>
+                    @endforeach
+                @endif
                 
                 <tr>
                     <th style="width: 20%">Total Deduction</th>
                     <td style="width: 40%"></td>
                     <td style="width: 20%;"></td>
-                    <th style="width: 20%;">{{ number_format((array_sum($allowances->amount_deductions ?? [0]) + $allowances->tax + $allowances->employee_ssf), 2) }}</th>
+                    <th style="width: 20%;">{{ number_format((array_sum($allowances->amount_deductions ?? [0]) + $allowances->tax + $allowances->employee_ssf + $total_paid_loan), 2) }}</th>
                 </tr>
                 <tr>
                     <td colspan="5"><br></td>

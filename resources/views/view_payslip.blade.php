@@ -37,6 +37,7 @@
                           
                           @php
                              $allowances = \App\Models\PayrollDependecy::where('id', $pay->depend_id)->first();
+                             $total_paid_loan = 0;
                           @endphp
                     
                           @if(!empty($allowances->incomes))
@@ -89,11 +90,26 @@
                               </tr>
                             @endforeach
                           @endif
+
+                          @if(!empty($allowances->loan_ids))
+                            @foreach ($allowances->loan_ids as $i => $loan_id)
+                              @php
+                                $paid_loan = \App\Models\LoanPayment::where('loan_pay_id', $loan_id)->first();
+                                $total_paid_loan += $paid_loan->amount_paid;
+                              @endphp
+                              <tr>
+                                  <th scope="row" style="padding-left: 50px;">{{ $paid_loan->loan->description }}</th>
+                                  <td>{{ number_format($paid_loan->amount_paid, 2) }} (Bal: {{ number_format($paid_loan->amount - $paid_loan->total_amount_paid, 2) }})</td>
+                                  <td></td>
+                              </tr>
+
+                            @endforeach
+                          @endif
                           
                           <tr>
                             <th scope="row" style="width: 40%">Total Deductions</th>
                             <td></td>
-                            <td>({{ number_format((array_sum($allowances->amount_deductions ?? [0]) + $allowances->tax + $allowances->employee_ssf), 2) }})</td>
+                            <td>({{ number_format((array_sum($allowances->amount_deductions ?? [0]) + $allowances->tax + $allowances->employee_ssf + $total_paid_loan), 2) }})</td>
                           </tr>
                           <tr>
                             <th scope="row">Net Income</th>

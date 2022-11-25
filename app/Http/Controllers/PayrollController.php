@@ -92,6 +92,7 @@ class PayrollController extends Controller
         // dd($request->all());
         if($request->has('loan_id') && $request->has('amount_loan')){
             // dd($request->all());
+            $paid_loan_ids = [];
             foreach ($request->loan_id as $i => $loan_id) {
 
                 $payment = LoanPayment::where(['loan_id' => $loan_id, 'staff_id' => $request->staff_id])
@@ -126,10 +127,12 @@ class PayrollController extends Controller
 
                 $loan_pay->save();
                
+                $paid_loan_ids[] = $loan_pay->loan_pay_id;
             }
         }
-            
+        
         $pay->staff_id = $request->staff_id;
+        $pay->loan_ids = $paid_loan_ids;
         $pay->incomes = $request->incomes;
         $pay->amount_incomes = (!empty($request->amount_incomes)) ? $this->percentageToAmount($request->amount_incomes, $request->rate_incomes, $request->basic_salary) : null;
         $pay->rate_incomes = (!empty($request->rate_incomes)) ? $this->toAmount($request->rate_incomes) : null;
@@ -179,7 +182,12 @@ class PayrollController extends Controller
 
             $pay_loan = LoanPayment::where('staff_id', $staff->staff_id)->orderByDesc('loan_pay_id')->first();
             if(isset($pay_loan->status) && $pay_loan->status === 2){
-                $pay_loan->loan_pay_id = 0;
+                $loan = Payroll::where('loan_pay_id', $pay_loan->loan_pay_id)->count();
+                if($loan >= 1){
+                    $pay_loan->loan_pay_id = 0;
+                } else {
+                    $pay_loan->loan_pay_id = $pay_loan->loan_pay_id;
+                }
             }
             // dd($request->all(), $pay_dep, $pay_loan, $staff->salary);
 

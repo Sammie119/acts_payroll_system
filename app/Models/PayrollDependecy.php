@@ -13,6 +13,7 @@ class PayrollDependecy extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'loan_ids' => 'array',
         'incomes' => 'array',
         'deductions' => 'array',
         'amount_incomes' => 'array',
