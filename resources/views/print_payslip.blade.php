@@ -1,7 +1,7 @@
 <!DOCTYPE>
  <html>
 
-    <title>ACTS_Payslip_{{ $staff->staff_number }}</title>
+    <title>ACTS_Payslip_{{ $staff->staff_number }}_{{ $staff->firstname }}</title>
     <link rel="shortcut icon" href="{{ asset('public/build/assets/images/smmie_logo.ico') }}" type="image/ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 
@@ -9,7 +9,7 @@
         #logo{
             text-align: center;
             border-bottom: 2px solid;
-            /* margin-bottom: 10px; */
+            width: 100%;
             margin-right: 14px;
         }
 
@@ -105,13 +105,13 @@
         </header>
 
         <div class = "data">
-            <div class="watermark"><img src="{{ asset('public/build/assets/images/acts_logo.jpg') }}" width="800px" height="400px"></div>
+            <div class="watermark"><img src="{{ asset('public/build/assets/images/acts_logo_alone.jpg') }}" width="300px" height="400px"></div>
             <table class="table border-secondary table-sm mt-2">
                 <tr>
                     <td style="width: 20%">Name: </td>
                     <td style="width: 40%">{{ $staff->fullname }}</td>
                     <td style="width: 20%;">Month: </td>
-                    <td style="width: 20%;">{{ $pay->pay_month }}, {{ $pay->pay_year }}</td>
+                    <td style="width: 20%;" nowrap>{{ $pay->pay_month }}, {{ $pay->pay_year }}</td>
                 </tr>
                 <tr>
                     <td style="width: 20%">Position: </td>
@@ -126,9 +126,9 @@
                     <td style="width: 20%;">{{ $staff->ssnit_number }}</td>
                 </tr>
                 <tr>
-                    <td style="width: 20%">Account No.: </td>
+                    <td style="width: 20%" nowrap>Account No.: </td>
                     <td style="width: 40%">{{ $staff->bank_account }}</td>
-                    <td style="width: 20%;">Annual Salary:</td>
+                    <td style="width: 20%;" nowrap>Annual Salary:</td>
                     <td style="width: 20%;">{{ number_format($pay->basic * 12, 2) }}</td>
                 </tr>
                 <tr>
@@ -140,7 +140,7 @@
                 <tr>
                     <td style="width: 20%">Basic Salary</td>
                     <td style="width: 40%"></td>
-                    <td style="width: 20%;">{{ number_format($pay->basic, 2) }}</td>
+                    <td style="width: 20%; text-align:right; padding-right:20px">{{ number_format($pay->basic, 2) }}</td>
                     <td style="width: 20%;"></td>
                 </tr>
                 @php
@@ -153,7 +153,7 @@
                     <tr>
                         <td style="width: 20%" nowrap>{{ $incomes }}</td>
                         <td style="width: 40%"></td>
-                        <td style="width: 20%;">{{ number_format($allowances->amount_incomes[$i], 2) }}</td>
+                        <td style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->amount_incomes[$i], 2) }}</td>
                         <td style="width: 20%;"></td>
                     </tr>
                     @endforeach
@@ -163,41 +163,49 @@
                     <th style="width: 20%">Gross Pay</th>
                     <td style="width: 40%"></td>
                     <td style="width: 20%;"></td>
-                    <th style="width: 20%;">{{ number_format($pay->gross_income, 2) }}</th>
+                    <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($pay->gross_income, 2) }}</th>
                 </tr>
                 <tr>
                     <td colspan="5"><br></td>
                 </tr>
-                <tr>
-                    <td style="width: 20%">Employer SSF</td>
-                    <td style="width: 40%"></td>
-                    <td style="width: 20%;">{{ number_format($allowances->employer_ssf, 2) }}</td>
-                    <td style="width: 20%;"></td>
-                </tr>
-                <tr>
-                    <td colspan="5"><br></td>
-                </tr>
+
+                @if ($staff->age <= 60)
+                    <tr>
+                        <td style="width: 20%">Employer SSF</td>
+                        <td style="width: 40%"></td>
+                        <td style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->employer_ssf, 2) }}</td>
+                        <td style="width: 20%;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5"><br></td>
+                    </tr>    
+                @endif
+                
                 <tr>
                     <th colspan="5" style="text-align: left; background: #eee">Deductions</th>
                 </tr>
                 <tr>
                     <td style="width: 20%">Income Tax</td>
                     <td style="width: 40%"></td>
-                    <td style="width: 20%;">{{ number_format($allowances->tax, 2) }}</td>
+                    <td style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->tax, 2) }}</td>
                     <td style="width: 20%;"></td>
                 </tr>
-                <tr>
-                    <td style="width: 20%">Employee SSF</td>
-                    <td style="width: 40%"></td>
-                    <td style="width: 20%;">{{ number_format($allowances->employee_ssf, 2) }}</td>
-                    <td style="width: 20%;"></td>
-                </tr>
+
+                @if ($staff->age <= 60)
+                    <tr>
+                        <td style="width: 20%">Employee SSF</td>
+                        <td style="width: 40%"></td>
+                        <td style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->employee_ssf, 2) }}</td>
+                        <td style="width: 20%;"></td>
+                    </tr>
+                @endif
+                
                 @if(!empty($allowances->deductions))
                     @foreach ($allowances->deductions as $i => $deductions)
                     <tr>
                         <td style="width: 20%" nowrap>{{ $deductions }}</td>
                         <td style="width: 40%"></td>
-                        <td style="width: 20%;">{{ number_format($allowances->amount_deductions[$i], 2) }}</td>
+                        <td style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->amount_deductions[$i], 2) }}</td>
                         <td style="width: 20%;"></td>
                     </tr>
                     @endforeach
@@ -210,9 +218,9 @@
                         $total_paid_loan += $paid_loan->amount_paid;
                         @endphp
                         <tr>
-                            <td style="width: 20%" nowrap colspan="2">{{ $paid_loan->loan->description }} &ensp; (Balance: {{ number_format($paid_loan->amount - $paid_loan->total_amount_paid, 2) }})</td>
+                            <td style="width: 20%" nowrap colspan="2">{{ $paid_loan->loan->description }} &ensp; (<b>Principal:</b> {{ number_format($paid_loan->amount, 2) }} <b>Paid:</b> {{ number_format($paid_loan->total_amount_paid, 2) }} <b>Balance:</b> {{ number_format($paid_loan->amount - $paid_loan->total_amount_paid, 2) }})</td>
                             {{-- <td style="width: 40%"></td> --}}
-                            <td style="width: 20%;">{{ number_format($paid_loan->amount_paid, 2) }}</td>
+                            <td style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($paid_loan->amount_paid, 2) }}</td>
                             <td style="width: 20%;"></td>
                         </tr>
                     @endforeach
@@ -222,7 +230,7 @@
                     <th style="width: 20%">Total Deduction</th>
                     <td style="width: 40%"></td>
                     <td style="width: 20%;"></td>
-                    <th style="width: 20%;">{{ number_format((array_sum($allowances->amount_deductions ?? [0]) + $allowances->tax + $allowances->employee_ssf + $total_paid_loan), 2) }}</th>
+                    <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format(($staff->age <= 60) ? (array_sum($allowances->amount_deductions ?? [0]) + $allowances->tax + $allowances->employee_ssf + $total_paid_loan) : (array_sum($allowances->amount_deductions ?? [0]) + $allowances->tax + $total_paid_loan), 2) }}</th>
                 </tr>
                 <tr>
                     <td colspan="5"><br></td>
@@ -231,16 +239,16 @@
                     <th style="width: 20%">Net Pay</th>
                     <td style="width: 40%"></td>
                     <td style="width: 20%;"></td>
-                    <th style="width: 20%;">{{ number_format($pay->net_income, 2) }}</th>
+                    <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format(($staff->age <= 60) ? $pay->net_income : $pay->net_income + $allowances->employee_ssf, 2) }}</th>
                 </tr>
                 <tr>
                     <td colspan="5"><br></td>
                 </tr>
                 <tr>
-                    <th style="width: 20%">Total SSF</th>
-                    <td style="width: 40%">{{ number_format($allowances->employer_ssf + $allowances->employee_ssf, 2) }}</td>
+                    <td style="width: 20%">Total SSF</td>
+                    <th style="width: 40%">{{ number_format(($staff->age <= 60) ? $allowances->employer_ssf + $allowances->employee_ssf : 0, 2) }}</th>
                     <td style="width: 20%;">Tax Relief</td>
-                    <th style="width: 20%;">{{ number_format($allowances->tax_relief, 2) }}</th>
+                    <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->tax_relief, 2) }}</th>
                 </tr>
             </table>
 

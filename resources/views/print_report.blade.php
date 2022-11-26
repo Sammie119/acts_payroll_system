@@ -9,7 +9,7 @@
         #logo{
             text-align: center;
             border-bottom: 2px solid;
-            /* margin-bottom: 10px; */
+            width: 100%;
             margin-right: 14px;
         }
 
@@ -90,23 +90,63 @@
         <div id="back"><a href="{{ url()->previous() }}">Back</a></div>
         <header id="header">
             <img class="center" src="{{ asset('public/build/assets/images/acts_logo.jpg') }}" width="300px" height="150px" alt="ACTS_logo">
-            <div id="logo" style="margin-top: -2%">
-                <h5 id="logo-text">Report</h5>
+            <div id="logo">
+                <h6 id="logo-text">{{ $header }}</h6>
             </div>
         </header>
 
-        <div class = "data">
-            <table class="table border-secondary table-sm mt-2">
-                <tr>
-                    <td style="width: 20%">Name: </td>
-                    <td style="width: 40%">Sarerkjdfkjndf</td>
-                    <td style="width: 20%;">Month: </td>
-                    <td style="width: 20%;">Sdfxjcbvxjfcbv</td>
-                </tr>                
-            </table>
+        @switch($report)
+            @case('Bankers')
+                <div class = "data">
+                    <table class="table border-secondary table-sm mt-2">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Staff Name</th>
+                                <th>Bank</th>
+                                <th>Bank Branch</th>
+                                <th>Account Number</th>
+                                <th style="text-align: right;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $total_salary = 0;
+                            @endphp
+                            @foreach ($data as $key => $staff)
+                                @php
+                                    $salary = \App\Models\Payroll::select('net_income')->where([
+                                            ['staff_id', $staff->staff_id],
+                                            ['pay_month', $date['month']],
+                                            ['pay_year', $date['year']]
+                                        ])->first()->net_income;
 
-        </div>
-
+                                    $total_salary += $salary;
+                                @endphp
+                                <tr>
+                                    <td>{{ ++$key }}</td>
+                                    <td>{{ $staff->fullname }}</td>
+                                    <td>{{ $staff->banker }}</td>
+                                    <td>{{ $staff->bank_branch }}</td>
+                                    <td>{{ $staff->bank_account }}</td>
+                                    <td style="text-align: right;">{{ number_format($salary, 2) }}</td>
+                                </tr> 
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" style="text-align: center">GRAND TOTAL</th>
+                                <th colspan="4" style="text-align: right;">{{ number_format($total_salary, 2) }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                @break
+        
+            @default
+                
+        @endswitch
+        
         
         <button class="noprint btn btn-outline-dark" onclick="print_1()"> &#128438; Print</button>
 		

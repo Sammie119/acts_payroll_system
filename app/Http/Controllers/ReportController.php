@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\VWStaff;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -20,9 +21,16 @@ class ReportController extends Controller
         ]);
 
         // dd($request->all());
+        $date = [
+            'month' => $request->report_month,
+            'year' => $request->report_year
+        ];
+
         switch ($request->report_type) {
             case 'bank_doc':
-                $data = 'Banker';
+                $report = 'Bankers';
+                $header = 'SALARIES FOR '. $request->report_month. ', '. $request->report_year;
+                $data = VWStaff::orderBy('banker')->get();
                 break;
 
             case 'tier_1':
@@ -50,6 +58,6 @@ class ReportController extends Controller
                 break;
         }
 
-        return view('print_report', ['data' => $data]);
+        return view('print_report', ['data' => $data, 'report' => $report, 'header' => $header, 'date' => $date]);
     }
 }

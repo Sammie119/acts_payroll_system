@@ -87,6 +87,7 @@ class PayrollController extends Controller
             'staff_id' => 'required|numeric'
         ]);
 
+        $staff_age = VWStaff::select('age')->where('staff_id', $request->staff_id)->first()->age;
         $pay = new PayrollDependecy;
         
         // dd($request->all());
@@ -132,7 +133,7 @@ class PayrollController extends Controller
         }
         
         $pay->staff_id = $request->staff_id;
-        $pay->loan_ids = $paid_loan_ids;
+        $pay->loan_ids = $paid_loan_ids ?? null;
         $pay->incomes = $request->incomes;
         $pay->amount_incomes = (!empty($request->amount_incomes)) ? $this->percentageToAmount($request->amount_incomes, $request->rate_incomes, $request->basic_salary) : null;
         $pay->rate_incomes = (!empty($request->rate_incomes)) ? $this->toAmount($request->rate_incomes) : null;
@@ -142,7 +143,7 @@ class PayrollController extends Controller
         $pay->tax = $request->tax;
         $pay->tax_relief = $request->tax_relief;
         $pay->employer_ssf = $request->employer_ssf;
-        $pay->employee_ssf = $request->employee_ssf;
+        $pay->employee_ssf = ($staff_age <= 60) ? $request->employee_ssf : 0;
         $pay->created_by = Auth()->user()->id;
         $pay->updated_by = Auth()->user()->id;
         $pay->save();
@@ -180,19 +181,20 @@ class PayrollController extends Controller
 
             $basic_salary = SetupSalary::select('salary')->where('staff_id', $staff->staff_id)->orderByDesc('salary_id')->first()->salary;
 
-            $pay_loan = LoanPayment::where('staff_id', $staff->staff_id)->orderByDesc('loan_pay_id')->first();
-            if(isset($pay_loan->status) && $pay_loan->status === 2){
-                $loan = Payroll::where('loan_pay_id', $pay_loan->loan_pay_id)->count();
-                if($loan >= 1){
-                    $pay_loan->loan_pay_id = 0;
-                } else {
-                    $pay_loan->loan_pay_id = $pay_loan->loan_pay_id;
+            $total_loan_paid = 0;
+            $loan_paid_id = null;
+            if(!empty($pay_dep->loan_ids)){
+                foreach ($pay_dep->loan_ids as $loan_ids) {
+                    $loan = LoanPayment::find($loan_ids)->amount_paid;
+                    
+                    $total_loan_paid += $loan;
+                    $loan_paid_id = $loan_ids;
                 }
             }
             // dd($request->all(), $pay_dep, $pay_loan, $staff->salary);
 
             $incomes = floatval(array_sum($pay_dep->amount_incomes ?? [0]));
-            $deductions = floatval(array_sum($pay_dep->amount_deductions ?? [0])) + floatval($pay_dep->tax) + floatval($pay_dep->employee_ssf) + floatval($pay_loan->amount_paid ?? null);
+            $deductions = floatval(array_sum($pay_dep->amount_deductions ?? [0])) + floatval($pay_dep->tax) + floatval($pay_dep->employee_ssf) + floatval($total_loan_paid);
 
             $gross_income = $basic_salary + $incomes;
             $net_income = $gross_income - $deductions;
@@ -200,7 +202,7 @@ class PayrollController extends Controller
             $payroll = new Payroll;
             $payroll->staff_id = $staff->staff_id;
             $payroll->depend_id = $pay_dep->id;
-            $payroll->loan_pay_id = $pay_loan->loan_pay_id ?? null;
+            $payroll->loan_pay_id = $loan_paid_id;
             $payroll->description = $request->description;
             $payroll->positon = $staff->position;
             $payroll->basic = $basic_salary;
