@@ -21,8 +21,11 @@
                                     <option value="bank_doc">Salaries</option>
                                     <option value="tier_1">Tier 1</option>
                                     <option value="tier_2">Tier 2</option>
-                                    <option value="contribute">Contributions</option>
-                                    <option value="credit_union">Credit Union</option>
+                                    <option value="paye_tax">Income Tax/PAYE</option>
+                                    <option value="welfare">Welfare Dues Contributions</option>
+                                    <option value="credit_union">Credit Union Savings Contributions</option>
+                                    <option value="rent">Rent Advance</option>
+                                    <option value="loans">Other Loans</option>
                                 </select>                       
                             </div>
                         </div>

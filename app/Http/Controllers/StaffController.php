@@ -73,6 +73,7 @@ class StaffController extends Controller
         $staff->ghana_card = $request->ghana_card;
         $staff->insurance_number = $request->insurance_number;
         $staff->insurance_expiry = $request->insurance_expiry;
+        $staff->tin_number = $request->tin_number;
         $staff->created_by = Auth()->user()->id;
         $staff->updated_by = Auth()->user()->id;
 
@@ -139,6 +140,7 @@ class StaffController extends Controller
         $staff->ghana_card = $request->ghana_card;
         $staff->insurance_number = $request->insurance_number;
         $staff->insurance_expiry = $request->insurance_expiry;
+        $staff->tin_number = $request->tin_number;
         $staff->updated_by = Auth()->user()->id;
 
         $staff->update();

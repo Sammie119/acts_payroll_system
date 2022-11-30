@@ -271,6 +271,20 @@
                             </div>
                         </div>
 
+                        <div class="row mb-3">
+                            <label for="tin_number" class="col-md-3 col-form-label text-md-end">{{ __('TIN Number') }}</label>
+
+                            <div class="col-md-7">
+                                <input id="tin_number" type="text" class="form-control @error('tin_number') is-invalid @enderror" name="tin_number" value="{{ isset($staff) ? $staff->tin_number : old('tin_number') }}" autocomplete="tin_number">
+
+                                @error('tin_number')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
                         <div class="row mb-0">
                             {{-- <div class="col-md-6 offset-md-4"> --}}
                                 <button type="submit" class="btn btn-primary">

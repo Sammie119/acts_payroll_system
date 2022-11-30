@@ -25,12 +25,13 @@ return new class extends Migration
             $table->string('qualification')->nullable();
             $table->string('position')->nullable();
             $table->string('banker')->nullable();
-            $table->string('bank_account')->nullable();
+            $table->string('bank_account', 20)->nullable();
             $table->string('bank_branch')->nullable();
-            $table->string('ssnit_number')->nullable();
-            $table->string('ghana_card')->nullable();
-            $table->string('insurance_number')->nullable();
+            $table->string('ssnit_number', 20)->nullable();
+            $table->string('ghana_card', 20)->nullable();
+            $table->string('insurance_number', 20)->nullable();
             $table->date('insurance_expiry')->nullable();
+            $table->string('tin_number', 20)->nullable();
             $table->integer('created_by');
             $table->integer('updated_by');
             $table->timestamps();

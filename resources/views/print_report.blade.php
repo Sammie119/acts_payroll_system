@@ -115,13 +115,7 @@
                             @endphp
                             @foreach ($data as $key => $staff)
                                 @php
-                                    $salary = \App\Models\Payroll::select('net_income')->where([
-                                            ['staff_id', $staff->staff_id],
-                                            ['pay_month', $date['month']],
-                                            ['pay_year', $date['year']]
-                                        ])->first()->net_income;
-
-                                    $total_salary += $salary;
+                                    $total_salary += $staff->net_income;
                                 @endphp
                                 <tr>
                                     <td>{{ ++$key }}</td>
@@ -129,7 +123,7 @@
                                     <td>{{ $staff->banker }}</td>
                                     <td>{{ $staff->bank_branch }}</td>
                                     <td>{{ $staff->bank_account }}</td>
-                                    <td style="text-align: right;">{{ number_format($salary, 2) }}</td>
+                                    <td style="text-align: right;">{{ number_format($staff->net_income, 2) }}</td>
                                 </tr> 
                             @endforeach
                         </tbody>
@@ -142,12 +136,411 @@
                     </table>
                 </div>
                 @break
+
+            @case('tier_1')
+                <div class = "data">
+                    <table class="table border-secondary table-sm mt-2">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Staff Name</th>
+                                <th>Social Security No</th>
+                                <th>NIA Number</th>
+                                <th style="text-align: right;">Basic Salary</th>
+                                <th style="text-align: right;">1st Tier</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $total_salary = 0;
+                                $total_ssf = 0;
+                            @endphp
+                            @foreach ($data as $key => $staff)
+                                @php
+                                    $total_ssf += $staff->tier_1;
+                                    $total_salary += $staff->basic;
+                                @endphp
+                                <tr>
+                                    <td>{{ ++$key }}</td>
+                                    <td>{{ $staff->fullname }}</td>
+                                    <td>{{ $staff->ssnit_number }}</td>
+                                    <td>{{ $staff->ghana_card }}</td>
+                                    <td style="text-align: right;">{{ $staff->basic }}</td>
+                                    <td style="text-align: right;">{{ number_format($staff->tier_1, 2) }}</td>
+                                </tr> 
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" style="text-align: center">GRAND TOTAL</th>
+                                <th colspan="3" style="text-align: right;">{{ number_format($total_salary, 2) }}</th>
+                                <th style="text-align: right;">{{ number_format($total_ssf, 2) }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                @break
+
+            @case('tier_2')
+                <div class = "data">
+                    <table class="table border-secondary table-sm mt-2">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Staff Name</th>
+                                <th>Social Security No</th>
+                                <th>NIA Number</th>
+                                <th style="text-align: right;">Basic Salary</th>
+                                <th style="text-align: right;">2nd Tier</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $total_salary = 0;
+                                $total_ssf = 0;
+                            @endphp
+                            @foreach ($data as $key => $staff)
+                                @php
+                                    $total_ssf += $staff->tier_2;
+                                    $total_salary += $staff->basic;
+                                @endphp
+                                <tr>
+                                    <td>{{ ++$key }}</td>
+                                    <td>{{ $staff->fullname }}</td>
+                                    <td>{{ $staff->ssnit_number }}</td>
+                                    <td>{{ $staff->ghana_card }}</td>
+                                    <td style="text-align: right;">{{ $staff->basic }}</td>
+                                    <td style="text-align: right;">{{ number_format($staff->tier_2, 2) }}</td>
+                                </tr> 
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" style="text-align: center">GRAND TOTAL</th>
+                                <th colspan="3" style="text-align: right;">{{ number_format($total_salary, 2) }}</th>
+                                <th style="text-align: right;">{{ number_format($total_ssf, 2) }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                @break
+
+            @case('paye_tax')
+                <div class = "data">
+                    <table class="table border-secondary table-sm mt-2">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>TIN Number</th>
+                                <th>Name of Employee</th>
+                                <th>Position</th>
+                                <th>Non<br>Resident<br>(Y / N)</th>
+                                <th style="text-align: right;">Basic Salary</th>
+                                <th>Secondary<br>Employment<br>(Y / N)</th>
+                                <th>Paid<br>SSNIT<br>(Y / N)</th>
+                                <th>Total Tax<br>Overtime<br>Income</th>
+                                <th>Overtime<br>Tax</th>
+                                <th style="text-align: right;">Payable<br>GRA</th>
+                                <th>Severance<br>pay paid</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $total_salary = 0;
+                                $total_tax = 0;
+
+                                $data_array = [];
+                            @endphp
+                            @foreach ($data as $key => $staff)
+                                @php
+                                    $tax = \App\Models\VWTax::select('tax', 'tax_relief')->where([
+                                            ['staff_id', $staff->staff_id],
+                                            ['pay_month', $date['month']],
+                                            ['pay_year', $date['year']],
+                                        ])->first();
+                                    $total_tax += $tax->tax;
+                                    $total_salary += $staff->basic;
+
+                                    $position = 'Junior';
+                                    $resident = 'N';
+                                    $secondary = 'N';
+                                    $paid_ssnit = ($staff->age >= 60) ? 'N' : 'Y';
+                                    $overtime_income = '0';
+                                    $overtime_tax = '0';
+                                    $severance = '0';
+                                    $remarks = NULL;
+
+                                    $data_array[] = [
+                                        'tin_number' => $staff->tin_number,
+                                        'fullname' => $staff->fullname,
+                                        'position' => $position,
+                                        'n_resident' => $resident,
+                                        'basic_salary' => $staff->basic,
+                                        'secondary' => $secondary,
+                                        'paid_ssnit' => $paid_ssnit,
+                                        'overtime_income' => $overtime_income,
+                                        'overtime_tax' => $overtime_tax,
+                                        'payable' => $tax->tax,
+                                        'severance' => $severance,
+                                        'remarks' => $remarks,
+                                    ];
+                                @endphp
+                                <tr>
+                                    <td>{{ ++$key }}</td>
+                                    <td>{{ $staff->tin_number }}</td>
+                                    <td>{{ $staff->fullname }}</td>
+                                    <td>{{ $position }}</td>
+                                    <td style="text-align: center;">{{ $resident }}</td>
+                                    <td style="text-align: right;">{{ number_format($staff->basic, 2) }}</td>
+                                    <td style="text-align: center;">{{ $secondary }}</td>
+                                    <td>{{ $paid_ssnit }}</td>
+                                    <td style="text-align: center;">{{ $overtime_income }}</td>
+                                    <td style="text-align: center;">{{ $overtime_tax }}</td>
+                                    <td style="text-align: right;">{{ number_format($tax->tax, 2) }}</td>
+                                    <td style="text-align: center;">{{ $severance }}</td>
+                                    <td style="text-align: center;">{{ $remarks }}</td>
+                                </tr> 
+                            @endforeach
+                                <tr>
+                                    <th colspan="5" style="text-align: center">GRAND TOTAL</th>
+                                    <th style="text-align: right;">{{ number_format($total_salary, 2) }}</th>
+                                    <th colspan="5" style="text-align: right;">{{ number_format($total_tax, 2) }}</th>
+                                    <th colspan="2"></th>
+                                </tr>
+                        </tbody>
+                            @php
+                                Illuminate\Support\Facades\Cache::put('paye_tax', collect($data_array), now()->addHours(2));
+                            @endphp
+                    </table>
+                </div>
+                @break
+
+            @case('welfare')
+                <div class = "data">
+                    <table class="table border-secondary table-sm mt-2">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Staff ID</th>
+                                <th>Staff Name</th>
+                                <th>Position</th>
+                                <th style="text-align: right;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $total_welfare = 0;
+                            @endphp
+                            @foreach ($data as $key => $staff)
+                                @php
+                                    $total_welfare += $staff->welfare;
+                                @endphp
+                                <tr>
+                                    <td>{{ ++$key }}</td>
+                                    <td>{{ $staff->staff_number }}</td>
+                                    <td>{{ $staff->fullname }}</td>
+                                    <td>{{ $staff->position }}</td>
+                                    <td style="text-align: right;">{{ number_format($staff->welfare, 2) }}</td>
+                                </tr> 
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" style="text-align: center">GRAND TOTAL</th>
+                                <th colspan="4" style="text-align: right;">{{ number_format($total_welfare, 2) }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                @break
+
+            @case('credit_union')
+                <div class = "data">
+                    <table class="table border-secondary table-sm mt-2">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Staff ID</th>
+                                <th>Staff Name</th>
+                                <th>Description</th>
+                                <th style="text-align: right;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $total_amount = 0;
+                                $key = 0;
+                                $data_array = [];
+                            @endphp
+                            @foreach ($data as $staff)                                
+                                @if (in_array('Credit Union Saving', json_decode($staff->deductions)))
+                                    @php
+                                        $index = array_search('Credit Union Saving', json_decode($staff->deductions));
+                                        $amount = json_decode($staff->amount_deductions);
+                                        $total_amount += $amount[$index];
+                                        $key += 1;
+
+                                        $data_array[] = [
+                                            'staff_number' => $staff->staff_number,
+                                            'fullname' => $staff->fullname,
+                                            'description' => 'Credit Union Saving',
+                                            'amount' => $amount[$index]
+                                        ];
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $key }}</td>
+                                        <td>{{ $staff->staff_number }}</td>
+                                        <td>{{ $staff->fullname }}</td>
+                                        <td>Credit Union Saving</td>
+                                        <td style="text-align: right;">{{ number_format($amount[$index], 2) }}</td>
+                                    </tr>
+                                @endif 
+                            @endforeach
+                            @php
+                                Illuminate\Support\Facades\Cache::put('credit_union', collect($data_array), now()->addHours(2));
+                            @endphp
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" style="text-align: center">GRAND TOTAL</th>
+                                <th colspan="3" style="text-align: right;">{{ number_format($total_amount, 2) }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                @break
+
+            @case('rent')
+                <div class = "data">
+                    <table class="table border-secondary table-sm mt-2">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Staff ID</th>
+                                <th>Staff Name</th>
+                                <th>Description</th>
+                                <th style="text-align: right;">Amount</th>
+                                <th style="text-align: right;">Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $total_paid = 0;
+                                $total_balance = 0;
+                            @endphp
+                            @foreach ($data as $key => $staff)
+                                @php
+                                    $total_paid += $staff->amount_paid;
+                                    $balance = $staff->amount - $staff->total_amount_paid;
+                                    $total_balance += $balance;
+                                @endphp
+                                <tr>
+                                    <td>{{ ++$key }}</td>
+                                    <td>{{ $staff->staff_number }}</td>
+                                    <td>{{ $staff->fullname }}</td>
+                                    <td>{{ $staff->description }}</td>
+                                    <td style="text-align: right;">{{ number_format($staff->amount_paid, 2) }}</td>
+                                    <td style="text-align: right;">{{ number_format($balance, 2) }}</td>
+                                </tr> 
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" style="text-align: center">GRAND TOTAL</th>
+                                <th colspan="3" style="text-align: right;">{{ number_format($total_paid, 2) }}</th>
+                                <th colspan="2" style="text-align: right;">{{ number_format($total_balance, 2) }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                @break
+
+            @case('loans')
+                <div class = "data">
+                    <table class="table border-secondary table-sm mt-2">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Staff ID</th>
+                                <th>Staff Name</th>
+                                <th>Description</th>
+                                <th style="text-align: right;">Amount</th>
+                                <th style="text-align: right;">Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $total_paid = 0;
+                                $total_balance = 0;
+                            @endphp
+                            @foreach ($data as $key => $staff)
+                                @php
+                                    $total_paid += $staff->amount_paid;
+                                    $balance = $staff->amount - $staff->total_amount_paid;
+                                    $total_balance += $balance;
+                                @endphp
+                                <tr>
+                                    <td>{{ ++$key }}</td>
+                                    <td>{{ $staff->staff_number }}</td>
+                                    <td>{{ $staff->fullname }}</td>
+                                    <td>{{ $staff->description }}</td>
+                                    <td style="text-align: right;">{{ number_format($staff->amount_paid, 2) }}</td>
+                                    <td style="text-align: right;">{{ number_format($balance, 2) }}</td>
+                                </tr> 
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" style="text-align: center">GRAND TOTAL</th>
+                                <th colspan="3" style="text-align: right;">{{ number_format($total_paid, 2) }}</th>
+                                <th colspan="2" style="text-align: right;">{{ number_format($total_balance, 2) }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                @break
         
+            @default
+                <h5>No Report Select</h5>
+        @endswitch
+        @switch($report)
+        
+            @case('Bankers')
+                <a href="{{ route('exprt_to_bank', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                @break
+
+            @case('tier_1')
+                <a href="{{ route('exprt_to_tier_1', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                @break
+
+            @case('tier_2')
+                <a href="{{ route('exprt_to_tier_2', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                @break
+
+            @case('paye_tax')
+                <a href="{{ route('exprt_to_paye_tax', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                @break
+
+            @case('welfare')
+                <a href="{{ route('exprt_to_welfare', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                @break
+
+            @case('credit_union')
+                <a href="{{ route('exprt_to_credit_union', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                @break
+
+            @case('rent')
+                <a href="{{ route('exprt_to_rent', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                @break
+
+            @case('loans')
+                <a href="{{ route('exprt_to_loans', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                @break
+
             @default
                 
         @endswitch
-        
-        
         <button class="noprint btn btn-outline-dark" onclick="print_1()"> &#128438; Print</button>
 		
     </body>

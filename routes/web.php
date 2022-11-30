@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ExportToExcelController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\PayrollController;
@@ -74,4 +75,16 @@ Route::controller(PayrollController::class)->group(function () {
 Route::controller(ReportController::class)->group(function () {   
     Route::get('reports', 'index')->name('reports');
     Route::post('generate_report', 'GenerateReport');
+});
+
+// Export Routes
+Route::controller(ExportToExcelController::class)->group(function () {   
+    Route::get('exprt_to_bank/{report_month}/{report_year}', 'exportToBank')->name('exprt_to_bank');
+    Route::get('exprt_to_tier_1/{report_month}/{report_year}', 'exportToTeirOne')->name('exprt_to_tier_1');
+    Route::get('exprt_to_tier_2/{report_month}/{report_year}', 'exportToTeirTwo')->name('exprt_to_tier_2');
+    Route::get('exprt_to_welfare/{report_month}/{report_year}', 'exportToWelfareDues')->name('exprt_to_welfare');
+    Route::get('exprt_to_loans/{report_month}/{report_year}', 'exportToLoans')->name('exprt_to_loans');
+    Route::get('exprt_to_rent/{report_month}/{report_year}', 'exportToRentAdvance')->name('exprt_to_rent');
+    Route::get('exprt_to_credit_union/{report_month}/{report_year}', 'exportToCreditUnionSaving')->name('exprt_to_credit_union');
+    Route::get('exprt_to_paye_tax/{report_month}/{report_year}', 'exportToGRA')->name('exprt_to_paye_tax');
 });
