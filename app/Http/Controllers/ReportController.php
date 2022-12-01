@@ -83,10 +83,9 @@ class ReportController extends Controller
                 $report = 'credit_union';
                 $header = 'CREDIT UNION SAVINGS CONTRIBUTIONS FOR '. strtoupper($request->report_month). ', '. $request->report_year;
                 $data = VWTax::where([
-                    ['pay_month', $request->report_month],
                     ['pay_year', $request->report_year],
                     ['deductions', '!=', NULL]
-                ])->orderBy('staff_number')->get();
+                ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$request->report_month'")->orderBy('staff_number')->get();
                 break;
 
             case 'rent':

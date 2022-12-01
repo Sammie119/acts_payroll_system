@@ -254,11 +254,11 @@
                             @endphp
                             @foreach ($data as $key => $staff)
                                 @php
+                                    $month = $date['month'];
                                     $tax = \App\Models\VWTax::select('tax', 'tax_relief')->where([
                                             ['staff_id', $staff->staff_id],
-                                            ['pay_month', $date['month']],
                                             ['pay_year', $date['year']],
-                                        ])->first();
+                                        ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$month'")->first();
                                     $total_tax += $tax->tax;
                                     $total_salary += $staff->basic;
 
