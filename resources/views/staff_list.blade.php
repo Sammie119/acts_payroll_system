@@ -63,7 +63,7 @@
                                             <td>{{ $staff->level_of_education }}</td>
                                             <td>{{ $staff->position }}</td>
                                             <td>{{ $staff->insurance_number }}</td>
-                                            <td>{{ $staff->insurance_number }}</td>
+                                            <td>{{ $staff->expiry_days }}</td>
                                             <td>{{ $staff->user }}</td>
                                             <td>
                                                 <div class="btn-group">
