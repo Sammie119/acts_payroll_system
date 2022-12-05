@@ -75,7 +75,9 @@ class ReportController extends Controller
                 $data = VWSalarySsnit::where([
                     ['pay_month', $request->report_month],
                     ['pay_year', $request->report_year],
-                    ['staff_number', '!=', 'AS001']
+                    ['staff_number', '!=', 'AS001'],
+                    ['staff_id', '<', 12],
+                    ['staff_id', '!=', 6]
                 ])->orderBy('staff_number')->get();
                 break;
 
@@ -92,20 +94,18 @@ class ReportController extends Controller
                 $report = 'rent';
                 $header = 'RENT ADVANCE PAYMENT FOR '. strtoupper($request->report_month). ', '. $request->report_year;
                 $data = VWLoanPayment::where([
-                    ['pay_month', $request->report_month],
                     ['pay_year', $request->report_year],
                     ['description', 'Rent Advance']
-                ])->orderBy('staff_number')->get();
+                ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$request->report_month'")->orderBy('staff_number')->get();
                 break;
 
             case 'loans':
                 $report = 'loans';
                 $header = 'OTHER LOAN PAYMENT FOR '. strtoupper($request->report_month). ', '. $request->report_year;
                 $data = VWLoanPayment::where([
-                    ['pay_month', $request->report_month],
                     ['pay_year', $request->report_year],
                     ['description', '!=', 'Rent Advance']
-                ])->orderBy('staff_number')->get();
+                ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$request->report_month'")->orderBy('staff_number')->get();
                 break;
 
             // case 'value':
