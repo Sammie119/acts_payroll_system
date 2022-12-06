@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DownloadPayslip;
 use App\Models\Loan;
 use App\Models\Payroll;
 use App\Models\VWStaff;
 use App\Models\LoanPayment;
-use Illuminate\Http\Request;
-use App\Models\PayrollDependecy;
 use App\Models\SetupSalary;
+use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\PayrollDependecy;
 
 class PayrollController extends Controller
 {
@@ -215,6 +217,23 @@ class PayrollController extends Controller
 
             $payroll->save();
         }
+
+        $pay = Payroll::where([['pay_month', $request->salary_month], ['pay_year', $request->salary_year]])->orderBy('staff_id')->get();
+    
+        $filename = 'salaries_for_'.strtolower($request->salary_month).'_'.$request->salary_year;
+        Pdf::loadView('salary_pdf', ['payment' => $pay])->setPaper('a4', 'portrait')->save(storage_path('salary_pdf/'.$filename.'.pdf'));
+        
+        DownloadPayslip::updateOrCreate(
+            [
+                'month' => $request->salary_month,
+                'year' => $request->salary_year,
+                'file_name' => "$filename.pdf",
+            ],
+            [
+                'file_url' => "storage/salary_pdf/$filename.pdf", 
+                'created_by' => Auth()->user()->id,
+            ]
+        );
 
         return redirect('payroll')->with('success', 'Payroll Generated Successfully!!');
         
