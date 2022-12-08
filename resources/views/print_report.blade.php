@@ -53,9 +53,9 @@
                 size: landscape;
             } */
 
-            tfoot{
+            /* tfoot{
                 page-break-before: always;
-            }
+            } */
         }
 
         @media screen {

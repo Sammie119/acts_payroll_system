@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('year')->nullable();
             $table->string('file_name')->nullable();
             $table->string('file_url')->nullable();
+            $table->string('description');
+            $table->unsignedTinyInteger('email_status')->default(0)->comment('0 = Not Sent, 1 = Sent');
             $table->unsignedBigInteger('created_by');
             $table->timestamps();
         });

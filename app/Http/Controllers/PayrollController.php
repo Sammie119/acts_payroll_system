@@ -175,6 +175,12 @@ class PayrollController extends Controller
 
     public function generatePayroll(Request $request)
     {
+        request()->validate([
+            'description' => 'required',
+            'salary_month' => 'required|string',
+            'salary_year' => 'required|numeric',
+        ]);
+
         $staffs = VWStaff::get();
         
         foreach ($staffs as $key => $staff) {
@@ -220,8 +226,8 @@ class PayrollController extends Controller
 
         $pay = Payroll::where([['pay_month', $request->salary_month], ['pay_year', $request->salary_year]])->orderBy('staff_id')->get();
     
-        $filename = 'salaries_for_'.strtolower($request->salary_month).'_'.$request->salary_year;
-        Pdf::loadView('salary_pdf', ['payment' => $pay])->setPaper('a4', 'portrait')->save(storage_path('salary_pdf/'.$filename.'.pdf'));
+        // Generate PDF file
+        $filename = DownloadPayslipController::generatePdfFile($request->salary_month, $request->salary_year, $pay);
         
         DownloadPayslip::updateOrCreate(
             [
@@ -231,6 +237,7 @@ class PayrollController extends Controller
             ],
             [
                 'file_url' => "storage/salary_pdf/$filename.pdf", 
+                'description' => $request->description,
                 'created_by' => Auth()->user()->id,
             ]
         );

@@ -32,10 +32,12 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Description</th>
                                         <th>File</th>
                                         <th>Month</th>
                                         <th>Year</th>
                                         <th>Date</th>
+                                        <th>Email Status</th>
                                         <th>User</th>
                                         <th>Action</th>
                                     </tr>
@@ -44,15 +46,18 @@
                                     @forelse ($slips as $key => $slip)
                                         <tr>
                                             <td>{{ $key+1 }}</td>
+                                            <td>{{ $slip->description }}</td>
                                             <td>{{ $slip->file_name }}</td>
                                             <td>{{ $slip->month }}</td>
                                             <td>{{ $slip->year }}</td>
                                             <td>{{ $slip->created_at->format('d-m-Y') }}</td>
+                                            <td>{{ ($slip->email_status === 0) ? 'Not Sent' : 'Sent' }}</td>
                                             <td>{{ getFirstname($slip->username->name) }}</td>
                                             <td>
                                                 <div class="btn-group">
                                                     <a class="btn btn-primary btn-sm" href="{{ route('download_pdf', [$slip->file_name]) }}" title="Download">Download</a>
-                                                    <a class="btn btn-danger btn-sm" onclick="return confirm('The Generated Salaries will be deleted permanently!!!')" href="{{ route('delete_payslips',[$slip->month, $slip->year]) }}}}" title="Delete">Del</a>
+                                                    <a class="btn btn-danger btn-sm" onclick="return confirm('The Generated Salaries will be deleted permanently!!!')" href="{{ route('delete_payslips',[$slip->month, $slip->year, $slip->file_name]) }}" title="Delete">Del</a>
+                                                    <a class="btn btn-success btn-sm" onclick="return confirm('Emails will be sent to Staff with email address!!!')" href="{{ route('send_emal', [$slip->month, $slip->year]) }}" title="Download">Email</a>
                                                 </div>
                                             </td>
                                         </tr>
