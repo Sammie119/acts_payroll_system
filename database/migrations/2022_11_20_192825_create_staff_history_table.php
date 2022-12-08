@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('staff_id');
             $table->string('staff_number', 10);
+            $table->string('email')->nullable();
             $table->string('level_of_education')->nullable();
             $table->string('qualification')->nullable();
             $table->string('position')->nullable();

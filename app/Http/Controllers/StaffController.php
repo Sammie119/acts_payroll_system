@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Staff;
 use App\Models\VWStaff;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StaffController extends Controller
 {
@@ -42,6 +43,7 @@ class StaffController extends Controller
             'othernames' => 'required',
             'date_of_birth' => 'required',
             'phone' => 'required',
+            'email' => 'email|unique:staff,email',
             'address' => 'required',
             'level_of_education' => 'required',
             'qualification' => 'nullable',
@@ -62,6 +64,7 @@ class StaffController extends Controller
         $staff->othernames = $request->othernames;
         $staff->date_of_birth = $request->date_of_birth;
         $staff->phone = $request->phone;
+        $staff->email = $request->email;
         $staff->address = $request->address;
         $staff->level_of_education = $request->level_of_education;
         $staff->qualification = $request->qualification;
@@ -78,6 +81,23 @@ class StaffController extends Controller
         $staff->updated_by = Auth()->user()->id;
 
         $staff->save();
+
+        DB::table('staff_history')->insert([
+            'staff_id' => $request->id,
+            'staff_number' => $request->staff_number,
+            'email' => $request->email,
+            'level_of_education' => $request->level_of_education,
+            'qualification' => $request->qualification,
+            'position' => $request->position,
+            'banker' => $request->banker,
+            'bank_account' => $request->bank_account,
+            'bank_branch' => $request->bank_branch,
+            'insurance_expiry' => $request->insurance_expiry,
+            'created_by' => Auth()->user()->id,
+            'updated_by' => Auth()->user()->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return back()->with('success', 'Staff Added Successfully!!!!');
     }
@@ -109,6 +129,7 @@ class StaffController extends Controller
             'othernames' => 'required',
             'date_of_birth' => 'required',
             'phone' => 'required',
+            'email' => 'email|unique:staff,email,'.$request->id.',staff_id',
             'address' => 'required',
             'level_of_education' => 'required',
             'qualification' => 'nullable',
@@ -129,6 +150,7 @@ class StaffController extends Controller
         $staff->othernames = $request->othernames;
         $staff->date_of_birth = $request->date_of_birth;
         $staff->phone = $request->phone;
+        $staff->email = $request->email;
         $staff->address = $request->address;
         $staff->level_of_education = $request->level_of_education;
         $staff->qualification = $request->qualification;
@@ -144,6 +166,23 @@ class StaffController extends Controller
         $staff->updated_by = Auth()->user()->id;
 
         $staff->update();
+
+        DB::table('staff_history')->insert([
+            'staff_id' => $request->id,
+            'staff_number' => $request->staff_number,
+            'email' => $request->email,
+            'level_of_education' => $request->level_of_education,
+            'qualification' => $request->qualification,
+            'position' => $request->position,
+            'banker' => $request->banker,
+            'bank_account' => $request->bank_account,
+            'bank_branch' => $request->bank_branch,
+            'insurance_expiry' => $request->insurance_expiry,
+            'created_by' => Auth()->user()->id,
+            'updated_by' => Auth()->user()->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return redirect('staff')->with('success', 'Staff Updated Successfully!!!!');
     }

@@ -34,6 +34,7 @@ return new class extends Migration
                         '%Y'
                     ) + 0 AS `age`,
                     `phone` AS `phone`,
+                    `staff`.`email` AS `email`,
                     `address` AS `address`,
                     `level_of_education` AS `level_of_education`,
                     `qualification` AS `qualification`,

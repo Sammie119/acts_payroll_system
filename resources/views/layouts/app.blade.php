@@ -61,6 +61,10 @@
                             </li>
 
                             <li class="nav-item">
+                                <a class="nav-link {{ request()->is('payslips') ? 'active' : '' }} {{ request()->is('payslips/*') ? 'active' : '' }}" href="{{ route('payslips') }}">{{ __('Payslips') }}</a>
+                            </li>
+
+                            <li class="nav-item">
                                 <a class="nav-link {{ request()->is('salary') ? 'active' : '' }} {{ request()->is('salary/*') ? 'active' : '' }}" href="{{ route('salary') }}">{{ __('Setup') }}</a>
                             </li>
 

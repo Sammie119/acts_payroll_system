@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('othernames');
             $table->date('date_of_birth')->nullable();
             $table->string('phone', 15)->nullable();
+            $table->string('email')->nullable();
             $table->string('address')->nullable();
             $table->string('level_of_education')->nullable();
             $table->string('qualification')->nullable();

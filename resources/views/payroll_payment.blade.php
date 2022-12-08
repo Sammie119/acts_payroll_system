@@ -69,12 +69,19 @@
                                                 ?>
                                             </select>
                                             <label>Year</label>
+                                            
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-floating mb-3 mb-md-0">
-                                            <input type="text" name="description" class="form-control" required placeholder=" " >
+                                            <input type="text" name="description" class="form-control @error('email') is-invalid @enderror" required placeholder=" " >
                                             <label>Description</label>
+
+                                            @error('description')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
                                     </div>
                                     

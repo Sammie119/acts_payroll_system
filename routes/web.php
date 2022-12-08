@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DownloadPayslipController;
 use App\Http\Controllers\ExportToExcelController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoanController;
@@ -75,6 +76,13 @@ Route::controller(PayrollController::class)->group(function () {
 Route::controller(ReportController::class)->group(function () {   
     Route::get('reports', 'index')->name('reports');
     Route::post('generate_report', 'GenerateReport');
+});
+
+Route::controller(DownloadPayslipController::class)->group(function () {   
+    Route::get('payslips', 'index')->name('payslips');
+    Route::get('download_pdf/{filename}', 'downloadPayslips')->name('download_pdf');
+    Route::get('delete_payslips/{month}/{year}/{filename}', 'deletePayslip')->name('delete_payslips');
+    Route::get('send_emal/{month}/{year}', 'sendEmails')->name('send_emal');
 });
 
 // Export Routes

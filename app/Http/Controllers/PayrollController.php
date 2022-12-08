@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DownloadPayslip;
 use App\Models\Loan;
 use App\Models\Payroll;
 use App\Models\VWStaff;
 use App\Models\LoanPayment;
-use Illuminate\Http\Request;
-use App\Models\PayrollDependecy;
 use App\Models\SetupSalary;
+use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\PayrollDependecy;
 
 class PayrollController extends Controller
 {
@@ -173,6 +175,12 @@ class PayrollController extends Controller
 
     public function generatePayroll(Request $request)
     {
+        request()->validate([
+            'description' => 'required',
+            'salary_month' => 'required|string',
+            'salary_year' => 'required|numeric',
+        ]);
+
         $staffs = VWStaff::get();
         
         foreach ($staffs as $key => $staff) {
@@ -215,6 +223,24 @@ class PayrollController extends Controller
 
             $payroll->save();
         }
+
+        $pay = Payroll::where([['pay_month', $request->salary_month], ['pay_year', $request->salary_year]])->orderBy('staff_id')->get();
+    
+        // Generate PDF file
+        $filename = DownloadPayslipController::generatePdfFile($request->salary_month, $request->salary_year, $pay);
+        
+        DownloadPayslip::updateOrCreate(
+            [
+                'month' => $request->salary_month,
+                'year' => $request->salary_year,
+                'file_name' => "$filename.pdf",
+            ],
+            [
+                'file_url' => "storage/salary_pdf/$filename.pdf", 
+                'description' => $request->description,
+                'created_by' => Auth()->user()->id,
+            ]
+        );
 
         return redirect('payroll')->with('success', 'Payroll Generated Successfully!!');
         

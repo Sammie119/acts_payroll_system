@@ -11,6 +11,11 @@ use App\Models\SetupSalary;
         return VWStaff::where('staff_id', $staff_id)->first()->fullname;
     }
 
+    function getFirstname($fullname){
+        $name = explode(" ", $fullname);
+        return $name[0];
+    }
+
     function getLoanStatus($status) 
     {
         switch ($status) {
