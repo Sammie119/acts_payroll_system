@@ -15,4 +15,9 @@ class VWStaff extends Model
     {
         return $this->hasMany(Payroll::class, 'staff_id', 'staff_id');
     }
+
+    public function pay_depend_on()
+    {
+        return $this->hasMany(PayrollDependecy::class, 'staff_id', 'staff_id');
+    }
 }
