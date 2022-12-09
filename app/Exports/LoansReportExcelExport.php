@@ -77,9 +77,8 @@ class LoansReportExcelExport implements FromCollection, WithHeadings, WithStyles
     public function collection()
     {
         return VWLoanPayment::selectRaw("staff_number, fullname, description, amount_paid, (amount - total_amount_paid) as balance")->where([
-            ['pay_month', $this->report_month],
             ['pay_year', $this->report_year],
             ['description', '!=', 'Rent Advance']
-        ])->orderBy('staff_number')->get();
+        ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$this->report_month'")->orderBy('staff_number')->get();
     }
 }

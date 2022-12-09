@@ -76,7 +76,9 @@ class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, With
         return VWSalarySsnit::select('staff_number', 'fullname', 'position', 'welfare')->where([
             ['pay_month', $this->report_month],
             ['pay_year', $this->report_year],
-            ['staff_number', '!=', 'AS001']
+            ['staff_number', '!=', 'AS001'],
+            ['staff_id', '<', 12],
+            ['staff_id', '!=', 6]
         ])->orderBy('staff_number')->get();
     }
 }
