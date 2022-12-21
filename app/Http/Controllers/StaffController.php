@@ -72,6 +72,7 @@ class StaffController extends Controller
         $staff->banker = $request->banker;
         $staff->bank_account = $request->bank_account;
         $staff->bank_branch = $request->bank_branch;
+        $staff->bank_sort_code = $request->bank_sort_code;
         $staff->ssnit_number = $request->ssnit_number;
         $staff->ghana_card = $request->ghana_card;
         $staff->insurance_number = $request->insurance_number;
@@ -158,6 +159,7 @@ class StaffController extends Controller
         $staff->banker = $request->banker;
         $staff->bank_account = $request->bank_account;
         $staff->bank_branch = $request->bank_branch;
+        $staff->bank_sort_code = $request->bank_sort_code;
         $staff->ssnit_number = $request->ssnit_number;
         $staff->ghana_card = $request->ghana_card;
         $staff->insurance_number = $request->insurance_number;

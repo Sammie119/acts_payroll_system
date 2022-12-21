@@ -63,7 +63,7 @@ class DownloadPayslipController extends Controller
         
                 Mail::to($staff->email)->send(new EmployeePayslip($data));
         
-                unlink(storage_path('salary_pdf/'.$staff->staff_number.'_'.strtolower($month).'_'.$year.'_payslip.pdf'));
+                // unlink(storage_path('salary_pdf/'.$staff->staff_number.'_'.strtolower($month).'_'.$year.'_payslip.pdf'));
             }
             
         }

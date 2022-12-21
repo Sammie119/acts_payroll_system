@@ -224,6 +224,20 @@
                         </div>
 
                         <div class="row mb-3">
+                            <label for="bank_sort_code" class="col-md-3 col-form-label text-md-end">{{ __('Bank Sort Code') }}</label>
+
+                            <div class="col-md-7">
+                                <input id="bank_sort_code" type="text" maxlength="6" class="form-control @error('bank_sort_code') is-invalid @enderror" name="bank_sort_code" value="{{ isset($staff) ? $staff->bank_sort_code : old('bank_sort_code') }}" autocomplete="bank_sort_code">
+
+                                @error('bank_sort_code')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
                             <label for="ssnit_number" class="col-md-3 col-form-label text-md-end">{{ __('SSNIT #') }}</label>
 
                             <div class="col-md-7">
@@ -255,7 +269,7 @@
                             <label for="insurance_number" class="col-md-3 col-form-label text-md-end">{{ __('Health Insurance #') }}</label>
 
                             <div class="col-md-7">
-                                <input id="insurance_number" type="text" class="form-control @error('insurance_number') is-invalid @enderror" name="insurance_number" value="{{ isset($staff) ? $staff->insurance_number : old('insurance_number') }}" autocomplete="off">
+                                <input id="insurance_number" type="text" maxlength="8" class="form-control @error('insurance_number') is-invalid @enderror" name="insurance_number" value="{{ isset($staff) ? $staff->insurance_number : old('insurance_number') }}" autocomplete="off">
 
                                 @error('insurance_number')
                                     <span class="invalid-feedback" role="alert">

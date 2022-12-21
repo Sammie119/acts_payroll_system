@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('banker')->nullable();
             $table->string('bank_account', 20)->nullable();
             $table->string('bank_branch')->nullable();
+            $table->string('bank_sort_code', 10)->nullable();
             $table->string('ssnit_number', 20)->nullable();
             $table->string('ghana_card', 20)->nullable();
             $table->string('insurance_number', 20)->nullable();

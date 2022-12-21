@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Http\Controllers\DownloadPayslipController;
 
-class EmployeePayslip extends Mailable
+class EmployeePayslip extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -58,6 +58,10 @@ class EmployeePayslip extends Mailable
      */
     public function attachments()
     {
+        //Delete multiple generated files
+        $file_mask = storage_path('salary_pdf/AS*_payslip.pdf');
+        array_map('unlink', glob($file_mask));
+        
         // Generate PDF file
         $pay = [$this->data['pay']];
         $filename = DownloadPayslipController::generatePdfFile($this->data['month'], $this->data['year'], $pay, $this->data['staff_id']);

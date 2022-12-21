@@ -103,6 +103,7 @@
                             <tr>
                                 <th>No.</th>
                                 <th>Staff Name</th>
+                                <th>Sort Code</th>
                                 <th>Bank</th>
                                 <th>Bank Branch</th>
                                 <th>Account Number</th>
@@ -120,6 +121,7 @@
                                 <tr>
                                     <td>{{ ++$key }}</td>
                                     <td>{{ $staff->fullname }}</td>
+                                    <td>{{ $staff->bank_sort_code }}</td>
                                     <td>{{ $staff->banker }}</td>
                                     <td>{{ $staff->bank_branch }}</td>
                                     <td>{{ $staff->bank_account }}</td>
@@ -130,7 +132,7 @@
                         <tfoot>
                             <tr>
                                 <th colspan="2" style="text-align: center">GRAND TOTAL</th>
-                                <th colspan="4" style="text-align: right;">{{ number_format($total_salary, 2) }}</th>
+                                <th colspan="5" style="text-align: right;">{{ number_format($total_salary, 2) }}</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -238,8 +240,9 @@
                                 <th style="text-align: right;">Basic Salary</th>
                                 <th>Secondary<br>Employment<br>(Y / N)</th>
                                 <th>Paid<br>SSNIT<br>(Y / N)</th>
-                                <th>Total Tax<br>Overtime<br>Income</th>
-                                <th>Overtime<br>Tax</th>
+                                <th>Total<br>Allowances</th>
+                                <th>Tax Relief</th>
+                                <th>Total Taxable<br>Income</th>
                                 <th style="text-align: right;">Payable<br>GRA</th>
                                 <th>Severance<br>pay paid</th>
                                 <th>Remarks</th>
@@ -249,27 +252,36 @@
                             @php
                                 $total_salary = 0;
                                 $total_tax = 0;
+                                $total_tax_relief_s = 0;
+                                $total_allowances_s = 0;
+                                $total_taxable_income_s = 0;
 
                                 $data_array = [];
                             @endphp
                             @foreach ($data as $key => $staff)
                                 @php
                                     $month = $date['month'];
-                                    $tax = \App\Models\VWTax::select('tax', 'tax_relief')->where([
+                                    $tax = \App\Models\VWTax::select('tax', 'tax_relief', 'amount_incomes')->where([
                                             ['staff_id', $staff->staff_id],
                                             ['pay_year', $date['year']],
                                         ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$month'")->first();
-                                    $total_tax += $tax->tax;
-                                    $total_salary += $staff->basic;
-
+                                        // dd(json_decode($tax->amount_incomes));
+                            
                                     $position = 'Junior';
                                     $resident = 'N';
                                     $secondary = 'N';
                                     $paid_ssnit = ($staff->age >= 60) ? 'N' : 'Y';
-                                    $overtime_income = '0';
-                                    $overtime_tax = '0';
+                                    $total_allowance = array_sum(json_decode($tax->amount_incomes ?? "[0]"));
+                                    $tax_relief = $tax->tax_relief;
+                                    $total_taxable_income = ($total_allowance + $staff->basic) - $tax_relief;
                                     $severance = '0';
                                     $remarks = NULL;
+
+                                    $total_tax += $tax->tax;
+                                    $total_salary += $staff->basic;
+                                    $total_tax_relief_s += $tax_relief;
+                                    $total_allowances_s += $total_allowance;
+                                    $total_taxable_income_s += $total_taxable_income;
 
                                     $data_array[] = [
                                         'tin_number' => $staff->tin_number,
@@ -279,8 +291,9 @@
                                         'basic_salary' => $staff->basic,
                                         'secondary' => $secondary,
                                         'paid_ssnit' => $paid_ssnit,
-                                        'overtime_income' => $overtime_income,
-                                        'overtime_tax' => $overtime_tax,
+                                        'total_allowance' => $total_allowance,
+                                        'tax_relief' => $tax_relief,
+                                        'total_taxable_income' => $total_taxable_income,
                                         'payable' => $tax->tax,
                                         'severance' => $severance,
                                         'remarks' => $remarks,
@@ -295,8 +308,9 @@
                                     <td style="text-align: right;">{{ number_format($staff->basic, 2) }}</td>
                                     <td style="text-align: center;">{{ $secondary }}</td>
                                     <td>{{ $paid_ssnit }}</td>
-                                    <td style="text-align: center;">{{ $overtime_income }}</td>
-                                    <td style="text-align: center;">{{ $overtime_tax }}</td>
+                                    <td style="text-align: right;">{{ number_format($total_allowance, 2) }}</td>
+                                    <td style="text-align: right;">{{ number_format($tax_relief, 2) }}</td>
+                                    <td style="text-align: right;">{{ number_format($total_taxable_income, 2) }}</td>
                                     <td style="text-align: right;">{{ number_format($tax->tax, 2) }}</td>
                                     <td style="text-align: center;">{{ $severance }}</td>
                                     <td style="text-align: center;">{{ $remarks }}</td>
@@ -305,7 +319,10 @@
                                 <tr>
                                     <th colspan="5" style="text-align: center">GRAND TOTAL</th>
                                     <th style="text-align: right;">{{ number_format($total_salary, 2) }}</th>
-                                    <th colspan="5" style="text-align: right;">{{ number_format($total_tax, 2) }}</th>
+                                    <th colspan="3" style="text-align: right;">{{ number_format($total_allowances_s, 2) }}</th>
+                                    <th style="text-align: right;">{{ number_format($total_tax_relief_s, 2) }}</th>
+                                    <th style="text-align: right;">{{ number_format($total_taxable_income_s, 2) }}</th>
+                                    <th style="text-align: right;">{{ number_format($total_tax, 2) }}</th>
                                     <th colspan="2"></th>
                                 </tr>
                         </tbody>

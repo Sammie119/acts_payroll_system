@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Payroll;
-use App\Models\PayrollDependecy;
-use App\Models\Staff;
 use App\Models\User;
+use App\Models\Staff;
+use App\Models\Payroll;
 use App\Models\VWStaff;
 use Illuminate\Http\Request;
+use App\Models\PayrollDependecy;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Artisan;
 
 class HomeController extends Controller
 {
@@ -44,6 +45,9 @@ class HomeController extends Controller
             't_ssf' => $t_ssf1 + $t_ssf2,
             't_salary' => $t_salary,
         ];
+
+        // Artisan::call('schedule:work');
+
         return view('home', ['staff' => $staff, 'results' => $result]);
     }
 

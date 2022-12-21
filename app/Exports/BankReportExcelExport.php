@@ -27,6 +27,7 @@ class BankReportExcelExport implements FromCollection, WithHeadings, WithStyles,
             ],
             [
                 'Staff Name',
+                'Sort Code',
                 'Bank',
                 'Bank Branch',
                 'Account Number',
@@ -55,18 +56,20 @@ class BankReportExcelExport implements FromCollection, WithHeadings, WithStyles,
     {
         return [
             'A' => 30,
-            'B' => 14, 
-            'C' => 20,
-            'D' => 18,
-            'E' => 13,           
+            'B' => 10,
+            'C' => 14, 
+            'D' => 20,
+            'E' => 18,
+            'F' => 13,           
         ];
     }
 
     public function columnFormats(): array
     {
         return [
-            'D' => NumberFormat::FORMAT_NUMBER,
-            'E' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'B' => NumberFormat::FORMAT_NUMBER,
+            'E' => NumberFormat::FORMAT_NUMBER,
+            'F' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
         ];
     }
     
@@ -75,7 +78,7 @@ class BankReportExcelExport implements FromCollection, WithHeadings, WithStyles,
     */
     public function collection()
     {
-        return VWSalarySsnit::select('fullname', 'banker', 'bank_branch', 'bank_account', 'net_income')->where([
+        return VWSalarySsnit::select('fullname', 'bank_sort_code', 'banker', 'bank_branch', 'bank_account', 'net_income')->where([
             ['pay_month', $this->report_month],
             ['pay_year', $this->report_year]
         ])->orderBy('banker')->get();

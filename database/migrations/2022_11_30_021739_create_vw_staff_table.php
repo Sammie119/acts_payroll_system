@@ -42,6 +42,7 @@ return new class extends Migration
                     `banker` AS `banker`,
                     `bank_account` AS `bank_account`,
                     `bank_branch` AS `bank_branch`,
+                    `bank_sort_code` AS `bank_sort_code`,
                     `ssnit_number` AS `ssnit_number`,
                     `ghana_card` AS `ghana_card`,
                     `insurance_number` AS `insurance_number`,
