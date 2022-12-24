@@ -43,7 +43,7 @@ class StaffController extends Controller
             'othernames' => 'required',
             'date_of_birth' => 'required',
             'phone' => 'required',
-            'email' => 'email|unique:staff,email',
+            'email' => 'nullable|email|unique:staff',
             'address' => 'required',
             'level_of_education' => 'required',
             'qualification' => 'nullable',
@@ -84,7 +84,7 @@ class StaffController extends Controller
         $staff->save();
 
         DB::table('staff_history')->insert([
-            'staff_id' => $request->id,
+            'staff_id' => $staff->staff_id,
             'staff_number' => $request->staff_number,
             'email' => $request->email,
             'level_of_education' => $request->level_of_education,
@@ -130,7 +130,7 @@ class StaffController extends Controller
             'othernames' => 'required',
             'date_of_birth' => 'required',
             'phone' => 'required',
-            'email' => 'email|unique:staff,email,'.$request->id.',staff_id',
+            'email' => 'nullable|email|unique:staff,'.$request->id.',staff_id',
             'address' => 'required',
             'level_of_education' => 'required',
             'qualification' => 'nullable',

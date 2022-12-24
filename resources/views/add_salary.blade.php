@@ -53,16 +53,19 @@
                                 <label class="col-md-3 col-form-label text-md-end">{{ __('Tax Relief') }}</label>
                             </div>
                             @foreach ($staff as $staff)
+                                @php
+                                    $sal = App\Models\SetupSalary::where('staff_id', $staff->staff_id)->orderByDesc('salary_id')->first();
+                                @endphp
                                 <div class="row mb-3">
                                     <label class="col-md-5 col-form-label text-md-end">{{ $staff->fullname }}</label>
 
                                     <input type="hidden" name="staff_id[]" value="{{ $staff->staff_id }}">
 
                                     <div class="col-md-3">
-                                        <input type="number" step="0.01" min="1" class="form-control" name="salary[]" value="{{ isset($salary) ? $salary->firstname : null }}" required>
+                                        <input type="number" step="0.01" min="1" class="form-control" name="salary[]" value="{{ (isset($sal->salary_id)) ? $sal->salary : '0.00' }}" required>
                                     </div>
                                     <div class="col-md-3">
-                                        <input type="number" step="0.01" min="0" class="form-control" name="tax_relief[]" value="{{ isset($salary) ? $salary->firstname : null }}" required>
+                                        <input type="number" step="0.01" min="0" class="form-control" name="tax_relief[]" value="{{ (isset($sal->salary_id)) ? $sal->tax_relief : '0.00' }}" required>
                                     </div>
                                 </div>
                             @endforeach

@@ -115,8 +115,8 @@
                                             <td>{{ $salary->position }}</td>
                                             <td>{{ number_format($salary->pay_staff->last()->gross_income ?? 0, 2) }}</td>
                                             <td>{{ number_format($salary->pay_staff->last()->net_income ?? 0, 2)  }}</td>
-                                            <td>{{ $salary->pay_staff->last()->pay_month ?? null }}, {{ $salary->pay_staff->last()->pay_year ?? null }}</td>
-                                            <td @if (date('d-m-Y') == $salary->pay_depend_on->last()->created_at->format('d-m-Y')) style="font-weight: bold;" @endif >{{ $salary->pay_depend_on->last()->created_at->format('d-m-Y') }}</td>
+                                            <td>{{ $salary->pay_staff->last()->pay_month ?? 'Month' }}, {{ $salary->pay_staff->last()->pay_year ?? '0000' }}</td>
+                                            <td @if (isset($salary->pay_depend_on->last()->created_at) && date('d-m-Y') == $salary->pay_depend_on->last()->created_at->format('d-m-Y')) style="font-weight: bold;" @endif >{{ (isset($salary->pay_depend_on->last()->created_at)) ? $salary->pay_depend_on->last()->created_at->format('d-m-Y') : '00-00-0000' }}</td>
                                             <td>
                                                 <div class="btn-group">
                                                     <a href="{{ route('view_paid_salaries', [$salary_id]) }}" class="btn btn-info btn-sm" title="View Details">View</a>
