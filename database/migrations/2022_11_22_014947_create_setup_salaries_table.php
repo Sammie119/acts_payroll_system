@@ -16,8 +16,9 @@ return new class extends Migration
         Schema::create('setup_salaries', function (Blueprint $table) {
             $table->id('salary_id');
             $table->unsignedBigInteger('staff_id');
-            $table->decimal('salary', 10, 2);
-            $table->decimal('tax_relief', 10, 2);
+            $table->decimal('salary', 10, 2)->default(0.00);
+            $table->decimal('tax_relief', 10, 2)->default(0.00);
+            $table->decimal('tier_3', 6, 2)->default(0.00);
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
             $table->timestamps();

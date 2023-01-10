@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-7">
+        <div class="col-md-9">
             <div class="card">
                 <div class="card-header">
                     
@@ -28,19 +28,42 @@
                             <div class="row mb-3" style="font-weight: bold">
                                 <label class="col-md-5 col-form-label text-md-end">{{ __('Staff Name') }}</label>
 
-                                <label class="col-md-3 col-form-label text-md-end">{{ __('Basic Salary') }}</label>
+                                <label class="col-md-2 col-form-label text-md-end">{{ __('Basic Salary') }}</label>
 
-                                <label class="col-md-3 col-form-label text-md-end">{{ __('Tax Relief') }}</label>
+                                <label class="col-md-2 col-form-label text-md-end">{{ __('Tax Relief') }}</label>
+                            
+                                <label class="col-md-2 col-form-label text-md-end">{{ __('Tier 3 (%)') }}</label>
                             </div>
 
                             <div class="row mb-3">
                                 <label class="col-md-5 col-form-label text-md-end">{{ $salary->staff->fullname }}</label>
 
-                                <div class="col-md-3">
-                                    <input type="number" step="0.01" min="1" class="form-control" name="salary" value="{{ $salary->salary }}" required>
+                                <div class="col-md-2">
+                                    <input type="number" step="0.01" min="1" class="form-control @error('salary') is-invalid @enderror" name="salary" value="{{ $salary->salary }}" required>
+                                    
+                                    @error('salary')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
-                                <div class="col-md-3">
-                                    <input type="number" step="0.01" min="0" class="form-control" name="tax_relief" value="{{ $salary->tax_relief }}" required>
+                                <div class="col-md-2">
+                                    <input type="number" step="0.01" min="0" class="form-control @error('tax_relief') is-invalid @enderror" name="tax_relief" value="{{ $salary->tax_relief }}" required>
+                                    
+                                    @error('tax_relief')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" step="0.01" min="1" class="form-control @error('tier_3') is-invalid @enderror" name="tier_3" value="{{ $salary->tier_3 }}" >
+                                    
+                                    @error('tier_3')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
                             </div>
 
@@ -48,9 +71,11 @@
                             <div class="row mb-3" style="font-weight: bold">
                                 <label class="col-md-5 col-form-label text-md-end">{{ __('Staff Name') }}</label>
 
-                                <label class="col-md-3 col-form-label text-md-end">{{ __('Basic Salary') }}</label>
+                                <label class="col-md-2 col-form-label text-md-end">{{ __('Basic Salary') }}</label>
 
-                                <label class="col-md-3 col-form-label text-md-end">{{ __('Tax Relief') }}</label>
+                                <label class="col-md-2 col-form-label text-md-end">{{ __('Tax Relief') }}</label>
+
+                                <label class="col-md-2 col-form-label text-md-end">{{ __('Tier 3 (%)') }}</label>
                             </div>
                             @foreach ($staff as $staff)
                                 @php
@@ -61,11 +86,14 @@
 
                                     <input type="hidden" name="staff_id[]" value="{{ $staff->staff_id }}">
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <input type="number" step="0.01" min="1" class="form-control" name="salary[]" value="{{ (isset($sal->salary_id)) ? $sal->salary : '0.00' }}" required>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <input type="number" step="0.01" min="0" class="form-control" name="tax_relief[]" value="{{ (isset($sal->salary_id)) ? $sal->tax_relief : '0.00' }}" required>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="number" step="0.01" min="0" class="form-control" name="tier_3[]" value="{{ (isset($sal->salary_id)) ? $sal->tier_3 : '0.00' }}" required>
                                     </div>
                                 </div>
                             @endforeach

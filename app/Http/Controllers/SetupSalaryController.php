@@ -40,12 +40,20 @@ class SetupSalaryController extends Controller
      */
     public function store(Request $request)
     {
+        request()->validate([
+            'staff_id' => 'required',
+            'salary' => 'required',
+            'tax_relief' => 'nullable',
+            'tier_3' => 'nullable|max:16.50',
+        ]);
+
         foreach ($request->staff_id as $key => $staff_id) {
             $salary = new SetupSalary;
 
             $salary->staff_id = $staff_id;
             $salary->salary = $request->salary[$key];
             $salary->tax_relief = $request->tax_relief[$key];
+            $salary->tier_3 = $request->tier_3[$key];
             $salary->created_by = Auth()->user()->id;
             $salary->updated_by = Auth()->user()->id;
 
@@ -77,10 +85,18 @@ class SetupSalaryController extends Controller
      */
     public function update(Request $request)
     {
+        request()->validate([
+            'staff_id' => 'required',
+            'salary' => 'required',
+            'tax_relief' => 'nullable',
+            'tier_3' => 'max:17',
+        ]);
+
         $salary = SetupSalary::find($request->id);
 
         $salary->salary = $request->salary;
         $salary->tax_relief = $request->tax_relief;
+        $salary->tier_3 = $request->tier_3;
         $salary->updated_by = Auth()->user()->id;
 
         $salary->update();

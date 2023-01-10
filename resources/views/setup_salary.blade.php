@@ -44,6 +44,7 @@
                                         <th>Position</th>
                                         <th>Basic Salary</th>
                                         <th>Tax Relief</th>
+                                        <th>Tier 3 (%)</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -57,6 +58,7 @@
                                             <td>{{ $salary->staff->position }}</td>
                                             <td>{{ number_format($salary->salary, 2) }}</td>
                                             <td>{{ number_format($salary->tax_relief, 2) }}</td>
+                                            <td>{{ $salary->tier_3 }}%</td>
                                             <td>
                                                 <div class="btn-group">
                                                     <a href="salary/edit_salary/{{ $salary->salary_id }}" class="btn btn-success btn-sm" title="Edit Details">Edit</a>

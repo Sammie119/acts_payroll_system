@@ -16,11 +16,17 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     
+    <style>
+        .active {
+            font-weight: bolder;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-info shadow-sm">
-            <div class="container">
+            <div class="container-fluid">
+                <img src="{{ asset('public/build/assets/images/acts_logo_transparent.jpg') }}" style="width: 30px; margin-right: 10px;" alt="Logo">
                 <a class="navbar-brand" href="{{ url('/') }}">ACTS Payroll System</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -73,7 +79,7 @@
                             </li>
 
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle {{ request()->is('users') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
 
@@ -91,9 +97,10 @@
                                     {{-- <a class="dropdown-item" href="#">
                                         {{ __('Profile') }}
                                     </a> --}}
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
+                                    <a class="dropdown-item" href="#"
+                                        onclick="event.preventDefault();
+                                        document.getElementById('logout-form').submit();"
+                                        >
                                         {{ __('Logout') }}
                                     </a>
 
