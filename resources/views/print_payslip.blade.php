@@ -250,6 +250,16 @@
                     <td style="width: 20%;">Tax Relief</td>
                     <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->tax_relief, 2) }}</th>
                 </tr>
+
+                @if ($allowances->tier_3 > 0)
+                    <tr>
+                        <td style="width: 20%"></td>
+                        <th style="width: 40%"></th>
+                        <td style="width: 20%;">Tier 3</td>
+                        <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->tier_3, 2) }}</th>
+                    </tr> 
+                @endif
+                
             </table>
 
         </div>

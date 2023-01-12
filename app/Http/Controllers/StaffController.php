@@ -130,7 +130,7 @@ class StaffController extends Controller
             'othernames' => 'required',
             'date_of_birth' => 'required',
             'phone' => 'required',
-            'email' => 'nullable|email|unique:staff,'.$request->id.',staff_id',
+            'email' => 'nullable|email|unique:staff,email,'.$request->id.',staff_id',
             'address' => 'required',
             'level_of_education' => 'required',
             'qualification' => 'nullable',

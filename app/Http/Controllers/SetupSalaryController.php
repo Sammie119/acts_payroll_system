@@ -44,7 +44,7 @@ class SetupSalaryController extends Controller
             'staff_id' => 'required',
             'salary' => 'required',
             'tax_relief' => 'nullable',
-            'tier_3' => 'nullable|max:16.50',
+            'tier_3' => 'nullable',
         ]);
 
         foreach ($request->staff_id as $key => $staff_id) {
@@ -86,12 +86,13 @@ class SetupSalaryController extends Controller
     public function update(Request $request)
     {
         request()->validate([
-            'staff_id' => 'required',
+            // 'id' => 'required',
             'salary' => 'required',
             'tax_relief' => 'nullable',
-            'tier_3' => 'max:17',
+            // 'tier_3' => 'nullable',
         ]);
 
+        // dd($request->tier_3);
         $salary = SetupSalary::find($request->id);
 
         $salary->salary = $request->salary;

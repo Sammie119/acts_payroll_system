@@ -107,7 +107,7 @@
                                 <tbody id="employee_table">
                                     @forelse ($salaries as $key => $salary)
                                         @php
-                                            $salary_id = \App\Models\SetupSalary::select('salary_id')->where('staff_id', $salary->staff_id)->orderByDesc('salary_id')->first()->salary_id;
+                                            $salary_id = \App\Models\SetupSalary::select('salary_id')->where('staff_id', $salary->staff_id)->orderByDesc('salary_id')->first()->salary_id ?? 0;
                                         @endphp
                                         <tr>
                                             <td>{{ ++$key }}</td>

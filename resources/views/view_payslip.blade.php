@@ -122,6 +122,14 @@
                             <td></td>
                             <td>{{ number_format($allowances->tax_relief, 2) }}</td>
                           </tr>
+
+                          @if ($allowances->tier_3 > 0)
+                            <tr>
+                              <th scope="row">Tier 3</th>
+                              <td></td>
+                              <td>{{ number_format($allowances->tier_3, 2) }}</td>
+                            </tr>
+                          @endif
                           
                         </tbody>
                     </table>

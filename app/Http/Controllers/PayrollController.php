@@ -144,6 +144,7 @@ class PayrollController extends Controller
         $pay->rate_deductions = (!empty($request->rate_deductions)) ? $this->toAmount($request->rate_deductions) : null;
         $pay->tax = $request->tax;
         $pay->tax_relief = $request->tax_relief;
+        $pay->tier_3 = $request->tier_3;
         $pay->employer_ssf = $request->employer_ssf;
         $pay->employee_ssf = ($staff_age <= 60) ? $request->employee_ssf : 0;
         $pay->created_by = Auth()->user()->id;

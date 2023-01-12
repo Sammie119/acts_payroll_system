@@ -71,6 +71,14 @@
                         </div>
 
                         <div class="row mb-3">
+                            <label for="tier_3" class="col-md-3 col-form-label text-md-end">{{ __('Tier 3') }}</label>
+
+                            <div class="col-md-7">
+                                <input id="tier_3" type="number" min="0" step="0.01" name="tier_3" readonly class="form-control" value="{{ number_format(getTierThree($staff->staff_id, $salary->salary), 2, '.', '') }}">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
                             <label for="employer_ssf" class="col-md-3 col-form-label text-md-end">{{ __('Employer SSF') }}</label>
 
                             <div class="col-md-7">

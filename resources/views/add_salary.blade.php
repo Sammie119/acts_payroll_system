@@ -57,7 +57,7 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-2">
-                                    <input type="number" step="0.01" min="1" class="form-control @error('tier_3') is-invalid @enderror" name="tier_3" value="{{ $salary->tier_3 }}" >
+                                    <input type="number" id="tier_3" onchange="(checkValue(this))" step="0.01" min="0" class="form-control @error('tier_3') is-invalid @enderror" name="tier_3" value="{{ $salary->tier_3 }}" >
                                     
                                     @error('tier_3')
                                         <span class="invalid-feedback" role="alert">
@@ -82,7 +82,7 @@
                                     $sal = App\Models\SetupSalary::where('staff_id', $staff->staff_id)->orderByDesc('salary_id')->first();
                                 @endphp
                                 <div class="row mb-3">
-                                    <label class="col-md-5 col-form-label text-md-end">{{ $staff->fullname }}</label>
+                                    <label class="col-md-5 col-form-label text-md-end">{{ $staff->fullname }} - {{ $staff->staff_number }}</label>
 
                                     <input type="hidden" name="staff_id[]" value="{{ $staff->staff_id }}">
 
@@ -93,7 +93,7 @@
                                         <input type="number" step="0.01" min="0" class="form-control" name="tax_relief[]" value="{{ (isset($sal->salary_id)) ? $sal->tax_relief : '0.00' }}" required>
                                     </div>
                                     <div class="col-md-2">
-                                        <input type="number" step="0.01" min="0" class="form-control" name="tier_3[]" value="{{ (isset($sal->salary_id)) ? $sal->tier_3 : '0.00' }}" required>
+                                        <input type="number" id="tier_3" step="0.01" min="0" class="form-control" name="tier_3[]" value="{{ (isset($sal->salary_id)) ? $sal->tier_3 : '0.00' }}" onchange="(checkValue(this))" required>
                                     </div>
                                 </div>
                             @endforeach
@@ -113,4 +113,18 @@
     </div>
 </div>
 @endsection
+
+<script>
+    
+    function checkValue(e)
+    {
+        if(e.value > 16.5){
+            alert("Tier 3 cannot be greater than 16.5%");
+            // console.log(e);
+            e.value = 0;
+            return false;
+        }
+    }
+
+</script>
 
