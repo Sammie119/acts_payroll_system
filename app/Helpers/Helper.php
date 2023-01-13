@@ -76,6 +76,12 @@ use App\Models\SetupSalary;
         $next_3 = $tax->next_17_5;
         $next_4 = $tax->next_25;
         $exceeding = $tax->exceeding;
+        $rate_0 = $tax->rate_0;
+        $rate_1 = $tax->rate_1;
+        $rate_2 = $tax->rate_2;
+        $rate_3 = $tax->rate_3;
+        $rate_4 = $tax->rate_4;
+        $rate_5 = $tax->rate_5;
 
         // Allowance
         $allownce = PayrollDependecy::select('amount_incomes')->where('staff_id', $id)->orderByDesc('id')->first();
@@ -89,7 +95,7 @@ use App\Models\SetupSalary;
             if($result > $next_1) {
                 $next_1_result = $result - $next_1;
             } else {
-                return floatval($result * (5/100));
+                return floatval($result * ($rate_1/100));
             }
             
             if($next_1_result >= 1){
@@ -97,7 +103,7 @@ use App\Models\SetupSalary;
                 if($next_1_result > $next_2) {
                     $next_2_result = $next_1_result - $next_2;
                 } else {
-                    return floatval($next_1 * (5/100)) + floatval($next_1_result * (10/100));
+                    return floatval($next_1 * ($rate_1/100)) + floatval($next_1_result * ($rate_2/100));
                 }
 
                 if($next_2_result >= 1){
@@ -105,7 +111,7 @@ use App\Models\SetupSalary;
                     if($next_2_result > $next_3) {
                         $next_3_result = $next_2_result - $next_3;
                     } else {
-                        return floatval($next_1 * (5/100)) + floatval($next_2 * (10/100)) + floatval($next_2_result * (17.5/100));
+                        return floatval($next_1 * ($rate_1/100)) + floatval($next_2 * ($rate_2/100)) + floatval($next_2_result * ($rate_3/100));
                     }
                     
                     if($next_3_result >= 1){
@@ -113,14 +119,14 @@ use App\Models\SetupSalary;
                         if($next_3_result > $next_4) {
                             $next_4_result = $next_3_result - $next_4;
                         } else {
-                            return floatval($next_1 * (5/100)) + floatval($next_2 * (10/100)) + floatval($next_3 * (17.5/100)) + floatval($next_3_result * (25/100)); 
+                            return floatval($next_1 * ($rate_1/100)) + floatval($next_2 * ($rate_2/100)) + floatval($next_3 * ($rate_3/100)) + floatval($next_3_result * ($rate_4/100)); 
                         }
 
                         if($next_4_result >= 1){
 
                             $exceeding_result = $next_4_result;
                             
-                            return floatval($next_1 * (5/100)) + floatval($next_2 * (10/100)) + floatval($next_3 * (17.5/100)) + floatval($next_4 * (25/100)) + floatval($exceeding_result * (30/100));
+                            return floatval($next_1 * ($rate_1/100)) + floatval($next_2 * ($rate_2/100)) + floatval($next_3 * ($rate_3/100)) + floatval($next_4 * ($rate_4/100)) + floatval($exceeding_result * ($rate_5/100));
                             
                         } 
 
@@ -131,8 +137,8 @@ use App\Models\SetupSalary;
             } 
         } else {
 
-            return floatval($first * (0/100));
+            return floatval($first * ($rate_0/100));
 
         }
-        // return floatval($basic * (25/100));
+        // return floatval($basic * ($rate_4/100));
     }

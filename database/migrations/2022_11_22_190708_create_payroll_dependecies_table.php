@@ -25,6 +25,7 @@ return new class extends Migration
             $table->json('amount_deductions')->comment('Tax, Loans, ssnit, ect')->nullable();
             $table->decimal('tax', 8,2)->default(0.00)->comment('part of deductions');
             $table->decimal('tax_relief', 8, 2)->default(0.00);
+            $table->decimal('tier_3', 8, 2)->default(0.00);
             $table->decimal('employer_ssf', 8,2)->default(0.00);
             $table->decimal('employee_ssf', 8,2)->default(0.00)->comment('part of deductions');
             $table->unsignedBigInteger('created_by');

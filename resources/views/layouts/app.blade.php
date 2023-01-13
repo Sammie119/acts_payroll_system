@@ -78,6 +78,24 @@
                                 <a class="nav-link {{ request()->is('loans') ? 'active' : '' }} {{ request()->is('loans/*') ? 'active' : '' }}" href="{{ route('loans') }}">{{ __('Loans') }}</a>
                             </li>
 
+                            @if(Auth::user()->id === 1)
+                                <li class="nav-item dropdown">
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle {{ request()->is('dropdowns') ? 'active' : '' }} {{ request()->is('taxs') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        Settings
+                                    </a>
+
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="{{ route('dropdowns') }}">
+                                            {{ __('Dropdowns') }}
+                                        </a>
+
+                                        <a class="dropdown-item" href="{{ route('taxs') }}">
+                                            {{ __('Tax Inputs') }}
+                                        </a>                                        
+                                    </div>
+                                </li>
+                            @endif
+
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle {{ request()->is('users') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}

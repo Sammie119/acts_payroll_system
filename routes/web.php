@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SetupSalaryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -83,6 +84,22 @@ Route::controller(DownloadPayslipController::class)->group(function () {
     Route::get('download_pdf/{filename}', 'downloadPayslips')->name('download_pdf');
     Route::get('delete_payslips/{month}/{year}/{filename}', 'deletePayslip')->name('delete_payslips');
     Route::get('send_emal/{month}/{year}', 'sendEmails')->name('send_emal');
+});
+
+Route::controller(SettingsController::class)->group(function () {   
+    Route::get('dropdowns', 'indexDropdown')->name('dropdowns');
+    Route::get('create_dropdown', 'createDropdown')->name('create_dropdown');
+    Route::post('store_dropdown', 'storeDropdown')->name('store_dropdown');
+    Route::get('edit_dropdown/{id}', 'editDropdown')->name('edit_dropdown');
+    Route::post('update_dropdown', 'updateDropdown')->name('update_dropdown');
+    Route::get('delete_dropdown/{id}', 'deleteDropdown')->name('delete_dropdown');
+
+    Route::get('taxs', 'indexTax')->name('taxs');
+    Route::get('create_taxs', 'createTax')->name('create_taxs');
+    Route::post('store_taxs', 'storeTax')->name('store_taxs');
+    // Route::get('edit_taxs/{id}', 'editTax')->name('edit_taxs');
+    // Route::post('update_taxs', 'updateTax')->name('update_taxs');
+    // Route::get('delete_taxs/{id}', 'deleteTax')->name('delete_taxs');    
 });
 
 // Export Routes

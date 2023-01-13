@@ -22,6 +22,12 @@ return new class extends Migration
             $table->decimal('next_17_5', 8,2);
             $table->decimal('next_25', 8,2);
             $table->decimal('exceeding', 8,2);
+            $table->decimal('rate_0', 6,2)->default(0.00);
+            $table->decimal('rate_1', 6,2);
+            $table->decimal('rate_2', 6,2);
+            $table->decimal('rate_3', 6,2);
+            $table->decimal('rate_4', 6,2);
+            $table->decimal('rate_5', 6,2);
             $table->decimal('ssf_employer', 4,2);
             $table->decimal('ssf_employee', 4,2);
             $table->timestamps();
