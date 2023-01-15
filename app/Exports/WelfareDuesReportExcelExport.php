@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 
 class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, WithStyles, WithColumnWidths, WithColumnFormatting
 {
-    public function __construct($report_month, $report_year)
+    public function __construct(public $report_month, public $report_year)
     {
         $this->report_month = $report_month;
         $this->report_year = $report_year;

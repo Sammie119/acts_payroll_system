@@ -14,7 +14,7 @@ use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 
 class GRAReportExcelExport implements FromCollection, WithHeadings, WithStyles, WithColumnWidths, WithColumnFormatting
 {
-    public function __construct($report_month, $report_year)
+    public function __construct(public $report_month, public $report_year)
     {
         $this->report_month = $report_month;
         $this->report_year = $report_year;
@@ -36,6 +36,7 @@ class GRAReportExcelExport implements FromCollection, WithHeadings, WithStyles, 
                 'Paid SSNIT',
                 'Total',
                 'Tax',
+                '',
                 'Total Taxable',
                 '',
                 'Severance',
@@ -51,6 +52,7 @@ class GRAReportExcelExport implements FromCollection, WithHeadings, WithStyles, 
                 '(Y/N)',
                 'Allowances',
                 'Relief',
+                'Tier 3',
                 'Income',
                 'Payable GRA',
                 'pay paid',
@@ -88,10 +90,11 @@ class GRAReportExcelExport implements FromCollection, WithHeadings, WithStyles, 
             'G' => 14, 
             'H' => 15,
             'I' => 10,
-            'J' => 15,
+            'J' => 10,
             'K' => 15,
-            'L' => 10,
-            'M' => 10,          
+            'L' => 15,
+            'M' => 10,
+            'N' => 10,         
         ];
     }
 
@@ -103,6 +106,7 @@ class GRAReportExcelExport implements FromCollection, WithHeadings, WithStyles, 
             'I' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
             'J' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
             'K' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'L' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
         ];
     }
     

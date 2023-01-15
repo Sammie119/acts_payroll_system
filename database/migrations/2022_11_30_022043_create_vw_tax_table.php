@@ -27,6 +27,7 @@ return new class extends Migration
                     ) AS `fullname`,
                     `lp`.`tax` AS `tax`,
                     `lp`.`tax_relief` AS `tax_relief`,
+                    `lp`.`tier_3` AS `tier_3`,
                     `lp`.`incomes` AS `incomes`,
                     `lp`.`rate_incomes` AS `rate_incomes`,
                     `lp`.`amount_incomes` AS `amount_incomes`,

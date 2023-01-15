@@ -242,6 +242,7 @@
                                 <th>Paid<br>SSNIT<br>(Y / N)</th>
                                 <th>Total<br>Allowances</th>
                                 <th>Tax Relief</th>
+                                <th>Tier 3</th>
                                 <th>Total Taxable<br>Income</th>
                                 <th style="text-align: right;">Payable<br>GRA</th>
                                 <th>Severance<br>pay paid</th>
@@ -253,6 +254,7 @@
                                 $total_salary = 0;
                                 $total_tax = 0;
                                 $total_tax_relief_s = 0;
+                                $total_tier_3 = 0;
                                 $total_allowances_s = 0;
                                 $total_taxable_income_s = 0;
 
@@ -261,7 +263,7 @@
                             @foreach ($data as $key => $staff)
                                 @php
                                     $month = $date['month'];
-                                    $tax = \App\Models\VWTax::select('tax', 'tax_relief', 'amount_incomes')->where([
+                                    $tax = \App\Models\VWTax::select('tax', 'tax_relief', 'tier_3', 'amount_incomes')->where([
                                             ['staff_id', $staff->staff_id],
                                             ['pay_year', $date['year']],
                                         ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$month'")->first();
@@ -273,13 +275,15 @@
                                     $paid_ssnit = ($staff->age >= 60) ? 'N' : 'Y';
                                     $total_allowance = array_sum(json_decode($tax->amount_incomes ?? "[0]"));
                                     $tax_relief = $tax->tax_relief;
-                                    $total_taxable_income = ($total_allowance + $staff->basic) - $tax_relief;
+                                    $tier_3 = $tax->tier_3;
+                                    $total_taxable_income = ($total_allowance + $staff->basic) - ($tax_relief + $tier_3);
                                     $severance = '0';
                                     $remarks = NULL;
 
                                     $total_tax += $tax->tax;
                                     $total_salary += $staff->basic;
                                     $total_tax_relief_s += $tax_relief;
+                                    $total_tier_3 += $tier_3;
                                     $total_allowances_s += $total_allowance;
                                     $total_taxable_income_s += $total_taxable_income;
 
@@ -293,6 +297,7 @@
                                         'paid_ssnit' => $paid_ssnit,
                                         'total_allowance' => $total_allowance,
                                         'tax_relief' => $tax_relief,
+                                        'tier_3' => $tier_3,
                                         'total_taxable_income' => $total_taxable_income,
                                         'payable' => $tax->tax,
                                         'severance' => $severance,
@@ -310,6 +315,7 @@
                                     <td>{{ $paid_ssnit }}</td>
                                     <td style="text-align: right;">{{ number_format($total_allowance, 2) }}</td>
                                     <td style="text-align: right;">{{ number_format($tax_relief, 2) }}</td>
+                                    <td style="text-align: right;">{{ number_format($tier_3, 2) }}</td>
                                     <td style="text-align: right;">{{ number_format($total_taxable_income, 2) }}</td>
                                     <td style="text-align: right;">{{ number_format($tax->tax, 2) }}</td>
                                     <td style="text-align: center;">{{ $severance }}</td>
@@ -321,6 +327,7 @@
                                     <th style="text-align: right;">{{ number_format($total_salary, 2) }}</th>
                                     <th colspan="3" style="text-align: right;">{{ number_format($total_allowances_s, 2) }}</th>
                                     <th style="text-align: right;">{{ number_format($total_tax_relief_s, 2) }}</th>
+                                    <th style="text-align: right;">{{ number_format($total_tier_3, 2) }}</th>
                                     <th style="text-align: right;">{{ number_format($total_taxable_income_s, 2) }}</th>
                                     <th style="text-align: right;">{{ number_format($total_tax, 2) }}</th>
                                     <th colspan="2"></th>
@@ -524,41 +531,41 @@
         @switch($report)
         
             @case('Bankers')
-                <a href="{{ route('exprt_to_bank', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                <a href="{{ route('exprt_to_bank', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
                 @break
 
             @case('tier_1')
-                <a href="{{ route('exprt_to_tier_1', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                <a href="{{ route('exprt_to_tier_1', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
                 @break
 
             @case('tier_2')
-                <a href="{{ route('exprt_to_tier_2', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                <a href="{{ route('exprt_to_tier_2', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
                 @break
 
             @case('paye_tax')
-                <a href="{{ route('exprt_to_paye_tax', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                <a href="{{ route('exprt_to_paye_tax', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
                 @break
 
             @case('welfare')
-                <a href="{{ route('exprt_to_welfare', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                <a href="{{ route('exprt_to_welfare', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
                 @break
 
             @case('credit_union')
-                <a href="{{ route('exprt_to_credit_union', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                <a href="{{ route('exprt_to_credit_union', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
                 @break
 
             @case('rent')
-                <a href="{{ route('exprt_to_rent', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                <a href="{{ route('exprt_to_rent', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
                 @break
 
             @case('loans')
-                <a href="{{ route('exprt_to_loans', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark"> &#128438; Export</a>
+                <a href="{{ route('exprt_to_loans', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
                 @break
 
             @default
                 
         @endswitch
-        <button class="noprint btn btn-outline-dark" onclick="print_1()"> &#128438; Print</button>
+        <button class="noprint btn btn-outline-dark" onclick="print_1()">Print</button>
 		
     </body>
 </html>
