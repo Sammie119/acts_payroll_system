@@ -40,6 +40,12 @@ return new class extends Migration
             'next_17_5' => 3000.00,
             'next_25' => 16395.00,
             'exceeding' => 20000.00,
+            'rate_0' => 0,
+            'rate_1' => 5,
+            'rate_2' => 10,
+            'rate_3' => 17.5,
+            'rate_4' => 25,
+            'rate_5' => 30,
             'ssf_employer' => 13.00,
             'ssf_employee' =>  5.50
         ]);
