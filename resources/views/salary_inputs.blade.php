@@ -11,7 +11,7 @@
                             <h5>{{ __('Salary Inputs for '. $staff->fullname) }}</h5>  
                         </div>
                         <div class="col-2">
-                            <a class="btn btn-secondary btn-sm float-end" href="{{ route('payroll') }}">Payroll</a> 
+                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a> 
                         </div>
                     </div> 
                 </div>

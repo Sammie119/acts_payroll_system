@@ -6,12 +6,18 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    
-                    @isset($staff)
-                        <h5>{{ __('Edit Staff') }}</h5>
-                    @else
-                        <h5>{{ __('Add Staff') }}</h5>  
-                    @endisset
+                    <div class="row">
+                        <div class="col-10">
+                            @isset($staff)
+                                <h5>{{ __('Edit Staff') }}</h5>
+                            @else
+                                <h5>{{ __('Add Staff') }}</h5>  
+                            @endisset
+                        </div>
+                        <div class="col-2">
+                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a> 
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card-body">

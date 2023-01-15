@@ -11,7 +11,7 @@
                             <h5>Salary details for {{ $pay->pay_month }}, {{ $pay->pay_year }}</h5> 
                         </div>
                         <div class="col-2">
-                            <a class="btn btn-secondary btn-sm float-end" href="{{ route('payroll') }}">Payroll</a> 
+                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a> 
                         </div>
                     </div>
                 </div>

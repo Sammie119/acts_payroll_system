@@ -6,11 +6,18 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    @isset($dropdown)
-                        {{ __('Edit Dropdown') }}
-                    @else
-                        {{ __('Add New Dropdown') }} 
-                    @endisset
+                    <div class="row">
+                        <div class="col-10">
+                            @isset($dropdown)
+                                {{ __('Edit Dropdown') }}
+                            @else
+                                {{ __('Add New Dropdown') }} 
+                            @endisset
+                        </div>
+                        <div class="col-2">
+                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a> 
+                        </div>
+                    </div>
                 </div>
                 
 

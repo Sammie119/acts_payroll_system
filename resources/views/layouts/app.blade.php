@@ -70,9 +70,9 @@
                                 <a class="nav-link {{ request()->is('payslips') ? 'active' : '' }} {{ request()->is('payslips/*') ? 'active' : '' }}" href="{{ route('payslips') }}">{{ __('Payslips') }}</a>
                             </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->is('salary') ? 'active' : '' }} {{ request()->is('salary/*') ? 'active' : '' }}" href="{{ route('salary') }}">{{ __('Setup') }}</a>
-                            </li>
+                            {{-- <li class="nav-item">
+                                <a class="nav-link " href="">{{ __('Setup') }}</a>
+                            </li> --}}
 
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->is('loans') ? 'active' : '' }} {{ request()->is('loans/*') ? 'active' : '' }}" href="{{ route('loans') }}">{{ __('Loans') }}</a>
@@ -80,11 +80,19 @@
 
                             @if(Auth::user()->id === 1)
                                 <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="nav-link dropdown-toggle {{ request()->is('dropdowns') ? 'active' : '' }} {{ request()->is('taxs') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle 
+                                    {{ request()->is('dropdowns') ? 'active' : '' }} {{ request()->is('dropdowns/*') ? 'active' : '' }}
+                                    {{ request()->is('taxs') ? 'active' : '' }}
+                                    {{ request()->is('salary') ? 'active' : '' }} {{ request()->is('salary/*') ? 'active' : '' }}
+                                    " href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         Settings
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="{{ route('salary') }}">
+                                            {{ __('Salary Setup') }}
+                                        </a>
+
                                         <a class="dropdown-item" href="{{ route('dropdowns') }}">
                                             {{ __('Dropdowns') }}
                                         </a>
@@ -97,7 +105,7 @@
                             @endif
 
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle {{ request()->is('users') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle {{ request()->is('users') ? 'active' : '' }} {{ request()->is('register') ? 'active' : '' }} {{ request()->is('password/*') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
 

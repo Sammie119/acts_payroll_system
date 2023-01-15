@@ -88,14 +88,14 @@ Route::controller(DownloadPayslipController::class)->group(function () {
 
 Route::controller(SettingsController::class)->group(function () {   
     Route::get('dropdowns', 'indexDropdown')->name('dropdowns');
-    Route::get('create_dropdown', 'createDropdown')->name('create_dropdown');
+    Route::get('dropdowns/create_dropdown', 'createDropdown')->name('create_dropdown');
     Route::post('store_dropdown', 'storeDropdown')->name('store_dropdown');
-    Route::get('edit_dropdown/{id}', 'editDropdown')->name('edit_dropdown');
+    Route::get('dropdowns/edit_dropdown/{id}', 'editDropdown')->name('edit_dropdown');
     Route::post('update_dropdown', 'updateDropdown')->name('update_dropdown');
     Route::get('delete_dropdown/{id}', 'deleteDropdown')->name('delete_dropdown');
 
     Route::get('taxs', 'indexTax')->name('taxs');
-    Route::get('create_taxs', 'createTax')->name('create_taxs');
+    // Route::get('taxs/create_taxs', 'createTax')->name('create_taxs');
     Route::post('store_taxs', 'storeTax')->name('store_taxs');
     // Route::get('edit_taxs/{id}', 'editTax')->name('edit_taxs');
     // Route::post('update_taxs', 'updateTax')->name('update_taxs');

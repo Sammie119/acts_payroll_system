@@ -22,8 +22,11 @@
                     <div class="card card-primary">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-9">
+                            <div class="col-10">
                                 <h5>{{ __('Loans Payment Details for '. getStaffName($staff)) }}</h5>
+                            </div>
+                            <div class="col-2">
+                                <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a> 
                             </div>
                         </div>  
                     </div>

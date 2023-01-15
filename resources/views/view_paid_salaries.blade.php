@@ -22,15 +22,12 @@
                     <div class="card card-primary">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-9">
+                            <div class="col-10">
                                 <h5>{{ __('Salaries Paid for '. $staff_name->fullname) }}</h5>
                             </div>
-                            {{-- <div class="col-2">
-                                <input class="form-control" type="text" id="search" style="height: 32px">
-                            </div> --}}
-                            {{-- <div class="col-1">
-                                <a href="{{ route('staff/create_staff') }}" class="btn btn-primary btn-sm">Add Staff</a>
-                            </div> --}}
+                            <div class="col-2">
+                                <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a> 
+                            </div>
                         </div>  
                     </div>
                         <div class="card-body">
