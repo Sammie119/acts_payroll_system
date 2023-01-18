@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id('dropdown_id');
             $table->unsignedInteger('category_id')->comment('1=Allowance, 2=Deduction');
             $table->string('dropdown_name');
+            $table->tinyInteger('taxable')->default(0)->comment('1=taxable, 2=Not Taxable');;
             $table->timestamps();
         });
     }

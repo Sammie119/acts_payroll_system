@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Dropdown;
 use App\Models\Staff;
 use App\Models\VWStaff;
 use App\Models\TaxSSNIT;
@@ -65,6 +66,24 @@ use App\Models\SetupSalary;
         return 0;
     }
 
+    function getTaxableAllowancesAmount(array $allownces = null, array $amounts = null): array
+    {
+        $allownces_amount = [];
+
+        if ($allownces === null){
+            return [0];
+        }
+
+        foreach ($allownces as $key => $allownce) {
+            $taxable = Dropdown::select('taxable')->where('dropdown_name', $allownce)->first()->taxable;
+            if($taxable === 1){
+                array_push($allownces_amount, $amounts[$key]);
+            }
+        }
+        // dd($allownces_amount);
+        return $allownces_amount;
+    }
+
     function getTax($basic, $id)
     {
         // dd(floatval(getTaxRelief($id)));
@@ -84,9 +103,10 @@ use App\Models\SetupSalary;
         $rate_5 = $tax->rate_5;
 
         // Allowance
-        $allownce = PayrollDependecy::select('amount_incomes')->where('staff_id', $id)->orderByDesc('id')->first();
+        $allownce = PayrollDependecy::select('incomes', 'amount_incomes')->where('staff_id', $id)->orderByDesc('id')->first();
 
-        $total_allowance = array_sum($allownce->amount_incomes ?? [0]);
+        $total_allowance = array_sum(getTaxableAllowancesAmount($allownce->incomes ?? [0], $allownce->amount_incomes ?? [0]));
+        // dd($total_allowance);
 
         $result = floatval($basic + $total_allowance) - (floatval($first + ($basic * ($ssf/100))) + floatval(getTaxRelief($id)) + floatval(getTierThree($id, $basic)));
 

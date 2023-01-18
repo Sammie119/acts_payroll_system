@@ -16,7 +16,8 @@ return new class extends Migration
     {
         DB::unprepared("CREATE OR REPLACE VIEW vw_tax as
                 SELECT
-                staff.`staff_id` AS `staff_id`,
+                    lp.`id` as pay_id,
+                    staff.`staff_id` AS `staff_id`,
                     `staff_number` AS `staff_number`,
                     `firstname` AS `firstname`,
                     `othernames` AS `othernames`,

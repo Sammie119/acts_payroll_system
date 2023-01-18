@@ -40,6 +40,7 @@
                                         <th>#</th>
                                         <th>Dropdown Name</th>
                                         <th>Category</th>
+                                        <th>Taxable</th>
                                         <th>Date</th>
                                         <th>Action</th>
                                     </tr>
@@ -50,6 +51,7 @@
                                             <td>{{ $key+1 }}</td>
                                             <td>{{ $dropdown->dropdown_name }}</td>
                                             <td>{{ $dropdown->category_id === 1 ? 'Allowance' : 'Deduction' }}</td>
+                                            <td>{{ $dropdown->taxable === 1 ? 'Yes' : 'No' }}</td>
                                             <td>{{ $dropdown->created_at }}</td>
                                             <td>
                                                 <div class="btn-group">

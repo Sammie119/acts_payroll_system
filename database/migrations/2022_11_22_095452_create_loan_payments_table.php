@@ -22,6 +22,8 @@ return new class extends Migration
             $table->decimal('total_amount_paid', 12, 2)->default(0.00);
             $table->unsignedTinyInteger('months_paid')->default(0);
             $table->unsignedTinyInteger('status')->default(0)->comment('0=pending, 1=paying, 2=paid');
+            $table->string('pay_month', 15);
+            $table->string('pay_year', 4);
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
             $table->timestamps();

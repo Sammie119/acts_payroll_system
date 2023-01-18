@@ -67,6 +67,8 @@ class LoanController extends Controller
         $loan_pay->amount = $request->amount;
         $loan_pay->amount_paid = 0;
         $loan_pay->months_paid = 0;
+        $loan_pay->pay_month = date('F');
+        $loan_pay->pay_year = date('Y');
         $loan_pay->created_by = Auth()->user()->id;
         $loan_pay->updated_by = Auth()->user()->id;
         $loan_pay->save();
@@ -123,6 +125,8 @@ class LoanController extends Controller
             LoanPayment::where('loan_id', $request->id)->update(array(
                 'staff_id' => $staff_id, 
                 'amount' => $request->amount,
+                'pay_month' => date('F'),
+                'pay_year' => date('Y'),
                 'updated_by' => Auth()->user()->id
             ));
 
@@ -145,6 +149,8 @@ class LoanController extends Controller
         $loan = Loan::find($id);
         if($loan->status === 0){
             $loan->delete();
+
+            LoanPayment::where('loan_id', $id)->delete();
 
             return redirect('loans')->with('success', 'Loan Deleted Successfully!!');
         }

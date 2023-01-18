@@ -7,6 +7,8 @@ use App\Models\VWStaff;
 use Illuminate\Http\Request;
 use App\Mail\EmployeePayslip;
 use App\Models\DownloadPayslip;
+use App\Models\Loan;
+use App\Models\LoanPayment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -79,9 +81,33 @@ class DownloadPayslipController extends Controller
     {
         DB::table('download_payslips')->where([['month', $month, ['year', $year]]])->delete();
 
+        unlink(storage_path('salary_pdf/'.strval($file_name)));
+
         DB::table('payroll_episodes')->where([['pay_month', $month, ['pay_year', $year]]])->delete();
 
-        unlink(storage_path('salary_pdf/'.strval($file_name)));
+        DB::table('payroll_dependecies')->where([['pay_month', $month, ['pay_year', $year]]])->delete();
+
+        $loan_pay = LoanPayment::select('loan_id', 'status')->where([['pay_month', $month, ['pay_year', $year]]])->where('status', '!=', 0)->get();
+
+        // dd($loan_pay);
+        if($loan_pay) {
+            foreach ($loan_pay as $loan) {
+
+                $loan = Loan::find($loan->loan_id);
+    
+                if($loan->status === 1){
+                    $loan->update([
+                        'status' => 0
+                    ]);
+                } elseif($loan->status === 2){
+                    $loan->update([
+                        'status' => 1
+                    ]);
+                }
+            }
+
+            DB::table('loan_payment_episodes')->where([['pay_month', $month, ['pay_year', $year]]])->where('status', '!=', 0)->delete();
+        }
 
         return back()->with('success', 'Generated Slips Deleted Successfully!!!!');
     }

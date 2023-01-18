@@ -263,17 +263,17 @@
                             @foreach ($data as $key => $staff)
                                 @php
                                     $month = $date['month'];
-                                    $tax = \App\Models\VWTax::select('tax', 'tax_relief', 'tier_3', 'amount_incomes')->where([
+                                    $tax = \App\Models\VWTax::select('tax', 'tax_relief', 'tier_3', 'incomes', 'amount_incomes')->where([
                                             ['staff_id', $staff->staff_id],
                                             ['pay_year', $date['year']],
-                                        ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$month'")->first();
+                                        ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$month'")->orderByDesc('pay_id')->first();
                                         // dd(json_decode($tax->amount_incomes));
                             
                                     $position = 'Junior';
                                     $resident = 'N';
                                     $secondary = 'N';
                                     $paid_ssnit = ($staff->age >= 60) ? 'N' : 'Y';
-                                    $total_allowance = array_sum(json_decode($tax->amount_incomes ?? "[0]"));
+                                    $total_allowance = array_sum(getTaxableAllowancesAmount(json_decode($tax->incomes), json_decode($tax->amount_incomes))); //array_sum(json_decode($tax->amount_incomes ?? "[0]"));
                                     $tax_relief = $tax->tax_relief;
                                     $tier_3 = $tax->tier_3;
                                     $total_taxable_income = ($total_allowance + $staff->basic) - ($tax_relief + $tier_3);

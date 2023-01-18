@@ -32,6 +32,7 @@ class SettingsController extends Controller
             ],
             [
                 'category_id' => $request['category_id'],
+                'taxable' => isset($request['taxable']) ? $request['taxable'] : 0
             ]
         );
 
@@ -54,6 +55,7 @@ class SettingsController extends Controller
         Dropdown::find($request->id)->update([
                 'dropdown_name' => $request['dropdown_name'],
                 'category_id' => $request['category_id'],
+                'taxable' => isset($request['taxable']) ? $request['taxable'] : 0
             ]);
 
         return redirect('dropdowns')->with('success', 'Dropdown Updated Successfully!!');

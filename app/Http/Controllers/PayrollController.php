@@ -125,6 +125,8 @@ class PayrollController extends Controller
                 $loan_pay->total_amount_paid = $payment->total_amount_paid + $request->amount_loan[$i];
                 $loan_pay->months_paid = $payment->months_paid + 1;
                 $loan_pay->status = $status;
+                $loan_pay->pay_month = date('F');
+                $loan_pay->pay_year = date('Y');
                 $loan_pay->created_by = Auth()->user()->id;
                 $loan_pay->updated_by = Auth()->user()->id;
 
@@ -147,6 +149,8 @@ class PayrollController extends Controller
         $pay->tier_3 = $request->tier_3;
         $pay->employer_ssf = $request->employer_ssf;
         $pay->employee_ssf = ($staff_age <= 60) ? $request->employee_ssf : 0;
+        $pay->pay_month = date('F');
+        $pay->pay_year = date('Y');
         $pay->created_by = Auth()->user()->id;
         $pay->updated_by = Auth()->user()->id;
         $pay->save();
@@ -259,11 +263,11 @@ class PayrollController extends Controller
      * @param  \App\Models\Payroll  $payroll
      * @return \Illuminate\Http\Response
      */
-    public function destroy($room_id)
-    {
-        $room = Payroll::find($room_id);
-        $room->delete();
+    // public function destroy($room_id)
+    // {
+    //     $room = Payroll::find($room_id);
+    //     $room->delete();
 
-        return back()->with('success', 'Payroll Deleted Successfully!!');
-    }
+    //     return back()->with('success', 'Payroll Deleted Successfully!!');
+    // }
 }
