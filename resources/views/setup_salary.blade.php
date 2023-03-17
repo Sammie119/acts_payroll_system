@@ -50,21 +50,25 @@
                                 </thead>
                                 <tbody id="employee_table">
                                     @forelse ($salary as $key => $salary)
-                                        <tr>
-                                            <td>{{ ++$key }}</td>
-                                            <td>{{ $salary->staff->staff_number }}</td>
-                                            <td>{{ $salary->staff->fullname }}</td>
-                                            <td>{{ $salary->staff->qualification }}</td>
-                                            <td>{{ $salary->staff->position }}</td>
-                                            <td>{{ number_format($salary->salary, 2) }}</td>
-                                            <td>{{ number_format($salary->tax_relief, 2) }}</td>
-                                            <td>{{ $salary->tier_3 }}%</td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <a href="salary/edit_salary/{{ $salary->salary_id }}" class="btn btn-success btn-sm" title="Edit Details">Edit</a>
-                                                </div>
-                                            </td>
-                                        </tr> 
+                                        
+                                        @if (($salary->staff->staff_number ?? null) !== null)
+                                            <tr>
+                                                <td>{{ ++$key }}</td>
+                                                <td>{{ $salary->staff->staff_number }}</td>
+                                                <td>{{ $salary->staff->fullname }}</td>
+                                                <td>{{ $salary->staff->qualification }}</td>
+                                                <td>{{ $salary->staff->position }}</td>
+                                                <td>{{ number_format($salary->salary, 2) }}</td>
+                                                <td>{{ number_format($salary->tax_relief, 2) }}</td>
+                                                <td>{{ $salary->tier_3 }}%</td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a href="salary/edit_salary/{{ $salary->salary_id }}" class="btn btn-success btn-sm" title="Edit Details">Edit</a>
+                                                    </div>
+                                                </td>
+                                            </tr> 
+                                        @endif 
+                                        
                                     @empty
                                         <tr>
                                             <td colspan="40">No data Found</td>

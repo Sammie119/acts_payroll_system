@@ -56,24 +56,27 @@
                                             $amnt_paid = $loan->loan_pay->last()->total_amount_paid;
                                             $balance = $amount - $amnt_paid;
                                         @endphp
-                                        <tr>
-                                            <td>{{ ++$key }}</td>
-                                            <td>{{ $loan->staff->fullname }}</td>
-                                            <td>{{ $loan->description }}</td>
-                                            <td>{{ number_format($amount, 2) }}</td>
-                                            <td>{{ number_format($loan->amount_per_month, 2) }}</td>
-                                            <td>{{ number_format($amnt_paid, 2) }}</td>
-                                            <td>{{ number_format($balance, 2) }}</td>
-                                            <td>{{ $loan->number_of_months - $loan->loan_pay->last()->months_paid }}</td>
-                                            <td>{{ getLoanStatus($loan->status) }}</td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <a href="{{ route('loan.payment',[$loan->loan_id]) }}" class="btn btn-info btn-sm" title="View Details">Veiw</a>
-                                                    <a href="{{ route('loan.edit',[$loan->loan_id]) }}" class="btn btn-success btn-sm" title="Edit Details">Edit</a>
-                                                    <a href="loans/delete_loan/{{ $loan->loan_id }}" onclick="return confirm('The Selected record will be deleted permanently!!!')" class="btn btn-danger btn-sm" >Del</a>
-                                                </div>
-                                            </td>
-                                        </tr> 
+
+                                        @if (($loan->staff->fullname ?? null) !== null)
+                                            <tr>
+                                                <td>{{ ++$key }}</td>
+                                                <td>{{ $loan->staff->fullname }}</td>
+                                                <td>{{ $loan->description }}</td>
+                                                <td>{{ number_format($amount, 2) }}</td>
+                                                <td>{{ number_format($loan->amount_per_month, 2) }}</td>
+                                                <td>{{ number_format($amnt_paid, 2) }}</td>
+                                                <td>{{ number_format($balance, 2) }}</td>
+                                                <td>{{ $loan->number_of_months - $loan->loan_pay->last()->months_paid }}</td>
+                                                <td>{{ getLoanStatus($loan->status) }}</td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a href="{{ route('loan.payment',[$loan->loan_id]) }}" class="btn btn-info btn-sm" title="View Details">Veiw</a>
+                                                        <a href="{{ route('loan.edit',[$loan->loan_id]) }}" class="btn btn-success btn-sm" title="Edit Details">Edit</a>
+                                                        <a href="loans/delete_loan/{{ $loan->loan_id }}" onclick="return confirm('The Selected record will be deleted permanently!!!')" class="btn btn-danger btn-sm" >Del</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endif 
                                     @empty
                                         <tr>
                                             <td colspan="25">No Data Found</td>
