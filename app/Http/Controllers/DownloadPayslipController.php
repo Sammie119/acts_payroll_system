@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Loan;
 use App\Models\Payroll;
 use App\Models\VWStaff;
+use App\Models\LoanPayment;
 use Illuminate\Http\Request;
 use App\Mail\EmployeePayslip;
 use App\Models\DownloadPayslip;
-use App\Models\Loan;
-use App\Models\LoanPayment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Response;
 
 class DownloadPayslipController extends Controller
@@ -67,6 +68,9 @@ class DownloadPayslipController extends Controller
         
                 // unlink(storage_path('salary_pdf/'.$staff->staff_number.'_'.strtolower($month).'_'.$year.'_payslip.pdf'));
             }
+
+            // php artisan schedule:run
+            Artisan::call('schedule:run');
             
         }
 
