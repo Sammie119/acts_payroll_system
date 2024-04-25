@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ActsWelfareReportExcelExport;
 use App\Exports\BankReportExcelExport;
 use App\Exports\CreditUnionSavingReportExcelExport;
 use App\Exports\GRAReportExcelExport;
 use App\Exports\LoansReportExcelExport;
+use App\Exports\NehemiahReportExcelExport;
+use App\Exports\ProvidentFundReportExcelExport;
 use App\Exports\RentAdvanceReportExcelExport;
 use App\Exports\TeirOneReportExcelExport;
 use App\Exports\TeirTwoReportExcelExport;
@@ -52,5 +55,20 @@ class ExportToExcelController extends Controller
     public function exportToWelfareDues($report_month, $report_year)
     {
         return Excel::download(new WelfareDuesReportExcelExport($report_month, $report_year), 'welfare_dues_contribution_'.strtolower($report_month).'_'.$report_year.'.xlsx');
+    }
+
+    public function exportToActsWelfare($report_month, $report_year)
+    {
+        return Excel::download(new ActsWelfareReportExcelExport($report_month, $report_year), 'acts_welfare_'.strtolower($report_month).'_'.$report_year.'.xlsx');
+    }
+
+    public function exportToNehemiah($report_month, $report_year)
+    {
+        return Excel::download(new NehemiahReportExcelExport($report_month, $report_year), 'nehemiah_'.strtolower($report_month).'_'.$report_year.'.xlsx');
+    }
+
+    public function exportToPFund($report_month, $report_year)
+    {
+        return Excel::download(new ProvidentFundReportExcelExport($report_month, $report_year), 'provident_fund_'.strtolower($report_month).'_'.$report_year.'.xlsx');
     }
 }

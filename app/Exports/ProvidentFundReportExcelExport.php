@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\VWSalarySsnit;
+use App\Models\VWTax;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -11,7 +12,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 
-class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, WithStyles, WithColumnWidths, WithColumnFormatting
+class ProvidentFundReportExcelExport implements FromCollection, WithHeadings, WithStyles, WithColumnWidths, WithColumnFormatting
 {
     public function __construct(public $report_month, public $report_year)
     {
@@ -23,12 +24,12 @@ class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, With
         $date = strtoupper($this->report_month).', '.$this->report_year;
         return [
             [
-                'WELFARE DUES '.$date
+                'PROVIDENT FUND '.$date
             ],
             [
                 'Staff ID',
                 'Staff Name',
-                'Position',
+                'Description',
                 'Amount',
             ]
         ];
@@ -73,13 +74,10 @@ class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, With
     */
     public function collection()
     {
-        return VWSalarySsnit::select('staff_number', 'fullname', 'position', 'welfare')->where([
-            ['pay_month', $this->report_month],
+        return VWTax::selectRaw("staff_number, fullname, 'Provident Fund', tier_3")->where([
             ['pay_year', $this->report_year],
-            ['staff_number', '!=', 'AS001'],
-            ['staff_id', '<', 12],
-            ['staff_id', '!=', 6]
-        ])->orderBy('staff_number')->get();
+            ['tier_3', '>', 0]
+        ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$this->report_month'")->orderBy('staff_number')->get();
     }
 }
 

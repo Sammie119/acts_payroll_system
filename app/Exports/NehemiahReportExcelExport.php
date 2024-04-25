@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\VWSalarySsnit;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -11,7 +12,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 
-class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, WithStyles, WithColumnWidths, WithColumnFormatting
+class NehemiahReportExcelExport implements FromCollection, WithHeadings, WithStyles, WithColumnWidths, WithColumnFormatting
 {
     public function __construct(public $report_month, public $report_year)
     {
@@ -23,12 +24,12 @@ class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, With
         $date = strtoupper($this->report_month).', '.$this->report_year;
         return [
             [
-                'WELFARE DUES '.$date
+                'NEHEMIAH PROJECT CONTRIBUTION '.$date
             ],
             [
                 'Staff ID',
                 'Staff Name',
-                'Position',
+                'Description',
                 'Amount',
             ]
         ];
@@ -53,9 +54,9 @@ class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, With
     public function columnWidths(): array
     {
         return [
-            'A' => 10,
+            'A' => 15,
             'B' => 30,
-            'C' => 23,
+            'C' => 20,
             'D' => 14,
         ];
     }
@@ -73,13 +74,7 @@ class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, With
     */
     public function collection()
     {
-        return VWSalarySsnit::select('staff_number', 'fullname', 'position', 'welfare')->where([
-            ['pay_month', $this->report_month],
-            ['pay_year', $this->report_year],
-            ['staff_number', '!=', 'AS001'],
-            ['staff_id', '<', 12],
-            ['staff_id', '!=', 6]
-        ])->orderBy('staff_number')->get();
+        return Cache::get('nehemiah_project');
     }
 }
 

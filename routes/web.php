@@ -42,10 +42,10 @@ Route::controller(StaffController::class)->group(function () {
     Route::post('staff/store_staff', 'store');
     Route::get('staff/edit_staff/{id}', 'edit');
     Route::post('staff/edit_staff/update_staff', 'update');
-    Route::get('staff/delete_staff/{id}', 'destroy');   
+    Route::get('staff/delete_staff/{id}', 'destroy');
 });
 
-Route::controller(SetupSalaryController::class)->group(function () {   
+Route::controller(SetupSalaryController::class)->group(function () {
     Route::get('salary', 'index')->name('salary');
     Route::get('salary/create_salary', 'create')->name('salary/create_salary');
     Route::post('salary/store_salary', 'store');
@@ -53,13 +53,13 @@ Route::controller(SetupSalaryController::class)->group(function () {
     Route::post('salary/edit_salary/update_salary', 'update');
 });
 
-Route::controller(LoanController::class)->group(function () {   
+Route::controller(LoanController::class)->group(function () {
     Route::get('loans', 'index')->name('loans');
     Route::get('loans/create_loan', 'create')->name('loans/create_loan');
     Route::post('loans/store_loan', 'store');
     Route::get('loans/edit_loan/{id}', 'edit')->name('loan.edit');
     Route::post('loans/edit_loan/update_loan', 'update');
-    Route::get('loans/delete_loan/{id}', 'destroy'); 
+    Route::get('loans/delete_loan/{id}', 'destroy');
     Route::get('loans/view_loan/{id}', 'viewLoanPayment')->name('loan.payment');
 });
 
@@ -69,24 +69,24 @@ Route::controller(PayrollController::class)->group(function () {
     Route::post('payroll/salary_inputs/store_payroll', 'store');
     Route::get('payroll/view_paid_salaries/{id}', 'viewSalariesPaid')->name('view_paid_salaries');
     // Route::get('payroll/delete_all_paymemt/{id}', 'destroy');
-    Route::post('generate_payroll', 'generatePayroll'); 
+    Route::post('generate_payroll', 'generatePayroll');
     Route::get('payroll/view_payslip/{pay_id}', 'viewPayslip')->name('view_payslip');
-    Route::get('payroll/get_payslip/{pay_id}', 'getPaySlip')->name('get_payslip');        
+    Route::get('payroll/get_payslip/{pay_id}', 'getPaySlip')->name('get_payslip');
 });
 
-Route::controller(ReportController::class)->group(function () {   
+Route::controller(ReportController::class)->group(function () {
     Route::get('reports', 'index')->name('reports');
     Route::post('generate_report', 'GenerateReport');
 });
 
-Route::controller(DownloadPayslipController::class)->group(function () {   
+Route::controller(DownloadPayslipController::class)->group(function () {
     Route::get('payslips', 'index')->name('payslips');
     Route::get('download_pdf/{filename}', 'downloadPayslips')->name('download_pdf');
     Route::get('delete_payslips/{month}/{year}/{filename}', 'deletePayslip')->name('delete_payslips');
     Route::get('send_emal/{month}/{year}', 'sendEmails')->name('send_emal');
 });
 
-Route::controller(SettingsController::class)->group(function () {   
+Route::controller(SettingsController::class)->group(function () {
     Route::get('dropdowns', 'indexDropdown')->name('dropdowns');
     Route::get('dropdowns/create_dropdown', 'createDropdown')->name('create_dropdown');
     Route::post('store_dropdown', 'storeDropdown')->name('store_dropdown');
@@ -99,11 +99,11 @@ Route::controller(SettingsController::class)->group(function () {
     Route::post('store_taxs', 'storeTax')->name('store_taxs');
     // Route::get('edit_taxs/{id}', 'editTax')->name('edit_taxs');
     // Route::post('update_taxs', 'updateTax')->name('update_taxs');
-    // Route::get('delete_taxs/{id}', 'deleteTax')->name('delete_taxs');    
+    // Route::get('delete_taxs/{id}', 'deleteTax')->name('delete_taxs');
 });
 
 // Export Routes
-Route::controller(ExportToExcelController::class)->group(function () {   
+Route::controller(ExportToExcelController::class)->group(function () {
     Route::get('exprt_to_bank/{report_month}/{report_year}', 'exportToBank')->name('exprt_to_bank');
     Route::get('exprt_to_tier_1/{report_month}/{report_year}', 'exportToTeirOne')->name('exprt_to_tier_1');
     Route::get('exprt_to_tier_2/{report_month}/{report_year}', 'exportToTeirTwo')->name('exprt_to_tier_2');
@@ -112,4 +112,8 @@ Route::controller(ExportToExcelController::class)->group(function () {
     Route::get('exprt_to_rent/{report_month}/{report_year}', 'exportToRentAdvance')->name('exprt_to_rent');
     Route::get('exprt_to_credit_union/{report_month}/{report_year}', 'exportToCreditUnionSaving')->name('exprt_to_credit_union');
     Route::get('exprt_to_paye_tax/{report_month}/{report_year}', 'exportToGRA')->name('exprt_to_paye_tax');
+
+    Route::get('exprt_to_act_welfare/{report_month}/{report_year}', 'exportToActsWelfare')->name('exprt_to_act_welfare');
+    Route::get('exprt_to_nehemiah/{report_month}/{report_year}', 'exportToNehemiah')->name('exprt_to_nehemiah');
+    Route::get('exprt_to_p_fund/{report_month}/{report_year}', 'exportToPFund')->name('exprt_to_p_fund');
 });

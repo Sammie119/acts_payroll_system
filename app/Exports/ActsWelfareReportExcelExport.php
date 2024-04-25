@@ -11,7 +11,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 
-class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, WithStyles, WithColumnWidths, WithColumnFormatting
+class ActsWelfareReportExcelExport implements FromCollection, WithHeadings, WithStyles, WithColumnWidths, WithColumnFormatting
 {
     public function __construct(public $report_month, public $report_year)
     {
@@ -23,7 +23,7 @@ class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, With
         $date = strtoupper($this->report_month).', '.$this->report_year;
         return [
             [
-                'WELFARE DUES '.$date
+                'ACTS WELFARE '.$date
             ],
             [
                 'Staff ID',
@@ -73,12 +73,9 @@ class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, With
     */
     public function collection()
     {
-        return VWSalarySsnit::select('staff_number', 'fullname', 'position', 'welfare')->where([
+        return VWSalarySsnit::select('staff_number', 'fullname', 'position', 'acts_welfare')->where([
             ['pay_month', $this->report_month],
-            ['pay_year', $this->report_year],
-            ['staff_number', '!=', 'AS001'],
-            ['staff_id', '<', 12],
-            ['staff_id', '!=', 6]
+            ['pay_year', $this->report_year]
         ])->orderBy('staff_number')->get();
     }
 }

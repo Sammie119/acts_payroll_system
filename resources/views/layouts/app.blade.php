@@ -15,7 +15,7 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    
+
     <style>
         .active {
             font-weight: bolder;
@@ -33,7 +33,7 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    
+
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->
@@ -78,9 +78,9 @@
                                 <a class="nav-link {{ request()->is('loans') ? 'active' : '' }} {{ request()->is('loans/*') ? 'active' : '' }}" href="{{ route('loans') }}">{{ __('Loans') }}</a>
                             </li>
 
-                            @if(Auth::user()->id === 1)
+{{--                            @if(Auth::user()->id === 1)--}}
                                 <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="nav-link dropdown-toggle 
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle
                                     {{ request()->is('dropdowns') ? 'active' : '' }} {{ request()->is('dropdowns/*') ? 'active' : '' }}
                                     {{ request()->is('taxs') ? 'active' : '' }}
                                     {{ request()->is('salary') ? 'active' : '' }} {{ request()->is('salary/*') ? 'active' : '' }}
@@ -99,10 +99,10 @@
 
                                         <a class="dropdown-item" href="{{ route('taxs') }}">
                                             {{ __('Tax Inputs') }}
-                                        </a>                                        
+                                        </a>
                                     </div>
                                 </li>
-                            @endif
+{{--                            @endif--}}
 
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle {{ request()->is('users') ? 'active' : '' }} {{ request()->is('register') ? 'active' : '' }} {{ request()->is('password/*') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -110,7 +110,7 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    
+
                                     @if (Auth::user()->id === 1)
                                         {{-- <a class="dropdown-item" href="{{ route('register') }}">
                                             {{ __('Register') }}
@@ -133,7 +133,7 @@
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
                                     </form>
-                                    
+
                                 </div>
                             </li>
                         @endguest

@@ -54,7 +54,7 @@
                                             
                                                 $amount_incomes = floatval(array_sum($pay_dep->amount_incomes ?? [0]));
                                                 $amount_deductions = floatval(array_sum($pay_dep->amount_deductions ?? [0])) + floatval($pay_dep->tax) + floatval($pay_dep->employee_ssf) + floatval($pay_loan->amount_paid ?? null);
-                                                // {{ dd(floatval(array_sum($pay_dep->amount_deductions ?? [0])), floatval($pay_dep->tax), floatval($pay_dep->employee_ssf), floatval($pay_loan->amount_paid ?? null), $amount_deductions); }}
+                                                // {{ dd(floatval(array_sum($pay_dep->amount_deductions ?? [0])), floatval($pay_dep->tax), floatval($pay_dep->employee_ssf), floatval($pay_loan->amount_paid ?? null), $amount_deductions) }}
                                             @endphp
                                             <td>{{ ++$key }}</td>
                                             <td>{{ $payment->positon }}</td>

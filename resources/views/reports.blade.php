@@ -14,7 +14,7 @@
                         @csrf
                         <div class="row mb-3">
                             <label for="report_type" class="col-md-3 col-form-label text-md-end">{{ __('Report Type') }}</label>
-    
+
                             <div class="col-md-7">
                                 <select class="form-control" name="report_type" required autofocus>
                                     <option value="" selected disabled>--Select--</option>
@@ -25,14 +25,18 @@
                                     <option value="welfare">Welfare Dues Contributions</option>
                                     <option value="credit_union">Credit Union Savings Contributions</option>
                                     <option value="rent">Rent Advance</option>
+                                    <option value="p_fund">Provident Fund</option>
+{{--                                    <option value="credit_hire">Credit Union Hire Purchase</option>--}}
+                                    <option value="nehemiah">Nehemiah Project</option>
+                                    <option value="acts_welfare">ACTS Welfare</option>
                                     <option value="loans">Other Loans</option>
-                                </select>                       
+                                </select>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <label for="report_month" class="col-md-3 col-form-label text-md-end">{{ __('Report Month') }}</label>
-    
+
                             <div class="col-md-7">
                                 <select class="form-control" name="report_month" required>
                                     <option value="" selected disabled>--Select Month--</option>
@@ -48,17 +52,17 @@
                                     <option {{ (date('m') === '10') ? 'selected' : null }}>October</option>
                                     <option {{ (date('m') === '11') ? 'selected' : null }}>November</option>
                                     <option {{ (date('m') === '12') ? 'selected' : null }}>December</option>
-                                </select> 
+                                </select>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <label for="report_year" class="col-md-3 col-form-label text-md-end">{{ __('Report Year') }}</label>
-    
+
                             <div class="col-md-7">
                                 <select class="form-control" name="report_year" required>
                                     <option value="" selected disabled>--Select Year--</option>
-                                    <?php 
+                                    <?php
                                        for($i = 2022 ; $i <= date('Y'); $i++){
                                             $thisYear = (date('Y') == $i) ? 'selected' : null;
                                           echo "<option ". $thisYear .">$i</option>";

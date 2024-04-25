@@ -108,15 +108,51 @@ class ReportController extends Controller
                 ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$request->report_month'")->orderBy('staff_number')->get();
                 break;
 
+            case 'p_fund':
+                $report = 'p_fund';
+                $header = 'Provident Fund '. strtoupper($request->report_month). ', '. $request->report_year;
+                $data = VWTax::where([
+                    ['pay_year', $request->report_year],
+                    ['tier_3', '>', 0]
+                ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$request->report_month'")->orderBy('staff_number')->get();
+                break;
+
+//            case 'credit_hire':
+//                $report = 'credit_hire';
+//                $header = 'Credit Union Hire Purchase '. strtoupper($request->report_month). ', '. $request->report_year;
+//                $data = VWLoanPayment::where([
+//                    ['pay_year', $request->report_year],
+//                    ['description', '!=', 'Credit Union Hire Purchase']
+//                ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$request->report_month'")->orderBy('staff_number')->get();
+//                break;
+
+            case 'nehemiah':
+                $report = 'nehemiah';
+                $header = 'Nehemiah Project '. strtoupper($request->report_month). ', '. $request->report_year;
+                $data = VWTax::where([
+                    ['pay_year', $request->report_year],
+                    ['deductions', '!=', NULL]
+                ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$request->report_month'")->orderBy('staff_number')->get();
+                break;
+
+            case 'acts_welfare':
+                $report = 'acts_welfare';
+                $header = 'ACTS Welfare '. strtoupper($request->report_month). ', '. $request->report_year;
+                $data = VWSalarySsnit::where([
+                    ['pay_month', $request->report_month],
+                    ['pay_year', $request->report_year]
+                ])->orderBy('staff_number')->get();
+                break;
+
             // case 'value':
             //     # code...
             //     break;
-            
+
             default:
                 return "No Report Selected";
                 break;
         }
 
-        return view('print_report', ['data' => $data, 'report' => $report, 'header' => $header, 'date' => $date]);
+        return view('print_report', ['data' => $data, 'report' => $report, 'header' => strtoupper($header), 'date' => $date]);
     }
 }

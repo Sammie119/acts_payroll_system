@@ -70,7 +70,7 @@ class DownloadPayslipController extends Controller
             }
 
             // php artisan schedule:run
-            Artisan::call('schedule:run');
+            // Artisan::call('schedule:run');
             
         }
 

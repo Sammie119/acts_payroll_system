@@ -10,6 +10,8 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Http\Controllers\DownloadPayslipController;
 
+use function PHPUnit\Framework\fileExists;
+
 class EmployeePayslip extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
@@ -60,7 +62,9 @@ class EmployeePayslip extends Mailable implements ShouldQueue
     {
         //Delete multiple generated files
         $file_mask = storage_path('salary_pdf/AS*_payslip.pdf');
-        array_map('unlink', glob($file_mask));
+        if(file_exists($file_mask)){
+            array_map('unlink', glob($file_mask));
+        }
         
         // Generate PDF file
         $pay = [$this->data['pay']];

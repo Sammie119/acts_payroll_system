@@ -11,11 +11,11 @@
                             @isset($loan)
                                 <h5>{{ __('Edit Loan') }}</h5>
                             @else
-                                <h5>{{ __('New Loan') }}</h5>  
+                                <h5>{{ __('New Loan') }}</h5>
                             @endisset
                         </div>
                         <div class="col-2">
-                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a> 
+                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a>
                         </div>
                     </div>
                 </div>
@@ -24,11 +24,11 @@
                     @isset($loan)
                         <form method="POST" action="update_loan">
                     @else
-                        <form method="POST" action="store_loan">  
+                        <form method="POST" action="store_loan">
                     @endisset
-                    
+
                         @csrf
-            
+
                         @isset($loan)
                             <input type="hidden" name="id" value="{{ $loan->loan_id }}">
                         @endisset
@@ -77,8 +77,9 @@
                                     <option value="" selected disabled>--Select--</option>
                                     <option @if (isset($loan) && $loan->description === "Rent Advance") selected @endif>Rent Advance</option>
                                     <option @if (isset($loan) && $loan->description === "Credit Union") selected @endif>Credit Union</option>
+                                    <option @if (isset($loan) && $loan->description === "Credit Union Hire Purchase") selected @endif>Credit Union Hire Purchase</option>
                                     <option @if (isset($loan) && $loan->description === "Welfare Loan") selected @endif>Welfare Loan</option>
-                                </select>  
+                                </select>
 
                                 @error('description')
                                     <span class="invalid-feedback" role="alert">
@@ -107,7 +108,7 @@
 
                             <div class="col-md-3">
                                 <input id="amount_per_month" type="number" min="1" step="0.01" class="form-control @error('amount_per_month') is-invalid @enderror" name="amount_per_month" value="{{ isset($loan) ? $loan->amount_per_month : old('amount_per_month') }}" required autocomplete="amount_per_month">
-                            
+
                                 @error('amount_per_month')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -119,7 +120,7 @@
 
                             <div class="col-md-2">
                                 <input id="number_of_months" type="number" min="1" step="1" class="form-control @error('number_of_months') is-invalid @enderror" name="number_of_months" value="{{ isset($loan) ? $loan->number_of_months : old('number_of_months') }}" required>
-                            
+
                                 @error('number_of_months')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
