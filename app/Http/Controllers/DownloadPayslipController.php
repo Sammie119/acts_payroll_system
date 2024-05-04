@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\EmployeePayslipJob;
 use App\Models\Loan;
 use App\Models\Payroll;
 use App\Models\VWStaff;
@@ -32,7 +33,7 @@ class DownloadPayslipController extends Controller
         } else {
             $filename = 'salaries_for_'.strtolower($month).'_'.$year;
         }
-        
+
         Pdf::loadView('salary_pdf', ['payment' => $pay, 'request' => $request])->setPaper('a4', 'portrait')->save(storage_path('salary_pdf/'.$filename.'.pdf'));
 
         return $filename;
@@ -54,7 +55,7 @@ class DownloadPayslipController extends Controller
 
         foreach ($payment as $pay) {
             $staff = VWStaff::where('staff_id', $pay->staff_id)->first();
-            
+
             if (!empty($staff->email)) {
                 $data = [
                     'pay' => $pay,
@@ -63,15 +64,21 @@ class DownloadPayslipController extends Controller
                     'month' => $month,
                     'year' => $year
                 ];
-        
-                Mail::to($staff->email)->send(new EmployeePayslip($data));
-        
+
+                $sendData = [
+                    'email' => $staff->email,
+                    'data' => $data
+                ];
+
+                EmployeePayslipJob::dispatch($sendData);
+//                Mail::to($staff->email)->send(new EmployeePayslip($data));
+
                 // unlink(storage_path('salary_pdf/'.$staff->staff_number.'_'.strtolower($month).'_'.$year.'_payslip.pdf'));
             }
 
             // php artisan schedule:run
             // Artisan::call('schedule:run');
-            
+
         }
 
         DownloadPayslip::where([['month', $month], ['year', $year]])->update(array(
@@ -98,7 +105,7 @@ class DownloadPayslipController extends Controller
             foreach ($loan_pay as $loan) {
 
                 $loan = Loan::find($loan->loan_id);
-    
+
                 if($loan->status === 1){
                     $loan->update([
                         'status' => 0

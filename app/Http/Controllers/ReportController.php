@@ -72,13 +72,10 @@ class ReportController extends Controller
             case 'welfare':
                 $report = 'welfare';
                 $header = 'WELFARE DUES '. strtoupper($request->report_month). ', '. $request->report_year;
-                $data = VWSalarySsnit::where([
-                    ['pay_month', $request->report_month],
+                $data = VWTax::where([
                     ['pay_year', $request->report_year],
-                    ['staff_number', '!=', 'AS001'],
-                    ['staff_id', '<', 12],
-                    ['staff_id', '!=', 6]
-                ])->orderBy('staff_number')->get();
+                    ['deductions', '!=', NULL]
+                ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$request->report_month'")->orderBy('staff_number')->get();
                 break;
 
             case 'credit_union':

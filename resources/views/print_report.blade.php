@@ -341,39 +341,92 @@
                 @break
 
             @case('welfare')
+{{--                <div class = "data">--}}
+{{--                    <table class="table border-secondary table-sm mt-2">--}}
+{{--                        <thead>--}}
+{{--                            <tr>--}}
+{{--                                <th>No.</th>--}}
+{{--                                <th>Staff ID</th>--}}
+{{--                                <th>Staff Name</th>--}}
+{{--                                <th>Position</th>--}}
+{{--                                <th style="text-align: right;">Amount</th>--}}
+{{--                            </tr>--}}
+{{--                        </thead>--}}
+{{--                        <tbody>--}}
+{{--                            @php--}}
+{{--                                $total_welfare = 0;--}}
+{{--                            @endphp--}}
+{{--                            @foreach ($data as $key => $staff)--}}
+{{--                                @php--}}
+{{--                                    $total_welfare += $staff->welfare;--}}
+{{--                                @endphp--}}
+{{--                                <tr>--}}
+{{--                                    <td>{{ ++$key }}</td>--}}
+{{--                                    <td>{{ $staff->staff_number }}</td>--}}
+{{--                                    <td>{{ $staff->fullname }}</td>--}}
+{{--                                    <td>{{ $staff->position }}</td>--}}
+{{--                                    <td style="text-align: right;">{{ number_format($staff->welfare, 2) }}</td>--}}
+{{--                                </tr>--}}
+{{--                            @endforeach--}}
+{{--                        </tbody>--}}
+{{--                        <tfoot>--}}
+{{--                            <tr>--}}
+{{--                                <th colspan="2" style="text-align: center">GRAND TOTAL</th>--}}
+{{--                                <th colspan="4" style="text-align: right;">{{ number_format($total_welfare, 2) }}</th>--}}
+{{--                            </tr>--}}
+{{--                        </tfoot>--}}
+{{--                    </table>--}}
+{{--                </div>--}}
                 <div class = "data">
                     <table class="table border-secondary table-sm mt-2">
                         <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th>Staff ID</th>
-                                <th>Staff Name</th>
-                                <th>Position</th>
-                                <th style="text-align: right;">Amount</th>
-                            </tr>
+                        <tr>
+                            <th>No.</th>
+                            <th>Staff ID</th>
+                            <th>Staff Name</th>
+                            <th>Description</th>
+                            <th style="text-align: right;">Amount</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            @php
-                                $total_welfare = 0;
-                            @endphp
-                            @foreach ($data as $key => $staff)
+                        @php
+                            $total_amount = 0;
+                            $key = 0;
+                            $data_array = [];
+                        @endphp
+                        @foreach ($data as $staff)
+                            @if (in_array('Welfare Contribution', json_decode($staff->deductions)))
                                 @php
-                                    $total_welfare += $staff->welfare;
+                                    $index = array_search('Welfare Contribution', json_decode($staff->deductions));
+                                    $amount = json_decode($staff->amount_deductions);
+                                    $total_amount += $amount[$index];
+                                    $key += 1;
+
+                                    $data_array[] = [
+                                        'staff_number' => $staff->staff_number,
+                                        'fullname' => $staff->fullname,
+                                        'description' => 'Welfare Contribution',
+                                        'amount' => $amount[$index]
+                                    ];
                                 @endphp
                                 <tr>
-                                    <td>{{ ++$key }}</td>
+                                    <td>{{ $key }}</td>
                                     <td>{{ $staff->staff_number }}</td>
                                     <td>{{ $staff->fullname }}</td>
-                                    <td>{{ $staff->position }}</td>
-                                    <td style="text-align: right;">{{ number_format($staff->welfare, 2) }}</td>
+                                    <td>Welfare Contribution</td>
+                                    <td style="text-align: right;">{{ number_format($amount[$index], 2) }}</td>
                                 </tr>
-                            @endforeach
+                            @endif
+                        @endforeach
+                        @php
+                            Illuminate\Support\Facades\Cache::put('welfare_contribution', collect($data_array), now()->addHours(2));
+                        @endphp
                         </tbody>
                         <tfoot>
-                            <tr>
-                                <th colspan="2" style="text-align: center">GRAND TOTAL</th>
-                                <th colspan="4" style="text-align: right;">{{ number_format($total_welfare, 2) }}</th>
-                            </tr>
+                        <tr>
+                            <th colspan="2" style="text-align: center">GRAND TOTAL</th>
+                            <th colspan="3" style="text-align: right;">{{ number_format($total_amount, 2) }}</th>
+                        </tr>
                         </tfoot>
                     </table>
                 </div>

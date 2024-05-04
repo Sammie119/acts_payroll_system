@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\VWSalarySsnit;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -28,7 +29,7 @@ class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, With
             [
                 'Staff ID',
                 'Staff Name',
-                'Position',
+                'Description',
                 'Amount',
             ]
         ];
@@ -73,13 +74,7 @@ class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, With
     */
     public function collection()
     {
-        return VWSalarySsnit::select('staff_number', 'fullname', 'position', 'welfare')->where([
-            ['pay_month', $this->report_month],
-            ['pay_year', $this->report_year],
-            ['staff_number', '!=', 'AS001'],
-            ['staff_id', '<', 12],
-            ['staff_id', '!=', 6]
-        ])->orderBy('staff_number')->get();
+        return Cache::get('welfare_contribution');
     }
 }
 
