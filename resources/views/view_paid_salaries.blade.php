@@ -26,9 +26,9 @@
                                 <h5>{{ __('Salaries Paid for '. $staff_name->fullname) }}</h5>
                             </div>
                             <div class="col-2">
-                                <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a> 
+                                <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a>
                             </div>
-                        </div>  
+                        </div>
                     </div>
                         <div class="card-body">
                             <table class="table table-striped table-advdruge table-hover">
@@ -49,12 +49,13 @@
                                     @forelse ($payments as $key => $payment)
                                         <tr>
                                             @php
-                                                $pay_dep = App\Models\PayrollDependecy::where('id', $payment->depend_id)->first();
-                                                $pay_loan = App\Models\LoanPayment::where('loan_pay_id', $payment->loan_pay_id)->first();
-                                            
-                                                $amount_incomes = floatval(array_sum($pay_dep->amount_incomes ?? [0]));
-                                                $amount_deductions = floatval(array_sum($pay_dep->amount_deductions ?? [0])) + floatval($pay_dep->tax) + floatval($pay_dep->employee_ssf) + floatval($pay_loan->amount_paid ?? null);
-                                                // {{ dd(floatval(array_sum($pay_dep->amount_deductions ?? [0])), floatval($pay_dep->tax), floatval($pay_dep->employee_ssf), floatval($pay_loan->amount_paid ?? null), $amount_deductions) }}
+                                                    $pay_dep = App\Models\PayrollDependecy::where('id', 363)->first();
+                                                    $pay_loan = App\Models\LoanPayment::where('loan_pay_id', $payment->loan_pay_id)->first();
+
+                                                    $amount_incomes = floatval(array_sum($pay_dep->amount_incomes ?? [0]));
+                                                    $amount_deductions = floatval(array_sum($pay_dep->amount_deductions ?? [0])) + floatval($pay_dep->tax ?? null) + floatval($pay_dep->employee_ssf ?? null) + floatval($pay_loan->amount_paid ?? null);
+//                                                    dd($pay_dep->tax);
+                                                    // {{ dd(floatval(array_sum($pay_dep->amount_deductions ?? [0])), floatval($pay_dep->tax), floatval($pay_dep->employee_ssf), floatval($pay_loan->amount_paid ?? null), $amount_deductions) }}
                                             @endphp
                                             <td>{{ ++$key }}</td>
                                             <td>{{ $payment->positon }}</td>
@@ -71,16 +72,16 @@
                                                     <button class="btn btn-danger btn-sm delete" value="{{ $payment->id }}" data-bs-toggle="modal" data-bs-target="#comfirm-delete" role="button"><i class="fas fa-trash"></i></button> --}}
                                                 </div>
                                             </td>
-                                        </tr> 
+                                        </tr>
                                     @empty
                                         <tr>
                                             <td colspan="25">No Data Found</td>
-                                        </tr> 
+                                        </tr>
                                     @endforelse
                                 </tbody>
                             </table>
                         </div>
-                    </div>  
+                    </div>
                 </div>
             </div>
         </div>
@@ -93,24 +94,24 @@
         $('#search').focus();
 
         // Table filter
-        $('#search').keyup(function(){  
-            search_table($(this).val());  
-        });  
-        function search_table(value){  
-            $('#employee_table tr').each(function(){  
-                var found = 'false';  
-                $(this).each(function(){  
-                    if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0){  
-                        found = 'true';  
-                    }  
-                });  
-                if(found == 'true'){  
-                    $(this).show();  
-                }  
-                else{  
-                    $(this).hide();  
-                }  
-            });  
+        $('#search').keyup(function(){
+            search_table($(this).val());
+        });
+        function search_table(value){
+            $('#employee_table tr').each(function(){
+                var found = 'false';
+                $(this).each(function(){
+                    if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0){
+                        found = 'true';
+                    }
+                });
+                if(found == 'true'){
+                    $(this).show();
+                }
+                else{
+                    $(this).hide();
+                }
+            });
         }
 
     };

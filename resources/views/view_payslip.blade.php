@@ -8,10 +8,10 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-10">
-                            <h5>Salary details for {{ $pay->pay_month }}, {{ $pay->pay_year }}</h5> 
+                            <h5>Salary details for {{ $pay->pay_month }}, {{ $pay->pay_year }}</h5>
                         </div>
                         <div class="col-2">
-                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a> 
+                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a>
                         </div>
                     </div>
                 </div>
@@ -34,17 +34,17 @@
                             <td>{{ number_format($pay->basic, 2) }}</td>
                             <td></td>
                           </tr>
-                          
+
                           @php
                              $allowances = \App\Models\PayrollDependecy::where('id', $pay->depend_id)->first();
                              $total_paid_loan = 0;
                           @endphp
-                    
+
                           @if(!empty($allowances->incomes))
                             <tr>
                               <th scope="row" colspan="3">Allowances</th>
                             </tr>
-                    
+
                             @foreach ($allowances->incomes as $i => $incomes)
                               <tr>
                                   <th scope="row" style="padding-left: 50px;">{{ $incomes }}</th>
@@ -53,20 +53,20 @@
                               </tr>
                             @endforeach
                           @endif
-                    
-                                
+
+
                           <tr>
                             <th scope="row">Total Earning</th>
                             <td></td>
                             <td>{{ number_format($pay->gross_income, 2) }}</td>
                           </tr>
-                    
+
                           <tr>
                             <th scope="row" style="padding-left: 50px;">SSF Employer</th>
                             <td>{{ number_format($allowances->employer_ssf, 2) }}</td>
                             <td></td>
                           </tr>
-                    
+
                           <tr>
                             <th scope="row" colspan="3">Deductions</th>
                           </tr>
@@ -80,7 +80,7 @@
                             <td>{{ number_format($allowances->employee_ssf, 2) }}</td>
                             <td></td>
                           </tr>
-                    
+
                           @if(!empty($allowances->deductions))
                             @foreach ($allowances->deductions as $i => $deductions)
                               <tr>
@@ -105,7 +105,7 @@
 
                             @endforeach
                           @endif
-                          
+
                           <tr>
                             <th scope="row" style="width: 40%">Total Deductions</th>
                             <td></td>
@@ -130,7 +130,7 @@
                               <td>{{ number_format($allowances->tier_3, 2) }}</td>
                             </tr>
                           @endif
-                          
+
                         </tbody>
                     </table>
                     <div style="text-align: center">
