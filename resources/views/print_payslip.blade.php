@@ -18,7 +18,7 @@
         }
 
         #logo-text {
-            font-size: 1.5rem; 
+            font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 5px;
             margin-top: 0px;
@@ -46,7 +46,7 @@
             #myheader_opd {
                 position: fixed;
                 top: 0;
-                right: 0; 
+                right: 0;
                 }
 
             /* @page{
@@ -72,14 +72,14 @@
             display: block;
             margin-left: auto;
             margin-right: auto;
-            margin-top: 0%; 
+            margin-top: 0%;
         }
 
         .watermark {
             position: absolute;
             opacity: 0.15;
             width: 100%;
-            top: 30%;    
+            top: 30%;
             text-align: center;
             z-index: 0;
         }
@@ -148,7 +148,7 @@
                     $total_paid_loan = 0;
                 @endphp
 
-                @if(!empty($allowances->incomes))            
+                @if(!empty($allowances->incomes))
                     @foreach ($allowances->incomes as $i => $incomes)
                     <tr>
                         <td style="width: 20%" nowrap>{{ $incomes }}</td>
@@ -158,7 +158,7 @@
                     </tr>
                     @endforeach
                 @endif
-                
+
                 <tr>
                     <th style="width: 20%">Gross Pay</th>
                     <td style="width: 40%"></td>
@@ -178,9 +178,9 @@
                     </tr>
                     <tr>
                         <td colspan="5"><br></td>
-                    </tr>    
+                    </tr>
                 @endif
-                
+
                 <tr>
                     <th colspan="5" style="text-align: left; background: #eee">Deductions</th>
                 </tr>
@@ -199,7 +199,7 @@
                         <td style="width: 20%;"></td>
                     </tr>
                 @endif
-                
+
                 @if(!empty($allowances->deductions))
                     @foreach ($allowances->deductions as $i => $deductions)
                     <tr>
@@ -225,7 +225,7 @@
                         </tr>
                     @endforeach
                 @endif
-                
+
                 <tr>
                     <th style="width: 20%">Total Deduction</th>
                     <td style="width: 40%"></td>
@@ -257,16 +257,16 @@
                         <th style="width: 40%"></th>
                         <td style="width: 20%;">Tier 3</td>
                         <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->tier_3, 2) }}</th>
-                    </tr> 
+                    </tr>
                 @endif
-                
+
             </table>
 
         </div>
 
-        
+
         <button class="noprint btn btn-outline-dark" onclick="print_1()"> &#128438; Print</button>
-		
+
     </body>
 </html>
 

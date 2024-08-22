@@ -26,11 +26,11 @@ class PayrollController extends Controller
             else {
                 $value = ($amount / 100) * $basic_salary;
             }
-            
+
 
             array_push($get_arr, $value);
         }
-        
+
         return $get_arr;
     }
 
@@ -40,11 +40,11 @@ class PayrollController extends Controller
 
         foreach ($array_rate as $value) {
 
-            $value = 'Amount';            
+            $value = 'Amount';
 
             array_push($get_arr, $value);
         }
-        
+
         return $get_arr;
     }
 
@@ -70,7 +70,7 @@ class PayrollController extends Controller
                         ])->get();
         return view('salary_inputs', [
                             'salary' => $salary,
-                            'staff' => $staff, 
+                            'staff' => $staff,
                             'pay' => $pay,
                             'loans' => $loans,
                         ]);
@@ -90,8 +90,9 @@ class PayrollController extends Controller
         ]);
 
         $staff_age = VWStaff::select('age')->where('staff_id', $request->staff_id)->first()->age;
+
         $pay = new PayrollDependecy;
-        
+
         // dd($request->all());
         if($request->has('loan_id') && $request->has('amount_loan')){
             // dd($request->all());
@@ -100,67 +101,77 @@ class PayrollController extends Controller
 
                 $payment = LoanPayment::where(['loan_id' => $loan_id, 'staff_id' => $request->staff_id])
                                     ->orderByDesc('loan_pay_id')->first();
-                $loan = Loan::find($loan_id);                                     
+                $loan = Loan::find($loan_id);
 
                 if($payment->amount - ($payment->total_amount_paid + $request->amount_loan[$i]) <= 0 ){
                     $status = 2;
                 } else {
                     $status = 1;
                 }
-            
+
                 // Update Loan Payment
-                
+
                 $loan->update(array(
-                    'status' => $status, 
+                    'status' => $status,
                     'rate' => $request->rate_loan,
                     'updated_by' => Auth()->user()->id
                 ));
 
                 $loan_pay = new LoanPayment;
 
-                $loan_pay->loan_id = $loan_id;
-                $loan_pay->staff_id = $request->staff_id;
-                $loan_pay->amount = $loan->amount;
-                $loan_pay->amount_paid = $request->amount_loan[$i];
-                $loan_pay->total_amount_paid = $payment->total_amount_paid + $request->amount_loan[$i];
-                $loan_pay->months_paid = $payment->months_paid + 1;
-                $loan_pay->status = $status;
-                $loan_pay->pay_month = date('F');
-                $loan_pay->pay_year = date('Y');
-                $loan_pay->created_by = Auth()->user()->id;
-                $loan_pay->updated_by = Auth()->user()->id;
+                $loan_pay->updateOrCreate([
+                    'loan_id' => $loan_id,
+                    'staff_id' => $request->staff_id,
+                    'amount' => $loan->amount,
+                    'pay_month' => date('F'),
+                    'pay_year' => date('Y'),
+                ], [
+                    'amount_paid' => $request->amount_loan[$i],
+                    'total_amount_paid' => $payment->total_amount_paid + $request->amount_loan[$i],
+                    'months_paid' => $payment->months_paid + 1,
+                    'status' => $status,
+                    'created_by' => Auth()->user()->id,
+                    'updated_by' => Auth()->user()->id,
+                ]);
 
-                $loan_pay->save();
-               
                 $paid_loan_ids[] = $loan_pay->loan_pay_id;
             }
         }
-        
-        $pay->staff_id = $request->staff_id;
-        $pay->loan_ids = $paid_loan_ids ?? null;
-        $pay->incomes = $request->incomes;
-        $pay->amount_incomes = (!empty($request->amount_incomes)) ? $this->percentageToAmount($request->amount_incomes, $request->rate_incomes, $request->basic_salary) : null;
-        $pay->rate_incomes = (!empty($request->rate_incomes)) ? $this->toAmount($request->rate_incomes) : null;
-        $pay->deductions = $request->deductions;
-        $pay->amount_deductions = (!empty($request->amount_deductions)) ? $this->percentageToAmount($request->amount_deductions, $request->rate_deductions, $request->basic_salary) : null;
-        $pay->rate_deductions = (!empty($request->rate_deductions)) ? $this->toAmount($request->rate_deductions) : null;
-        $pay->tax = $request->tax;
-        $pay->tax_relief = $request->tax_relief;
-        $pay->tier_3 = $request->tier_3;
-        $pay->employer_ssf = $request->employer_ssf;
-        $pay->employee_ssf = ($staff_age <= 60) ? $request->employee_ssf : 0;
-        $pay->pay_month = date('F');
-        $pay->pay_year = date('Y');
-        $pay->created_by = Auth()->user()->id;
-        $pay->updated_by = Auth()->user()->id;
-        $pay->save();
+
+        $pay->updateOrCreate([
+            'staff_id' => $request->staff_id,
+            'pay_month' => date('F'),
+            'pay_year' => date('Y'),
+        ],[
+            'loan_ids' => $paid_loan_ids ?? null,
+            'incomes' => $request->incomes,
+            'amount_incomes' => (!empty($request->amount_incomes)) ? $this->percentageToAmount($request->amount_incomes, $request->rate_incomes, $request->basic_salary) : null,
+            'rate_incomes' => (!empty($request->rate_incomes)) ? $this->toAmount($request->rate_incomes) : null,
+            'deductions' => $request->deductions,
+            'amount_deductions' => (!empty($request->amount_deductions)) ? $this->percentageToAmount($request->amount_deductions, $request->rate_deductions, $request->basic_salary) : null,
+            'rate_deductions' => (!empty($request->rate_deductions)) ? $this->toAmount($request->rate_deductions) : null,
+            'tax' => $request->tax,
+            'tax_relief' => $request->tax_relief,
+            'tier_3' => $request->tier_3,
+            'employer_ssf' => ($staff_age < 60) ? $request->employer_ssf : 0,
+            'employee_ssf' => ($staff_age < 60) ? $request->employee_ssf : 0,
+            'created_by' => Auth()->user()->id,
+            'updated_by' => Auth()->user()->id,
+        ]);
 
         $pay->update(array(
-            'tax' => getTax($request->basic_salary, $request->staff_id), 
+            'tax' => getTax($request->basic_salary, $request->staff_id),
         ));
 
+        if($staff_age >= 60){
+            $pay->update(array(
+                'employer_ssf' => 0,
+                'employee_ssf' => 0,
+            ));
+        }
+
         return redirect('payroll')->with('success', 'Payroll Created Successfully!!');
-        
+
     }
 
     public function viewSalariesPaid($id)
@@ -187,7 +198,7 @@ class PayrollController extends Controller
         ]);
 
         $staffs = VWStaff::get();
-        
+
         foreach ($staffs as $key => $staff) {
             // dd($staff->staff_id);
             $pay_dep = PayrollDependecy::where('staff_id', $staff->staff_id)->orderByDesc('id')->first();
@@ -199,7 +210,7 @@ class PayrollController extends Controller
             if(!empty($pay_dep->loan_ids)){
                 foreach ($pay_dep->loan_ids as $loan_ids) {
                     $loan = LoanPayment::find($loan_ids)->amount_paid;
-                    
+
                     $total_loan_paid += $loan;
                     $loan_paid_id = $loan_ids;
                 }
@@ -213,27 +224,28 @@ class PayrollController extends Controller
             $net_income = $gross_income - $deductions;
 
             $payroll = new Payroll;
-            $payroll->staff_id = $staff->staff_id;
-            $payroll->depend_id = $pay_dep->id;
-            $payroll->loan_pay_id = $loan_paid_id;
-            $payroll->description = $request->description;
-            $payroll->positon = $staff->position;
-            $payroll->basic = $basic_salary;
-            $payroll->gross_income = $gross_income;
-            $payroll->net_income = $net_income;
-            $payroll->pay_month = $request->salary_month;
-            $payroll->pay_year = $request->salary_year;
-            $payroll->created_by = Auth()->user()->id;
-            $payroll->updated_by = Auth()->user()->id;
-
-            $payroll->save();
+            $payroll->updateOrCreate([
+                'staff_id' => $staff->staff_id,
+                'pay_month' => $request->salary_month,
+                'pay_year' => $request->salary_year,
+            ],[
+                'depend_id' => $pay_dep->id,
+                'loan_pay_id' => $loan_paid_id,
+                'description' => $request->description,
+                'positon' => $staff->position,
+                'basic' => $basic_salary,
+                'gross_income' => $gross_income,
+                'net_income' => $net_income,
+                'created_by' => Auth()->user()->id,
+                'updated_by' => Auth()->user()->id,
+            ]);
         }
 
         $pay = Payroll::where([['pay_month', $request->salary_month], ['pay_year', $request->salary_year]])->orderBy('staff_id')->get();
-    
+
         // Generate PDF file
         $filename = DownloadPayslipController::generatePdfFile($request->salary_month, $request->salary_year, $pay);
-        
+
         DownloadPayslip::updateOrCreate(
             [
                 'month' => $request->salary_month,
@@ -241,14 +253,14 @@ class PayrollController extends Controller
                 'file_name' => "$filename.pdf",
             ],
             [
-                'file_url' => "storage/salary_pdf/$filename.pdf", 
+                'file_url' => "storage/salary_pdf/$filename.pdf",
                 'description' => $request->description,
                 'created_by' => Auth()->user()->id,
             ]
         );
 
         return redirect('payroll')->with('success', 'Payroll Generated Successfully!!');
-        
+
     }
 
     public function getPaySlip($pay_id)
