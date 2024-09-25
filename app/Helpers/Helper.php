@@ -17,13 +17,13 @@ use App\Models\SetupSalary;
         return $name[0];
     }
 
-    function getLoanStatus($status) 
+    function getLoanStatus($status)
     {
         switch ($status) {
             case 0:
                 return "Pending";
                 break;
-            
+
             case 1:
                 return "Paying";
                 break;
@@ -58,7 +58,7 @@ use App\Models\SetupSalary;
     function getTierThree($staff_id, $basic)
     {
         $tier_3 = SetupSalary::select('tier_3')->where('staff_id', $staff_id)->orderByDesc('salary_id')->first()->tier_3;
-        
+
         if($tier_3 > 0){
             return floatval($basic * ($tier_3/100));
         }
@@ -102,13 +102,15 @@ use App\Models\SetupSalary;
         $rate_4 = $tax->rate_4;
         $rate_5 = $tax->rate_5;
 
+        $staff_age = (int)VWStaff::select('age')->where('staff_id', $id)->first()->age;
+
         // Allowance
         $allownce = PayrollDependecy::select('incomes', 'amount_incomes')->where('staff_id', $id)->orderByDesc('id')->first();
 
         $total_allowance = array_sum(getTaxableAllowancesAmount($allownce->incomes ?? [0], $allownce->amount_incomes ?? [0]));
         // dd($total_allowance);
 
-        $result = floatval($basic + $total_allowance) - (floatval($first + ($basic * ($ssf/100))) + floatval(getTaxRelief($id)) + floatval(getTierThree($id, $basic)));
+        $result = floatval($basic + $total_allowance) - ( floatval($first + (($staff_age >= 60) ? 0 : $basic * ($ssf/100))) + floatval(getTaxRelief($id)) + floatval(getTierThree($id, $basic)));
 
         if($result > 0){
 
@@ -117,7 +119,7 @@ use App\Models\SetupSalary;
             } else {
                 return floatval($result * ($rate_1/100));
             }
-            
+
             if($next_1_result >= 1){
 
                 if($next_1_result > $next_2) {
@@ -133,28 +135,28 @@ use App\Models\SetupSalary;
                     } else {
                         return floatval($next_1 * ($rate_1/100)) + floatval($next_2 * ($rate_2/100)) + floatval($next_2_result * ($rate_3/100));
                     }
-                    
+
                     if($next_3_result >= 1){
 
                         if($next_3_result > $next_4) {
                             $next_4_result = $next_3_result - $next_4;
                         } else {
-                            return floatval($next_1 * ($rate_1/100)) + floatval($next_2 * ($rate_2/100)) + floatval($next_3 * ($rate_3/100)) + floatval($next_3_result * ($rate_4/100)); 
+                            return floatval($next_1 * ($rate_1/100)) + floatval($next_2 * ($rate_2/100)) + floatval($next_3 * ($rate_3/100)) + floatval($next_3_result * ($rate_4/100));
                         }
 
                         if($next_4_result >= 1){
 
                             $exceeding_result = $next_4_result;
-                            
+
                             return floatval($next_1 * ($rate_1/100)) + floatval($next_2 * ($rate_2/100)) + floatval($next_3 * ($rate_3/100)) + floatval($next_4 * ($rate_4/100)) + floatval($exceeding_result * ($rate_5/100));
-                            
-                        } 
 
-                    } 
+                        }
 
-                } 
+                    }
 
-            } 
+                }
+
+            }
         } else {
 
             return floatval($first * ($rate_0/100));

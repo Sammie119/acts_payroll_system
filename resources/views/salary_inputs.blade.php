@@ -8,18 +8,18 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-10">
-                            <h5>{{ __('Salary Inputs for '. $staff->fullname) }}</h5>  
+                            <h5>{{ __('Salary Inputs for '. $staff->fullname) }}</h5>
                         </div>
                         <div class="col-2">
-                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a> 
+                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a>
                         </div>
-                    </div> 
+                    </div>
                 </div>
 
                 <div class="card-body">
                     <form method="POST" action="store_payroll">
                         @csrf
-            
+
                         @isset($loan)
                             <input type="hidden" name="id" value="{{ $loan->loan_id }}">
                         @endisset
@@ -82,7 +82,7 @@
                             <label for="employer_ssf" class="col-md-3 col-form-label text-md-end">{{ __('Employer SSF') }}</label>
 
                             <div class="col-md-7">
-                                <input id="employer_ssf" type="number" min="0" step="0.01" name="employer_ssf" readonly class="form-control" value="{{ number_format(getSsfEmployer($salary->salary), 2, '.', '') }}">
+                                <input id="employer_ssf" type="number" min="0" step="0.01" name="employer_ssf" readonly class="form-control" value="{{ number_format(($staff->age >= 60) ? 0 : getSsfEmployer($salary->salary), 2, '.', '') }}">
                             </div>
                         </div>
 
@@ -90,7 +90,7 @@
                             <label for="employee_ssf" class="col-md-3 col-form-label text-md-end">{{ __('SSF Employee') }}</label>
 
                             <div class="col-md-7">
-                                <input id="employee_ssf" type="number" min="0" step="0.01" name="employee_ssf" readonly class="form-control" value="{{ number_format(getSsfEmployee($salary->salary), 2, '.', '') }}">
+                                <input id="employee_ssf" type="number" min="0" step="0.01" name="employee_ssf" readonly class="form-control" value="{{ number_format(($staff->age >= 60) ? 0 : getSsfEmployee($salary->salary), 2, '.', '') }}">
                             </div>
                         </div>
 
