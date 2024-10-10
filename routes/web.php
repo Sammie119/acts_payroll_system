@@ -24,10 +24,16 @@ use App\Http\Controllers\StaffController;
 */
 
 Route::get('/', function () {
-    return view('auth.login');
+    return view('lock_screen');
+//    return view('auth.login');
 })->middleware('guest');
 
 Auth::routes();
+
+Route::get('login', function () {
+    return view('lock_screen');
+//    return view('auth.login');
+})->middleware('guest');
 
 Route::controller(HomeController::class)->group(function (){
     Route::get('/home', 'index')->name('home');

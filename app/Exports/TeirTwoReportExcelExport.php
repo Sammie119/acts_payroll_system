@@ -55,10 +55,10 @@ class TeirTwoReportExcelExport implements FromCollection, WithHeadings, WithStyl
     {
         return [
             'A' => 30,
-            'B' => 20, 
+            'B' => 20,
             'C' => 20,
             'D' => 15,
-            'E' => 15,           
+            'E' => 15,
         ];
     }
 
@@ -71,7 +71,7 @@ class TeirTwoReportExcelExport implements FromCollection, WithHeadings, WithStyl
             'E' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
         ];
     }
-    
+
     /**
     * @return \Illuminate\Support\Collection
     */
@@ -80,11 +80,12 @@ class TeirTwoReportExcelExport implements FromCollection, WithHeadings, WithStyl
         return VWSalarySsnit::select('fullname', 'ssnit_number', 'ghana_card', 'basic', 'tier_2')->where([
             ['pay_month', $this->report_month],
             ['pay_year', $this->report_year],
-            ['ghana_card', '!=', 'NAN']
+            ['ghana_card', '!=', 'NAN'],
+            ['age', '<', 60]
         ])->orderBy('staff_number')->get();
-        
-        
-        
-        
+
+
+
+
     }
 }

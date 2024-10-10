@@ -45,7 +45,8 @@ class ReportController extends Controller
                 $data = VWSalarySsnit::where([
                     ['pay_month', $request->report_month],
                     ['pay_year', $request->report_year],
-                    ['ssnit_number', '!=', 'NA']
+                    ['ssnit_number', '!=', 'NA'],
+                    ['age', '<', 60]
                 ])->orderBy('staff_number')->get();
                 break;
 
@@ -55,7 +56,8 @@ class ReportController extends Controller
                 $data = VWSalarySsnit::where([
                     ['pay_month', $request->report_month],
                     ['pay_year', $request->report_year],
-                    ['ghana_card', '!=', 'NAN']
+                    ['ghana_card', '!=', 'NAN'],
+                    ['age', '<', 60]
                 ])->orderBy('staff_number')->get();
                 break;
 
