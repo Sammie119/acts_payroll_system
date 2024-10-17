@@ -211,6 +211,15 @@
                     @endforeach
                 @endif
 
+                @if ($allowances->tier_3 > 0)
+                    <tr>
+                        <td style="width: 20%" nowrap colspan="2">Tier 3</td>
+                        {{-- <td style="width: 40%"></td> --}}
+                        <td style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->tier_3, 2) }}</td>
+                        <td style="width: 20%;"></td>
+                    </tr>
+                @endif
+
                 @if(!empty($allowances->loan_ids))
                     @foreach ($allowances->loan_ids as $i => $loan_id)
                         @php
@@ -230,7 +239,7 @@
                     <th style="width: 20%">Total Deduction</th>
                     <td style="width: 40%"></td>
                     <td style="width: 20%;"></td>
-                    <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format(($staff->age <= 60) ? (array_sum($allowances->amount_deductions ?? [0]) + $allowances->tax + $allowances->employee_ssf + $total_paid_loan) : (array_sum($allowances->amount_deductions ?? [0]) + $allowances->tax + $total_paid_loan), 2) }}</th>
+                    <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format(($staff->age <= 60) ? (array_sum($allowances->amount_deductions ?? [0]) + $allowances->tax + $allowances->employee_ssf + $total_paid_loan + $allowances->tier_3) : (array_sum($allowances->amount_deductions ?? [0]) + $allowances->tax + $total_paid_loan + $allowances->tier_3), 2) }}</th>
                 </tr>
                 <tr>
                     <td colspan="5"><br></td>
@@ -239,7 +248,7 @@
                     <th style="width: 20%">Net Pay</th>
                     <td style="width: 40%"></td>
                     <td style="width: 20%;"></td>
-                    <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format(($staff->age <= 60) ? $pay->net_income : $pay->net_income + $allowances->employee_ssf, 2) }}</th>
+                    <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format(($staff->age <= 60) ? $pay->net_income - $allowances->tier_3 : ($pay->net_income - $allowances->tier_3) + $allowances->employee_ssf, 2) }}</th>
                 </tr>
                 <tr>
                     <td colspan="5"><br></td>
@@ -250,15 +259,6 @@
                     <td style="width: 20%;">Tax Relief</td>
                     <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->tax_relief, 2) }}</th>
                 </tr>
-
-                @if ($allowances->tier_3 > 0)
-                    <tr>
-                        <td style="width: 20%"></td>
-                        <th style="width: 40%"></th>
-                        <td style="width: 20%;">Tier 3</td>
-                        <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->tier_3, 2) }}</th>
-                    </tr>
-                @endif
 
             </table>
 

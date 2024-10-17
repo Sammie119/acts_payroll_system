@@ -40,6 +40,7 @@
                                         <th>Allowances</th>
                                         <th>Gross Sal.</th>
                                         <th>Deductions</th>
+                                        <th>Tier 3</th>
                                         <th>Net Sal.</th>
                                         <th>Month</th>
                                         <th>Action</th>
@@ -49,13 +50,15 @@
                                     @forelse ($payments as $key => $payment)
                                         <tr>
                                             @php
-                                                    $pay_dep = App\Models\PayrollDependecy::where('id', 363)->first();
-                                                    $pay_loan = App\Models\LoanPayment::where('loan_pay_id', $payment->loan_pay_id)->first();
-
-                                                    $amount_incomes = floatval(array_sum($pay_dep->amount_incomes ?? [0]));
-                                                    $amount_deductions = floatval(array_sum($pay_dep->amount_deductions ?? [0])) + floatval($pay_dep->tax ?? null) + floatval($pay_dep->employee_ssf ?? null) + floatval($pay_loan->amount_paid ?? null);
-//                                                    dd($pay_dep->tax);
-                                                    // {{ dd(floatval(array_sum($pay_dep->amount_deductions ?? [0])), floatval($pay_dep->tax), floatval($pay_dep->employee_ssf), floatval($pay_loan->amount_paid ?? null), $amount_deductions) }}
+                                                //  dd($payments);
+                                                $pay_dep = App\Models\PayrollDependecy::where('id', $payment->depend_id)->first();
+                                                $pay_loan = App\Models\LoanPayment::where(['staff_id' => $payment->staff_id, 'pay_month' => $payment->pay_month, 'pay_year' => $payment->pay_year])->sum('amount_paid');
+//                                                dd($pay_loan);
+                                                $amount_incomes = floatval(array_sum($pay_dep->amount_incomes ?? [0]));
+                                                $amount_deductions = floatval(array_sum($pay_dep->amount_deductions ?? [0])) + floatval($pay_dep->tax ?? null) + floatval($pay_dep->employee_ssf ?? null) + floatval($pay_loan ?? null);
+                                                //  dd($amount_deductions, array_sum($pay_dep->amount_deductions ?? [0]), $pay_dep->tax, $pay_dep->employee_ssf, floatval($pay_loan->amount_paid ?? null))
+                                                //  dd($pay_dep->tax);
+                                                // {{ dd(floatval(array_sum($pay_dep->amount_deductions ?? [0])), floatval($pay_dep->tax), floatval($pay_dep->employee_ssf), floatval($pay_loan->amount_paid ?? null), $amount_deductions) }}
                                             @endphp
                                             <td>{{ ++$key }}</td>
                                             <td>{{ $payment->positon }}</td>
@@ -63,7 +66,8 @@
                                             <td>{{ number_format($amount_incomes, 2) }}</td>
                                             <td>{{ number_format($payment->gross_income, 2) }}</td>
                                             <td>{{ number_format($amount_deductions, 2) }}</td>
-                                            <td>{{ number_format($payment->net_income, 2) }}</td>
+                                            <td>{{ number_format($tier3 = floatval($pay_dep->tier_3 ?? 0.00), 2) }}</td>
+                                            <td>{{ number_format($payment->net_income - $tier3, 2) }}</td>
                                             <td>{{ $payment->pay_month }}, {{ $payment->pay_year }}</td>
                                             <td>
                                                 <div class="btn-group">

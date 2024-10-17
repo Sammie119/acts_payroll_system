@@ -113,10 +113,21 @@
                         <tbody>
                             @php
                                 $total_salary = 0;
+                                $data_array = [];
                             @endphp
                             @foreach ($data as $key => $staff)
                                 @php
+//                                dd($data);
+                                    $pay_dep = App\Models\PayrollDependecy::where(['staff_id' => $staff->staff_id, 'pay_month' => $staff->pay_month, 'pay_year' => $staff->pay_year])->first();
                                     $total_salary += $staff->net_income;
+                                    $data_array[] = [
+                                        'fullname' => $staff->fullname,
+                                        'bank_sort_code' => $staff->bank_sort_code,
+                                        'banker' => $staff->banker,
+                                        'bank_branch' => $staff->bank_branch,
+                                        'bank_account' => $staff->bank_account,
+                                        'net_income' => number_format($staff->net_income - $pay_dep->tier_3, 2),
+                                    ];
                                 @endphp
                                 <tr>
                                     <td>{{ ++$key }}</td>
@@ -125,7 +136,7 @@
                                     <td>{{ $staff->banker }}</td>
                                     <td>{{ $staff->bank_branch }}</td>
                                     <td>{{ $staff->bank_account }}</td>
-                                    <td style="text-align: right;">{{ number_format($staff->net_income, 2) }}</td>
+                                    <td style="text-align: right;">{{ number_format($staff->net_income - $pay_dep->tier_3, 2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -136,6 +147,9 @@
                             </tr>
                         </tfoot>
                     </table>
+                    @php
+                        Illuminate\Support\Facades\Cache::put('bank_file', collect($data_array), now()->addHours(2));
+                    @endphp
                 </div>
                 @break
 

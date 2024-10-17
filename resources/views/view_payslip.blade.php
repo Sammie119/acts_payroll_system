@@ -38,6 +38,7 @@
                           @php
                              $allowances = \App\Models\PayrollDependecy::where('id', $pay->depend_id)->first();
                              $total_paid_loan = 0;
+//                             dd($allowances->tier_3);
                           @endphp
 
                           @if(!empty($allowances->incomes))
@@ -106,15 +107,23 @@
                             @endforeach
                           @endif
 
+                          @if($allowances->tier_3 > 0)
+                              <tr>
+                                  <th scope="row" style="padding-left: 50px;">Tier 3</th>
+                                  <td>{{ number_format($allowances->tier_3, 2) }}</td>
+                                  <td></td>
+                              </tr>
+                          @endif
+
                           <tr>
                             <th scope="row" style="width: 40%">Total Deductions</th>
                             <td></td>
-                            <td>({{ number_format((array_sum($allowances->amount_deductions ?? [0]) + $allowances->tax + $allowances->employee_ssf + $total_paid_loan), 2) }})</td>
+                            <td>({{ number_format((array_sum($allowances->amount_deductions ?? [0]) + $allowances->tax + $allowances->employee_ssf + $total_paid_loan + $allowances->tier_3), 2) }})</td>
                           </tr>
                           <tr>
                             <th scope="row">Net Income</th>
                             <td></td>
-                            <td>{{ number_format($pay->net_income, 2) }}</td>
+                            <td>{{ number_format($pay->net_income - $allowances->tier_3, 2) }}</td>
                           </tr>
 
                           <tr>
@@ -123,13 +132,13 @@
                             <td>{{ number_format($allowances->tax_relief, 2) }}</td>
                           </tr>
 
-                          @if ($allowances->tier_3 > 0)
-                            <tr>
-                              <th scope="row">Tier 3</th>
-                              <td></td>
-                              <td>{{ number_format($allowances->tier_3, 2) }}</td>
-                            </tr>
-                          @endif
+{{--                          @if ($allowances->tier_3 > 0)--}}
+{{--                            <tr>--}}
+{{--                              <th scope="row">Tier 3</th>--}}
+{{--                              <td></td>--}}
+{{--                              <td>{{ number_format($allowances->tier_3, 2) }}</td>--}}
+{{--                            </tr>--}}
+{{--                          @endif--}}
 
                         </tbody>
                     </table>

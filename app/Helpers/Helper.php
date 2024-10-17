@@ -57,6 +57,7 @@ use App\Models\SetupSalary;
 
     function getTierThree($staff_id, $basic)
     {
+
         $tier_3 = SetupSalary::select('tier_3')->where('staff_id', $staff_id)->orderByDesc('salary_id')->first()->tier_3;
 
         if($tier_3 > 0){
@@ -109,8 +110,11 @@ use App\Models\SetupSalary;
 
         $total_allowance = array_sum(getTaxableAllowancesAmount($allownce->incomes ?? [0], $allownce->amount_incomes ?? [0]));
         // dd($total_allowance);
+//        dd($id, $basic);
 
         $result = floatval($basic + $total_allowance) - ( floatval($first + (($staff_age >= 60) ? 0 : $basic * ($ssf/100))) + floatval(getTaxRelief($id)) + floatval(getTierThree($id, $basic)));
+
+//        dd($basic + $total_allowance, getTierThree($id, $basic), $result, $first, $basic * ($ssf/100));
 
         if($result > 0){
 

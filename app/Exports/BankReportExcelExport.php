@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\VWSalarySsnit;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -57,10 +58,10 @@ class BankReportExcelExport implements FromCollection, WithHeadings, WithStyles,
         return [
             'A' => 30,
             'B' => 10,
-            'C' => 14, 
+            'C' => 14,
             'D' => 20,
             'E' => 18,
-            'F' => 13,           
+            'F' => 13,
         ];
     }
 
@@ -72,15 +73,19 @@ class BankReportExcelExport implements FromCollection, WithHeadings, WithStyles,
             'F' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
         ];
     }
-    
+
     /**
     * @return \Illuminate\Support\Collection
     */
+//    public function collection()
+//    {
+//        return VWSalarySsnit::select('fullname', 'bank_sort_code', 'banker', 'bank_branch', 'bank_account', 'net_income')->where([
+//            ['pay_month', $this->report_month],
+//            ['pay_year', $this->report_year]
+//        ])->orderBy('banker')->get();
+//    }
     public function collection()
     {
-        return VWSalarySsnit::select('fullname', 'bank_sort_code', 'banker', 'bank_branch', 'bank_account', 'net_income')->where([
-            ['pay_month', $this->report_month],
-            ['pay_year', $this->report_year]
-        ])->orderBy('banker')->get();
+        return Cache::get('bank_file');
     }
 }
