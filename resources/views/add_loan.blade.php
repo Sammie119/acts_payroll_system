@@ -75,6 +75,7 @@
                             <div class="col-md-7">
                                 <select id="description" class="form-control @error('description') is-invalid @enderror" name="description" required>
                                     <option value="" selected disabled>--Select--</option>
+                                    <option @if (isset($loan) && $loan->description === "Emergency Loan") selected @endif>Emergency Loan</option>
                                     <option @if (isset($loan) && $loan->description === "Rent Advance") selected @endif>Rent Advance</option>
                                     <option @if (isset($loan) && $loan->description === "Credit Union") selected @endif>Credit Union</option>
                                     <option @if (isset($loan) && $loan->description === "Credit Union Hire Purchase") selected @endif>Credit Union Hire Purchase</option>

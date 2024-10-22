@@ -91,8 +91,6 @@ class PayrollController extends Controller
 
         $staff_age = VWStaff::select('age')->where('staff_id', $request->staff_id)->first()->age;
 
-        $pay = new PayrollDependecy;
-
         // dd($request->all());
         if($request->has('loan_id') && $request->has('amount_loan')){
             // dd($request->all());
@@ -101,6 +99,7 @@ class PayrollController extends Controller
 
                 $payment = LoanPayment::where(['loan_id' => $loan_id, 'staff_id' => $request->staff_id])
                                     ->orderByDesc('loan_pay_id')->first();
+
                 $loan = Loan::find($loan_id);
 
                 if($payment->amount - ($payment->total_amount_paid + $request->amount_loan[$i]) <= 0 ){
@@ -117,9 +116,7 @@ class PayrollController extends Controller
                     'updated_by' => Auth()->user()->id
                 ));
 
-                $loan_pay = new LoanPayment;
-
-                $loan_pay->updateOrCreate([
+                $loan_pay = LoanPayment::updateOrCreate([
                     'loan_id' => $loan_id,
                     'staff_id' => $request->staff_id,
                     'amount' => $loan->amount,
@@ -138,7 +135,7 @@ class PayrollController extends Controller
             }
         }
 
-        $pay->updateOrCreate([
+        $pay = PayrollDependecy::updateOrCreate([
             'staff_id' => $request->staff_id,
             'pay_month' => date('F'),
             'pay_year' => date('Y'),
@@ -208,7 +205,9 @@ class PayrollController extends Controller
             $total_loan_paid = 0;
             $loan_paid_id = null;
             if(!empty($pay_dep->loan_ids)){
+
                 foreach ($pay_dep->loan_ids as $loan_ids) {
+
                     $loan = LoanPayment::find($loan_ids)->amount_paid;
 
                     $total_loan_paid += $loan;
