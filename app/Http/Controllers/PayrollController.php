@@ -156,16 +156,17 @@ class PayrollController extends Controller
             'updated_by' => Auth()->user()->id,
         ]);
 
-        $pay->update(array(
-            'tax' => getTax($request->basic_salary, $request->staff_id),
-        ));
-
         if($staff_age >= 60){
-            $pay->update(array(
+            $pay->update([
                 'employer_ssf' => 0,
                 'employee_ssf' => 0,
-            ));
+            ]);
         }
+
+//        dd(getTax($request->basic_salary, $request->staff_id));
+        $pay->update([
+            'tax' => getTax($request->basic_salary, $request->staff_id),
+        ]);
 
         return redirect('payroll')->with('success', 'Payroll Created Successfully!!');
 
