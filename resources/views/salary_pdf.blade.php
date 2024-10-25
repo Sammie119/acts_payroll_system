@@ -2,7 +2,7 @@
 <html>
 <head>
 	<style type="text/css">
-        html { 
+        html {
             margin: 20px
         }
 
@@ -37,7 +37,7 @@
         }
 
         #logo-text {
-            font-size: 1.5rem; 
+            font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 5px;
             margin-top: 0px;
@@ -65,14 +65,14 @@
             display: block;
             margin-left: auto;
             margin-right: auto;
-            margin-top: 0%; 
+            margin-top: 0%;
         }
 
         .watermark {
             position: absolute;
             opacity: 0.15;
             width: 100%;
-            top: 30%;    
+            top: 30%;
             text-align: center;
             z-index: 0;
         }
@@ -84,13 +84,14 @@
 
 </head>
 <body>
-    
+
     @foreach ($payment as $pay)
         @php
             $staff = \App\Models\VWStaff::where('staff_id', $pay->staff_id)->first();
+//            dd($payment);
         @endphp
 
-        @empty($staff->email)
+        @if(empty($staff->email) && $staff)
             <div class="page-break" style="width: 100%;" >
                 <header id="header">
                     <img class="center" src="{{ public_path('build/assets/images/acts_logo.jpg') }}" width="300px" height="150px" alt="ACTS_logo">
@@ -143,7 +144,7 @@
                             $total_paid_loan = 0;
                         @endphp
 
-                        @if(!empty($allowances->incomes))            
+                        @if(!empty($allowances->incomes))
                             @foreach ($allowances->incomes as $i => $incomes)
                             <tr>
                                 <td style="width: 20%" nowrap>{{ $incomes }}</td>
@@ -153,7 +154,7 @@
                             </tr>
                             @endforeach
                         @endif
-                        
+
                         <tr>
                             <th style="width: 20%">Gross Pay</th>
                             <td style="width: 40%"></td>
@@ -173,9 +174,9 @@
                             </tr>
                             <tr>
                                 <td colspan="5"><br></td>
-                            </tr>    
+                            </tr>
                         @endif
-                        
+
                         <tr>
                             <th colspan="5" style="text-align: left; background: #eee">Deductions</th>
                         </tr>
@@ -194,7 +195,7 @@
                                 <td style="width: 20%;"></td>
                             </tr>
                         @endif
-                        
+
                         @if(!empty($allowances->deductions))
                             @foreach ($allowances->deductions as $i => $deductions)
                             <tr>
@@ -220,7 +221,7 @@
                                 </tr>
                             @endforeach
                         @endif
-                        
+
                         <tr>
                             <th style="width: 20%">Total Deduction</th>
                             <td style="width: 40%"></td>
@@ -245,19 +246,19 @@
                             <td style="width: 20%;">Tax Relief</td>
                             <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->tax_relief, 2) }}</th>
                         </tr>
-                        
+
                         @if ($allowances->tier_3 > 0)
                             <tr>
                                 <td style="width: 20%"></td>
                                 <th style="width: 40%"></th>
                                 <td style="width: 20%;">Tier 3</td>
                                 <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->tier_3, 2) }}</th>
-                            </tr> 
+                            </tr>
                         @endif
-                        
+
                     </table>
 
-                </div>        
+                </div>
             </div>
         @endempty
 
@@ -314,7 +315,7 @@
                             $total_paid_loan = 0;
                         @endphp
 
-                        @if(!empty($allowances->incomes))            
+                        @if(!empty($allowances->incomes))
                             @foreach ($allowances->incomes as $i => $incomes)
                             <tr>
                                 <td style="width: 20%" nowrap>{{ $incomes }}</td>
@@ -324,7 +325,7 @@
                             </tr>
                             @endforeach
                         @endif
-                        
+
                         <tr>
                             <th style="width: 20%">Gross Pay</th>
                             <td style="width: 40%"></td>
@@ -344,9 +345,9 @@
                             </tr>
                             <tr>
                                 <td colspan="5"><br></td>
-                            </tr>    
+                            </tr>
                         @endif
-                        
+
                         <tr>
                             <th colspan="5" style="text-align: left; background: #eee">Deductions</th>
                         </tr>
@@ -365,7 +366,7 @@
                                 <td style="width: 20%;"></td>
                             </tr>
                         @endif
-                        
+
                         @if(!empty($allowances->deductions))
                             @foreach ($allowances->deductions as $i => $deductions)
                             <tr>
@@ -391,7 +392,7 @@
                                 </tr>
                             @endforeach
                         @endif
-                        
+
                         <tr>
                             <th style="width: 20%">Total Deduction</th>
                             <td style="width: 40%"></td>
@@ -416,22 +417,22 @@
                             <td style="width: 20%;">Tax Relief</td>
                             <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->tax_relief, 2) }}</th>
                         </tr>
-    
+
                         @if ($allowances->tier_3 > 0)
                             <tr>
                                 <td style="width: 20%"></td>
                                 <th style="width: 40%"></th>
                                 <td style="width: 20%;">Tier 3</td>
                                 <th style="width: 20%; text-align:right; padding-right:20px"">{{ number_format($allowances->tier_3, 2) }}</th>
-                            </tr> 
+                            </tr>
                         @endif
 
                     </table>
 
-                </div>        
+                </div>
             </div>
         @endisset
-        
+
     @endforeach
 </body>
 

@@ -7,13 +7,10 @@ use App\Models\Loan;
 use App\Models\Payroll;
 use App\Models\VWStaff;
 use App\Models\LoanPayment;
-use Illuminate\Http\Request;
-use App\Mail\EmployeePayslip;
+use File;
 use App\Models\DownloadPayslip;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Response;
 
 class DownloadPayslipController extends Controller
@@ -39,13 +36,23 @@ class DownloadPayslipController extends Controller
         return $filename;
     }
 
-    public function downloadPayslips($file_name)
+    public function downloadPayslips($month, $year)
     {
-        $file = storage_path("salary_pdf/$file_name");
+        File::deleteDirectory(storage_path('salary_pdf', true));
+        File::makeDirectory(storage_path('salary_pdf', true));
+
+        $pay = Payroll::where([['pay_month', $month], ['pay_year', $year]])->orderBy('staff_id')->get();
+
+        // Generate PDF file
+        $filename = DownloadPayslipController::generatePdfFile($month, $year, $pay);
+
+        $filename = $filename.".pdf";
+
+        $file = storage_path("salary_pdf/$filename");
 
         $headers = ['Content-Type: application/pdf'];
 
-        return Response::download($file, $file_name, $headers);
+        return Response::download($file, $filename, $headers);
 
     }
 

@@ -87,7 +87,7 @@ Route::controller(ReportController::class)->group(function () {
 
 Route::controller(DownloadPayslipController::class)->group(function () {
     Route::get('payslips', 'index')->name('payslips');
-    Route::get('download_pdf/{filename}', 'downloadPayslips')->name('download_pdf');
+    Route::get('download_pdf/{month}/{year}', 'downloadPayslips')->name('download_pdf');
     Route::get('delete_payslips/{month}/{year}/{filename}', 'deletePayslip')->name('delete_payslips');
     Route::get('send_emal/{month}/{year}', 'sendEmails')->name('send_emal');
 });

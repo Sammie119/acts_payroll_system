@@ -25,7 +25,7 @@
                             <div class="col-9">
                                 <h5>{{ __('Generated Payslips') }}</h5>
                             </div>
-                        </div>  
+                        </div>
                     </div>
                         <div class="card-body">
                             <table class="table table-striped table-advdruge table-hover">
@@ -55,7 +55,7 @@
                                             <td>{{ getFirstname($slip->username->name) }}</td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <a class="btn btn-primary btn-sm" href="{{ route('download_pdf', [$slip->file_name]) }}" title="Download">Download</a>
+                                                    <a class="btn btn-primary btn-sm" href="{{ route('download_pdf', [$slip->month, $slip->year]) }}" title="Download">Download</a>
                                                     <a class="btn btn-danger btn-sm" onclick="return confirm('The Generated Salaries will be deleted permanently!!!')" href="{{ route('delete_payslips',[$slip->month, $slip->year, $slip->file_name]) }}" title="Delete">Del</a>
                                                     <a class="btn btn-success btn-sm" onclick="return confirm('Emails will be sent to Staff with email address!!!')" href="{{ route('send_emal', [$slip->month, $slip->year]) }}" title="Download">Email</a>
                                                 </div>
@@ -69,7 +69,7 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>  
+                    </div>
                 </div>
             </div>
         </div>
@@ -82,24 +82,24 @@
         $('#search').focus();
 
         // Table filter
-        $('#search').keyup(function(){  
-            search_table($(this).val());  
-        });  
-        function search_table(value){  
-            $('#employee_table tr').each(function(){  
-                var found = 'false';  
-                $(this).each(function(){  
-                    if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0){  
-                        found = 'true';  
-                    }  
-                });  
-                if(found == 'true'){  
-                    $(this).show();  
-                }  
-                else{  
-                    $(this).hide();  
-                }  
-            });  
+        $('#search').keyup(function(){
+            search_table($(this).val());
+        });
+        function search_table(value){
+            $('#employee_table tr').each(function(){
+                var found = 'false';
+                $(this).each(function(){
+                    if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0){
+                        found = 'true';
+                    }
+                });
+                if(found == 'true'){
+                    $(this).show();
+                }
+                else{
+                    $(this).hide();
+                }
+            });
         }
 
     };
