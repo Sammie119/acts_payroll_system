@@ -31,7 +31,7 @@
                             {{-- <div class="col-1">
                                 <a href="{{ route('staff/create_staff') }}" class="btn btn-primary btn-sm">Add Staff</a>
                             </div> --}}
-                        </div>  
+                        </div>
                     </div>
                         <div class="card-body">
                             <form action="generate_payroll" method="post">
@@ -61,7 +61,7 @@
                                         <div class="form-floating mb-3 mb-md-0">
                                             <select class="form-control" name="salary_year" required placeholder=" " >
                                                 <option value="" selected disabled>--Select Year--</option>
-                                                <?php 
+                                                <?php
                                                    for($i = 2022 ; $i <= date('Y'); $i++){
                                                         $thisYear = (date('Y') == $i) ? 'selected' : null;
                                                       echo "<option ". $thisYear .">$i</option>";
@@ -69,7 +69,7 @@
                                                 ?>
                                             </select>
                                             <label>Year</label>
-                                            
+
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -84,7 +84,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
+
                                     <div class="mt-3">
                                         <button type="submit" class="btn btn-success" style="margin-left: 89%; margin-right: -3;">Generate Payroll</button>
                                     </div>
@@ -98,7 +98,7 @@
                                         <th>Full Name</th>
                                         <th>Position</th>
                                         <th>Gross Salary</th>
-                                        <th>Net Salary</th>
+{{--                                        <th>Net Salary</th>--}}
                                         <th>Month</th>
                                         <th>Date</th>
                                         <th>Action</th>
@@ -114,7 +114,7 @@
                                             <td>{{ $salary->fullname }}</td>
                                             <td>{{ $salary->position }}</td>
                                             <td>{{ number_format($salary->pay_staff->last()->gross_income ?? 0, 2) }}</td>
-                                            <td>{{ number_format($salary->pay_staff->last()->net_income ?? 0, 2)  }}</td>
+{{--                                            <td>{{ number_format($salary->pay_staff->last()->net_income ?? 0, 2)  }}</td>--}}
                                             <td>{{ $salary->pay_staff->last()->pay_month ?? 'Month' }}, {{ $salary->pay_staff->last()->pay_year ?? '0000' }}</td>
                                             <td @if (isset($salary->pay_depend_on->last()->created_at) && date('d-m-Y') == $salary->pay_depend_on->last()->created_at->format('d-m-Y')) style="font-weight: bold;" @endif >{{ (isset($salary->pay_depend_on->last()->created_at)) ? $salary->pay_depend_on->last()->created_at->format('d-m-Y') : '00-00-0000' }}</td>
                                             <td>
@@ -123,16 +123,16 @@
                                                     <a href="{{ route('salary_inputs', [$salary_id]) }}" class="btn btn-success btn-sm" title="Edit Details">Inputs</a>
                                                 </div>
                                             </td>
-                                        </tr> 
+                                        </tr>
                                     @empty
                                         <tr>
                                             <td colspan="25">No Data Found</td>
-                                        </tr> 
+                                        </tr>
                                     @endforelse
                                 </tbody>
                             </table>
                         </div>
-                    </div>  
+                    </div>
                 </div>
             </div>
         </div>
@@ -145,24 +145,24 @@
         $('#search').focus();
 
         // Table filter
-        $('#search').keyup(function(){  
-            search_table($(this).val());  
-        });  
-        function search_table(value){  
-            $('#employee_table tr').each(function(){  
-                var found = 'false';  
-                $(this).each(function(){  
-                    if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0){  
-                        found = 'true';  
-                    }  
-                });  
-                if(found == 'true'){  
-                    $(this).show();  
-                }  
-                else{  
-                    $(this).hide();  
-                }  
-            });  
+        $('#search').keyup(function(){
+            search_table($(this).val());
+        });
+        function search_table(value){
+            $('#employee_table tr').each(function(){
+                var found = 'false';
+                $(this).each(function(){
+                    if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0){
+                        found = 'true';
+                    }
+                });
+                if(found == 'true'){
+                    $(this).show();
+                }
+                else{
+                    $(this).hide();
+                }
+            });
         }
 
     };
