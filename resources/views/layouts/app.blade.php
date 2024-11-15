@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'ACTS') }}</title>
-    <link rel="shortcut icon" href="{{ asset('public/build/assets/images/smmie_logo.ico') }}" type="image/ico">
+    <link rel="shortcut icon" href="{{ asset('build/assets/images/smmie_logo.ico') }}" type="image/ico">
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -26,7 +26,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-info shadow-sm">
             <div class="container-fluid">
-                <img src="{{ asset('public/build/assets/images/acts_logo_transparent.jpg') }}" style="width: 30px; margin-right: 10px;" alt="Logo">
+                <img src="{{ asset('build/assets/images/acts_logo_transparent.jpg') }}" style="width: 30px; margin-right: 10px;" alt="Logo">
                 <a class="navbar-brand" href="{{ url('/') }}">ACTS Payroll System</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>

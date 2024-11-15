@@ -2,7 +2,7 @@
  <html>
 
     <title>ACTS | Report</title>
-    <link rel="shortcut icon" href="{{ asset('public/build/assets/images/smmie_logo.ico') }}" type="image/ico">
+    <link rel="shortcut icon" href="{{ asset('build/assets/images/smmie_logo.ico') }}" type="image/ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 
 	<style type="text/css">
@@ -89,7 +89,7 @@
 
         <div id="back"><a href="{{ url()->previous() }}">Back</a></div>
         <header id="header">
-            <img class="center" src="{{ asset('public/build/assets/images/acts_logo.jpg') }}" width="300px" height="150px" alt="ACTS_logo">
+            <img class="center" src="{{ asset('build/assets/images/acts_logo.jpg') }}" width="300px" height="150px" alt="ACTS_logo">
             <div id="logo">
                 <h6 id="logo-text">{{ $header }}</h6>
             </div>
