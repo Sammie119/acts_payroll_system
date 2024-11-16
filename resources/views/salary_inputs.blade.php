@@ -95,6 +95,46 @@
                         </div>
 
                         <hr width="104%" style="margin-left: -15px; background: #bbb">
+                        <div class="row mb-4" style="width: 70%; margin-left: 15%">
+                            <div class="col-6">
+                                <label for="month" class="col-form-label text-md-end">{{ __('Salary Month') }}</label>
+
+                                <div class="">
+                                    <select class="form-control" name="month" required>
+                                        <option value="" selected disabled>--Select Month--</option>
+                                        <option {{ (date('m') === '01') ? 'selected' : null }}>January</option>
+                                        <option {{ (date('m') === '02') ? 'selected' : null }}>February</option>
+                                        <option {{ (date('m') === '03') ? 'selected' : null }}>March</option>
+                                        <option {{ (date('m') === '04') ? 'selected' : null }}>April</option>
+                                        <option {{ (date('m') === '05') ? 'selected' : null }}>May</option>
+                                        <option {{ (date('m') === '06') ? 'selected' : null }}>June</option>
+                                        <option {{ (date('m') === '07') ? 'selected' : null }}>July</option>
+                                        <option {{ (date('m') === '08') ? 'selected' : null }}>August</option>
+                                        <option {{ (date('m') === '09') ? 'selected' : null }}>September</option>
+                                        <option {{ (date('m') === '10') ? 'selected' : null }}>October</option>
+                                        <option {{ (date('m') === '11') ? 'selected' : null }}>November</option>
+                                        <option {{ (date('m') === '12') ? 'selected' : null }}>December</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <label for="year" class="col-form-label text-md-end">{{ __('Salary Year') }}</label>
+
+                                <div class="">
+                                    <select class="form-control" name="year" required>
+                                        <option value="" selected disabled>--Select Year--</option>
+                                            <?php
+                                            for($i = 2022 ; $i <= date('Y'); $i++){
+                                                $thisYear = (date('Y') == $i) ? 'selected' : null;
+                                                echo "<option ". $thisYear .">$i</option>";
+                                            }
+                                            ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
 
                         @include('includes.salary_input_display', [
                             'header' => 'Allowances',

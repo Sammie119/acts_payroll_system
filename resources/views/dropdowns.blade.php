@@ -31,7 +31,7 @@
                             <div class="col-1">
                                 <a href="{{ route('create_dropdown') }}" class="btn btn-primary btn-sm">Add New</a>
                             </div>
-                        </div>  
+                        </div>
                     </div>
                         <div class="card-body">
                             <table class="table table-striped table-advdruge table-hover">
@@ -50,7 +50,7 @@
                                         <tr>
                                             <td>{{ $key+1 }}</td>
                                             <td>{{ $dropdown->dropdown_name }}</td>
-                                            <td>{{ $dropdown->category_id === 1 ? 'Allowance' : 'Deduction' }}</td>
+                                            <td>{{ $dropdown->category_id === 1 ? 'Allowance' : ($dropdown->category_id === 2 ? 'Deduction' : 'Loan Description')}}</td>
                                             <td>{{ $dropdown->taxable === 1 ? 'Yes' : 'No' }}</td>
                                             <td>{{ $dropdown->created_at }}</td>
                                             <td>
@@ -68,7 +68,7 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>  
+                    </div>
                 </div>
             </div>
         </div>
@@ -81,24 +81,24 @@
         $('#search').focus();
 
         // Table filter
-        $('#search').keyup(function(){  
-            search_table($(this).val());  
-        });  
-        function search_table(value){  
-            $('#employee_table tr').each(function(){  
-                var found = 'false';  
-                $(this).each(function(){  
-                    if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0){  
-                        found = 'true';  
-                    }  
-                });  
-                if(found == 'true'){  
-                    $(this).show();  
-                }  
-                else{  
-                    $(this).hide();  
-                }  
-            });  
+        $('#search').keyup(function(){
+            search_table($(this).val());
+        });
+        function search_table(value){
+            $('#employee_table tr').each(function(){
+                var found = 'false';
+                $(this).each(function(){
+                    if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0){
+                        found = 'true';
+                    }
+                });
+                if(found == 'true'){
+                    $(this).show();
+                }
+                else{
+                    $(this).hide();
+                }
+            });
         }
 
     };

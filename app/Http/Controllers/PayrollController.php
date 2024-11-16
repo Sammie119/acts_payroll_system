@@ -86,7 +86,9 @@ class PayrollController extends Controller
     {
         // dd($request->tax);
         request()->validate([
-            'staff_id' => 'required|numeric'
+            'staff_id' => 'required|numeric',
+            'month' => 'required|string',
+            'year' => 'required|numeric'
         ]);
 
         $staff_age = VWStaff::select('age')->where('staff_id', $request->staff_id)->first()->age;
@@ -120,8 +122,8 @@ class PayrollController extends Controller
                     'loan_id' => $loan_id,
                     'staff_id' => $request->staff_id,
                     'amount' => $loan->amount,
-                    'pay_month' => date('F'),
-                    'pay_year' => date('Y'),
+                    'pay_month' => $request->month,
+                    'pay_year' => $request->year,
                 ], [
                     'amount_paid' => $request->amount_loan[$i],
                     'total_amount_paid' => $payment->total_amount_paid + $request->amount_loan[$i],
@@ -137,8 +139,8 @@ class PayrollController extends Controller
 
         $pay = PayrollDependecy::updateOrCreate([
             'staff_id' => $request->staff_id,
-            'pay_month' => date('F'),
-            'pay_year' => date('Y'),
+            'pay_month' => $request->month,
+            'pay_year' => $request->year,
         ],[
             'loan_ids' => $paid_loan_ids ?? null,
             'incomes' => $request->incomes,
@@ -197,48 +199,56 @@ class PayrollController extends Controller
 
         $staffs = VWStaff::get();
 
+        $check = PayrollDependecy::where(['pay_month' => $request->salary_month, 'pay_year' => $request->salary_year])->count();
+
+        if($check === 0){
+            return redirect('payroll')->with('error', 'No Payroll data Found to Process!!');
+        }
+
         foreach ($staffs as $key => $staff) {
             // dd($staff->staff_id);
-            $pay_dep = PayrollDependecy::where('staff_id', $staff->staff_id)->orderByDesc('id')->first();
+            $pay_dep = PayrollDependecy::where(['staff_id' => $staff->staff_id, 'pay_month' => $request->salary_month, 'pay_year' => $request->salary_year])->orderByDesc('id')->first();
 
-            $basic_salary = SetupSalary::select('salary')->where('staff_id', $staff->staff_id)->orderByDesc('salary_id')->first()->salary;
+            if($pay_dep) {
+                $basic_salary = SetupSalary::select('salary')->where('staff_id', $staff->staff_id)->orderByDesc('salary_id')->first()->salary;
 
-            $total_loan_paid = 0;
-            $loan_paid_id = null;
-            if(!empty($pay_dep->loan_ids)){
+                $total_loan_paid = 0;
+                $loan_paid_id = null;
+                if(!empty($pay_dep->loan_ids)){
 
-                foreach ($pay_dep->loan_ids as $loan_ids) {
+                    foreach ($pay_dep->loan_ids as $loan_ids) {
 
-                    $loan = LoanPayment::find($loan_ids)->amount_paid;
+                        $loan = LoanPayment::find($loan_ids)->amount_paid;
 
-                    $total_loan_paid += $loan;
-                    $loan_paid_id = $loan_ids;
+                        $total_loan_paid += $loan;
+                        $loan_paid_id = $loan_ids;
+                    }
                 }
+                // dd($request->all(), $pay_dep, $pay_loan, $staff->salary);
+
+                $incomes = floatval(array_sum($pay_dep->amount_incomes ?? [0]));
+                $deductions = floatval(array_sum($pay_dep->amount_deductions ?? [0])) + floatval($pay_dep->tax) + floatval($pay_dep->employee_ssf) + floatval($total_loan_paid);
+
+                $gross_income = $basic_salary + $incomes;
+                $net_income = $gross_income - $deductions;
+
+                $payroll = new Payroll;
+                $payroll->updateOrCreate([
+                    'staff_id' => $staff->staff_id,
+                    'pay_month' => $request->salary_month,
+                    'pay_year' => $request->salary_year,
+                ],[
+                    'depend_id' => $pay_dep->id,
+                    'loan_pay_id' => $loan_paid_id,
+                    'description' => $request->description,
+                    'positon' => $staff->position,
+                    'basic' => $basic_salary,
+                    'gross_income' => $gross_income,
+                    'net_income' => $net_income,
+                    'created_by' => Auth()->user()->id,
+                    'updated_by' => Auth()->user()->id,
+                ]);
             }
-            // dd($request->all(), $pay_dep, $pay_loan, $staff->salary);
-
-            $incomes = floatval(array_sum($pay_dep->amount_incomes ?? [0]));
-            $deductions = floatval(array_sum($pay_dep->amount_deductions ?? [0])) + floatval($pay_dep->tax) + floatval($pay_dep->employee_ssf) + floatval($total_loan_paid);
-
-            $gross_income = $basic_salary + $incomes;
-            $net_income = $gross_income - $deductions;
-
-            $payroll = new Payroll;
-            $payroll->updateOrCreate([
-                'staff_id' => $staff->staff_id,
-                'pay_month' => $request->salary_month,
-                'pay_year' => $request->salary_year,
-            ],[
-                'depend_id' => $pay_dep->id,
-                'loan_pay_id' => $loan_paid_id,
-                'description' => $request->description,
-                'positon' => $staff->position,
-                'basic' => $basic_salary,
-                'gross_income' => $gross_income,
-                'net_income' => $net_income,
-                'created_by' => Auth()->user()->id,
-                'updated_by' => Auth()->user()->id,
-            ]);
         }
 
         $pay = Payroll::where([['pay_month', $request->salary_month], ['pay_year', $request->salary_year]])->orderBy('staff_id')->get();

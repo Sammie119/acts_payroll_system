@@ -11,15 +11,15 @@
                             @isset($dropdown)
                                 {{ __('Edit Dropdown') }}
                             @else
-                                {{ __('Add New Dropdown') }} 
+                                {{ __('Add New Dropdown') }}
                             @endisset
                         </div>
                         <div class="col-2">
-                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a> 
+                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a>
                         </div>
                     </div>
                 </div>
-                
+
 
                 <div class="card-body">
                     @isset($dropdown->dropdown_id)
@@ -27,7 +27,7 @@
                     @else
                         <form method="POST" action="{{ route('store_dropdown') }}">
                     @endisset
-                    
+
                         @csrf
 
                         @isset($dropdown->dropdown_id)
@@ -56,6 +56,7 @@
                                     <option value="" disabled selected>--Select Category--</option>
                                     <option @if (isset($dropdown->dropdown_id) && $dropdown->category_id === 1) selected @endif value="1">Allowance</option>
                                     <option @if (isset($dropdown->dropdown_id) && $dropdown->category_id === 2) selected @endif value="2">Deduction</option>
+                                    <option @if (isset($dropdown->dropdown_id) && $dropdown->category_id === 3) selected @endif value="3">Loan Description</option>
                                 </select>
 
                                 @error('category_id')
@@ -99,7 +100,7 @@
     function taxableCheck() {
         let value = document.getElementById('category_id').value;
         if(document.getElementById("taxable_check").checked){
-            if(value == 2 && document.getElementById("taxable_check").checked){
+            if((value == 2 || value == 3) && document.getElementById("taxable_check").checked){
                 alert('Deductions Cannot be Taxed!!!!');
                 document.getElementById("taxable_check").checked = false;
                 return false;

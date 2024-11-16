@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dropdown;
 use App\Models\Loan;
 use App\Models\VWStaff;
 use App\Models\LoanPayment;
@@ -27,7 +28,8 @@ class LoanController extends Controller
      */
     public function create()
     {
-        return view('add_loan');
+        $loans = Dropdown::where('category_id', 3)->orderBy('dropdown_name')->get('dropdown_name');
+        return view('add_loan', ['loans' => $loans]);
     }
 
     /**
@@ -48,10 +50,10 @@ class LoanController extends Controller
         ]);
 
         $loan = new Loan;
-        $loan_pay = new LoanPayment; 
-        
+        $loan_pay = new LoanPayment;
+
         $staff_id = VWStaff::select('staff_id')->where('fullname', $request->staffname)->first()->staff_id;
-        
+
         $loan->staff_id = $staff_id;
         $loan->description = $request->description;
         $loan->amount = $request->amount;
@@ -84,8 +86,9 @@ class LoanController extends Controller
      */
     public function edit($id)
     {
-        $loan = Loan::find($id);
-        return view('add_loan', ['loan' => $loan]);
+        $data['loan'] = Loan::find($id);
+        $data['loans'] = Dropdown::where('category_id', 3)->orderBy('dropdown_name')->get('dropdown_name');
+        return view('add_loan',  $data);
     }
 
     /**
@@ -109,10 +112,10 @@ class LoanController extends Controller
                 'number_of_months' => 'required|numeric|min:1|max:48', // max:48 = 4 years
             ]);
 
-            $loan = Loan::find($request->id);  
-            
+            $loan = Loan::find($request->id);
+
             $staff_id = VWStaff::select('staff_id')->where('fullname', $request->staffname)->first()->staff_id;
-            
+
             $loan->staff_id = $staff_id;
             $loan->description = $request->description;
             $loan->amount = $request->amount;
@@ -123,7 +126,7 @@ class LoanController extends Controller
             $loan->update();
 
             LoanPayment::where('loan_id', $request->id)->update(array(
-                'staff_id' => $staff_id, 
+                'staff_id' => $staff_id,
                 'amount' => $request->amount,
                 'pay_month' => date('F'),
                 'pay_year' => date('Y'),
@@ -135,7 +138,7 @@ class LoanController extends Controller
         else {
             return redirect('loans')->with('error', 'Loan Payment has Started or Completed. Cannot Update!!!!');
         }
-        
+
     }
 
     /**
