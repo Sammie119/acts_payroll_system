@@ -144,6 +144,7 @@
                     </table>
                     <div style="text-align: center">
                         <a href="{{ route('get_payslip', [$pay->pay_id]) }}" class="btn btn-dark">Get Payslip</a>
+                        <a href="{{ route('send_emal', [$pay->pay_month, $pay->pay_year, $staff->staff_id]) }}" class="btn btn-danger">Send Payslip</a>
                     </div>
                 </div>
             </div>

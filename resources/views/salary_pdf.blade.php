@@ -88,10 +88,11 @@
     @foreach ($payment as $pay)
         @php
             $staff = \App\Models\VWStaff::where('staff_id', $pay->staff_id)->first();
+            $verified = \App\Models\Staff::where('staff_id', $pay->staff_id)->first()->is_email_verified;
 //            dd($payment);
         @endphp
 
-        @if(empty($staff->email) && $staff)
+        @if(!$verified && $staff)
             <div class="page-break" style="width: 100%;" >
                 <header id="header">
                     <img class="center" src="{{ public_path('build/assets/images/acts_logo.jpg') }}" width="300px" height="150px" alt="ACTS_logo">

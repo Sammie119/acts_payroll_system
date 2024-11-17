@@ -2,13 +2,38 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\StaffEmailVerifyJob;
 use App\Models\Staff;
+use App\Models\StaffEmailVerify;
 use App\Models\VWStaff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Mail;
 
 class StaffController extends Controller
 {
+    private function sendVerificationEmail($email, $staff_id)
+    {
+        $token = Str::random(64);
+
+        StaffEmailVerify::create([
+            'staff_id' => $staff_id,
+            'token' => $token
+        ]);
+
+        $data = [
+           'email' => $email,
+           'token' => $token
+        ];
+
+        StaffEmailVerifyJob::dispatch($data);
+//        Mail::send('emails.emailVerificationEmail', ['token' => $token], function($message) use($email){
+//            $message->to($email);
+//            $message->subject('ACTS-Payroll Email Verification');
+//        });
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -56,7 +81,7 @@ class StaffController extends Controller
             'insurance_number' => 'required|unique:staff,insurance_number',
             'insurance_expiry' => 'required'
         ]);
-        
+
         $staff = new Staff;
 
         $staff->staff_number = $request->staff_number;
@@ -82,6 +107,10 @@ class StaffController extends Controller
         $staff->updated_by = Auth()->user()->id;
 
         $staff->save();
+
+        if(isset($request->email)){
+            $this->sendVerificationEmail($request->email, $staff->staff_id);
+        }
 
         DB::table('staff_history')->insert([
             'staff_id' => $staff->staff_id,
@@ -143,7 +172,7 @@ class StaffController extends Controller
             'insurance_number' => 'required|unique:staff,insurance_number,'.$request->id.',staff_id',
             'insurance_expiry' => 'required'
         ]);
-        
+
         $staff = Staff::find($request->id);
 
         $staff->staff_number = $request->staff_number;
@@ -168,6 +197,10 @@ class StaffController extends Controller
         $staff->updated_by = Auth()->user()->id;
 
         $staff->update();
+
+        if(isset($request->email)){
+            $this->sendVerificationEmail($request->email, $staff->staff_id);
+        }
 
         DB::table('staff_history')->insert([
             'staff_id' => $request->id,
@@ -202,5 +235,32 @@ class StaffController extends Controller
         $staff->delete();
 
         return back()->with('success', 'Staff Deleted Successfully!!!!');
+    }
+
+    public function verifyAccount($token)
+    {
+        $verifyStaff = StaffEmailVerify::where('token', $token)->first();
+
+        $data['message'] = 'Sorry your email cannot be identified.';
+        $data['success'] = 'Sorry';
+
+        if(!is_null($verifyStaff) ){
+            $staff = Staff::find($verifyStaff->staff_id);
+//            dd($staff);
+            if(!$staff->is_email_verified) {
+                $staff->is_email_verified = 1;
+                $staff->save();
+
+                $data['message'] = "Your e-mail is verified successfully. You will now receive your payslip through your email.";
+                $data['success'] = "Congratulations";
+            } else {
+                $data['message'] = "Your e-mail is already verified. You will receive your payslip through your email.";
+                $data['success'] = "Congratulations";
+            }
+        }
+
+        $data['staff'] = $staff;
+
+        return view('emails.verifiedEmail',$data);
     }
 }

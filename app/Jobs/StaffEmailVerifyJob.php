@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Mail\EmployeePayslip;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Mail;
 
-class EmployeePayslipJob implements ShouldQueue
+class StaffEmailVerifyJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -22,7 +21,6 @@ class EmployeePayslipJob implements ShouldQueue
      */
 
     public $data;
-
     public function __construct($data)
     {
         $this->data = $data;
@@ -35,6 +33,11 @@ class EmployeePayslipJob implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->data['email'])->send(new EmployeePayslip($this->data['data']));
+        $email = $this->data['email'];
+
+        Mail::send('emails.emailVerificationEmail', ['token' => $this->data['token']], function($message) use($email){
+            $message->to($email);
+            $message->subject('ACTS-Payroll Email Verification');
+        });
     }
 }

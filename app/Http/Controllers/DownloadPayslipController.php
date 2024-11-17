@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\EmployeePayslipJob;
 use App\Models\Loan;
 use App\Models\Payroll;
+use App\Models\Staff;
 use App\Models\VWStaff;
 use App\Models\LoanPayment;
 use File;
@@ -56,14 +57,20 @@ class DownloadPayslipController extends Controller
 
     }
 
-    public function sendEmails($month, $year)
+    public function sendEmails($month, $year, $staff_id = 0)
     {
-        $payment = Payroll::where([['pay_month', $month], ['pay_year', $year]])->orderBy('staff_id')->get();
+        if($staff_id == 0){
+            $payment = Payroll::where([['pay_month', $month], ['pay_year', $year]])->orderBy('staff_id')->get();
+        } else {
+            $payment = Payroll::where([['staff_id', $staff_id],['pay_month', $month], ['pay_year', $year]])->get();
+        }
 
         foreach ($payment as $pay) {
             $staff = VWStaff::where('staff_id', $pay->staff_id)->first();
+            $verified = Staff::where('staff_id', $pay->staff_id)->first()->is_email_verified;
 
-            if (!empty($staff->email)) {
+            if (!empty($staff->email) && $verified == 1) {
+
                 $data = [
                     'pay' => $pay,
                     'name' => $staff->fullname,
