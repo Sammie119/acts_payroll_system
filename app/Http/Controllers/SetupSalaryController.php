@@ -48,6 +48,11 @@ class SetupSalaryController extends Controller
         ]);
 
         foreach ($request->staff_id as $key => $staff_id) {
+
+            if($request->tier_3[$key] > 16.5){
+                return back()->with('error', 'Tier 3 Maximum is 16.5%');
+            }
+
             $salary = new SetupSalary;
 
             $salary->staff_id = $staff_id;
@@ -61,7 +66,7 @@ class SetupSalaryController extends Controller
         }
 
         return redirect('salary')->with('success', 'Salaries Added Successfully!!!');
-        
+
     }
 
     /**
@@ -89,8 +94,12 @@ class SetupSalaryController extends Controller
             // 'id' => 'required',
             'salary' => 'required',
             'tax_relief' => 'nullable',
-            // 'tier_3' => 'nullable',
+//            'tier_3' => 'nullable|max:16.5',
         ]);
+
+        if($request->tier_3 > 16.5){
+            return back()->with('error', 'Tier 3 Maximum is 16.5%');
+        }
 
         // dd($request->tier_3);
         $salary = SetupSalary::find($request->id);

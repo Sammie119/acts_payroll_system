@@ -11,11 +11,11 @@
                             @isset($staff)
                                 <h5>{{ __('Edit Staff') }}</h5>
                             @else
-                                <h5>{{ __('Add Staff') }}</h5>  
+                                <h5>{{ __('Add Staff') }}</h5>
                             @endisset
                         </div>
                         <div class="col-2">
-                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a> 
+                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a>
                         </div>
                     </div>
                 </div>
@@ -24,9 +24,9 @@
                     @isset($staff)
                         <form method="POST" action="update_staff">
                     @else
-                        <form method="POST" action="store_staff">  
+                        <form method="POST" action="store_staff">
                     @endisset
-                    
+
                         @csrf
                         @php
                             $staff_number = sprintf("%03d", Illuminate\Support\Facades\DB::table('staff')->count() + 1);
@@ -149,7 +149,7 @@
                                     <option @if (isset($staff) && $staff->level_of_education === "Primary") selected @endif value="Primary">Primary</option>
                                     <option @if (isset($staff) && $staff->level_of_education === "Secondary") selected @endif value="Secondary">Secondary</option>
                                     <option @if (isset($staff) && $staff->level_of_education === "Tertiary") selected @endif value="Tertiary">Tertiary</option>
-                                </select>  
+                                </select>
 
                                 @error('level_of_education')
                                     <span class="invalid-feedback" role="alert">
@@ -319,6 +319,22 @@
                             </div>
                         </div>
 
+                        <div class="row mb-3">
+                            <label for="tin_number" class="col-md-3 col-form-label text-md-end">{{ __('Setup Payment of') }}</label>
+                            <div class="col-md-3 mt-2">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="tier1" name="tier1" value="1" @isset($staff) {{ ($staff->pay_tier1) ? 'checked' : ''  }} @else checked @endisset>
+                                    <label class="form-check-label" for="flexSwitchCheckDefault">Tier 1</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="tier2" name="tier2" value="1" @isset($staff) {{ ($staff->pay_tier2) ? 'checked' : ''  }} @else checked @endisset>
+                                    <label class="form-check-label" for="flexSwitchCheckDefault">Tier 2</label>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="row mb-0">
                             {{-- <div class="col-md-6 offset-md-4"> --}}
                                 <button type="submit" class="btn btn-primary">
@@ -345,34 +361,34 @@
                 $(this).val($(this).val().replace(regexp, ''));
             }
             });
-            
+
         };
 
         //Age Calculator.............................................................
-    
+
         function myAgeValidation() {
-         
+
             var lre = /^\s*/;
             var datemsg = "";
-            
+
             var inputDate = document.getElementById("date_of_birth").value;
             inputDate = inputDate.replace(lre, "");
             document.getElementById("date_of_birth").value = inputDate;
             getAge(new Date(inputDate));
-         
+
         }
-         
+
         function getAge(birth) {
-         
+
             var today = new Date();
             var nowyear = today.getFullYear();
             var nowmonth = today.getMonth() + 1;
             var nowday = today.getDate();
-         
+
             var birthyear = birth.getFullYear();
             var birthmonth = birth.getMonth() + 1;
             var birthday = birth.getDate();
-         
+
             var age = nowyear - birthyear;
             var age_month = nowmonth - birthmonth;
             var age_day = nowday - birthday;
@@ -383,27 +399,27 @@
                     //age = age -1;
                 }
             document.getElementById("age").value = age;
-         
+
         }
 
         function insuranceExpiry() {
-         
+
             var lre = /^\s*/;
             var datemsg = "";
-            
+
             var inputDate = document.getElementById("insurance_expiry").value;
             inputDate = inputDate.replace(lre, "");
             document.getElementById("insurance_expiry").value = inputDate;
-            getDays(new Date(inputDate));        
+            getDays(new Date(inputDate));
         }
-   
+
      function getDays(birth) {
-   
+
          var today = new Date();
-     
-         let difference = birth.getTime() - today.getTime(); 
+
+         let difference = birth.getTime() - today.getTime();
 
          document.getElementById("days").value = Math.ceil(difference / (1000 * 3600 * 24));
-      
+
      }
 </script>

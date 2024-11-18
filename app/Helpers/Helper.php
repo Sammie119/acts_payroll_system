@@ -103,7 +103,7 @@ use App\Models\SetupSalary;
         $rate_4 = $tax->rate_4;
         $rate_5 = $tax->rate_5;
 
-        $staff_age = (int)VWStaff::select('age')->where('staff_id', $id)->first()->age;
+        $pay_tier2 = (int)VWStaff::select('pay_tier2')->where('staff_id', $id)->first()->pay_tier2;
 
         // Allowance
         $allownce = PayrollDependecy::select('incomes', 'amount_incomes')->where('staff_id', $id)->orderByDesc('id')->first();
@@ -112,7 +112,7 @@ use App\Models\SetupSalary;
         // dd($total_allowance);
 //        dd($id, $basic);
 
-        $result = floatval($basic + $total_allowance) - ( floatval($first + (($staff_age >= 60) ? 0 : $basic * ($ssf/100))) + floatval(getTaxRelief($id)) + floatval(getTierThree($id, $basic)));
+        $result = floatval($basic + $total_allowance) - ( floatval($first + (($pay_tier2 == 0) ? 0 : $basic * ($ssf/100))) + floatval(getTaxRelief($id)) + floatval(getTierThree($id, $basic)));
 
 //        dd($basic + $total_allowance, getTierThree($id, $basic), $result, $first, $basic * ($ssf/100));
 

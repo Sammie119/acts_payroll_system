@@ -67,9 +67,8 @@ class DownloadPayslipController extends Controller
 
         foreach ($payment as $pay) {
             $staff = VWStaff::where('staff_id', $pay->staff_id)->first();
-            $verified = Staff::where('staff_id', $pay->staff_id)->first()->is_email_verified;
 
-            if (!empty($staff->email) && $verified == 1) {
+            if (!empty($staff->email) && $staff->is_email_verified == 1) {
 
                 $data = [
                     'pay' => $pay,

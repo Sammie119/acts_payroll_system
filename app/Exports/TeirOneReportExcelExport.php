@@ -80,8 +80,7 @@ class TeirOneReportExcelExport implements FromCollection, WithHeadings, WithStyl
         return VWSalarySsnit::select('fullname', 'ssnit_number', 'ghana_card', 'basic', 'tier_1')->where([
             ['pay_month', $this->report_month],
             ['pay_year', $this->report_year],
-            ['ssnit_number', '!=', 'NA'],
-            ['age', '<', 60]
+            ['pay_tier1', 1]
         ])->orderBy('staff_number')->get();
 
 

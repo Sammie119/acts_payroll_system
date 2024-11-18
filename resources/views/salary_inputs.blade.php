@@ -82,7 +82,7 @@
                             <label for="employer_ssf" class="col-md-3 col-form-label text-md-end">{{ __('Employer SSF') }}</label>
 
                             <div class="col-md-7">
-                                <input id="employer_ssf" type="number" min="0" step="0.01" name="employer_ssf" readonly class="form-control" value="{{ number_format(($staff->age >= 60) ? 0 : getSsfEmployer($salary->salary), 2, '.', '') }}">
+                                <input id="employer_ssf" type="number" min="0" step="0.01" name="employer_ssf" readonly class="form-control" value="{{ number_format(($staff->pay_tier2 == 0) ? 0 : getSsfEmployer($salary->salary), 2, '.', '') }}">
                             </div>
                         </div>
 
@@ -90,7 +90,7 @@
                             <label for="employee_ssf" class="col-md-3 col-form-label text-md-end">{{ __('SSF Employee') }}</label>
 
                             <div class="col-md-7">
-                                <input id="employee_ssf" type="number" min="0" step="0.01" name="employee_ssf" readonly class="form-control" value="{{ number_format(($staff->age >= 60) ? 0 : getSsfEmployee($salary->salary), 2, '.', '') }}">
+                                <input id="employee_ssf" type="number" min="0" step="0.01" name="employee_ssf" readonly class="form-control" value="{{ number_format(($staff->pay_tier2 == 00) ? 0 : getSsfEmployee($salary->salary), 2, '.', '') }}">
                             </div>
                         </div>
 

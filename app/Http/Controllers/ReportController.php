@@ -45,8 +45,7 @@ class ReportController extends Controller
                 $data = VWSalarySsnit::where([
                     ['pay_month', $request->report_month],
                     ['pay_year', $request->report_year],
-                    ['ssnit_number', '!=', 'NA'],
-                    ['age', '<', 60]
+                    ['pay_tier1', 1]
                 ])->orderBy('staff_number')->get();
                 break;
 
@@ -56,8 +55,7 @@ class ReportController extends Controller
                 $data = VWSalarySsnit::where([
                     ['pay_month', $request->report_month],
                     ['pay_year', $request->report_year],
-                    ['ghana_card', '!=', 'NAN'],
-                    ['age', '<', 60]
+                    ['pay_tier2', 1]
                 ])->orderBy('staff_number')->get();
                 break;
 
@@ -66,8 +64,7 @@ class ReportController extends Controller
                 $header = 'STAFF INCOME TAX CONTRIBUTION FOR '. strtoupper($request->report_month). ', '. $request->report_year;
                 $data = VWSalarySsnit::where([
                     ['pay_month', $request->report_month],
-                    ['pay_year', $request->report_year],
-                    ['staff_number', '!=', 'AS015']
+                    ['pay_year', $request->report_year]
                 ])->orderBy('staff_number')->get();
                 break;
 

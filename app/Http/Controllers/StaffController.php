@@ -81,7 +81,7 @@ class StaffController extends Controller
             'insurance_number' => 'required|unique:staff,insurance_number',
             'insurance_expiry' => 'required'
         ]);
-
+        dd($request->all());
         $staff = new Staff;
 
         $staff->staff_number = $request->staff_number;
@@ -103,6 +103,8 @@ class StaffController extends Controller
         $staff->insurance_number = $request->insurance_number;
         $staff->insurance_expiry = $request->insurance_expiry;
         $staff->tin_number = $request->tin_number;
+        $staff->pay_tier1 = $request->tier1 ? $request->tier1 : 0;
+        $staff->pay_tier2 = $request->tier2 ? $request->tier2 : 0;
         $staff->created_by = Auth()->user()->id;
         $staff->updated_by = Auth()->user()->id;
 
@@ -175,6 +177,12 @@ class StaffController extends Controller
 
         $staff = Staff::find($request->id);
 
+        if($staff->email != $request->email){
+            $staff->update([
+                'is_email_verified' => 0
+            ]);
+        }
+
         $staff->staff_number = $request->staff_number;
         $staff->firstname = $request->firstname;
         $staff->othernames = $request->othernames;
@@ -194,12 +202,16 @@ class StaffController extends Controller
         $staff->insurance_number = $request->insurance_number;
         $staff->insurance_expiry = $request->insurance_expiry;
         $staff->tin_number = $request->tin_number;
+        $staff->pay_tier1 = $request->tier1 ? $request->tier1 : 0;
+        $staff->pay_tier2 = $request->tier2 ? $request->tier2 : 0;
         $staff->updated_by = Auth()->user()->id;
 
         $staff->update();
 
-        if(isset($request->email)){
-            $this->sendVerificationEmail($request->email, $staff->staff_id);
+        if(!$staff->is_email_verified){
+            if(isset($request->email)){
+                $this->sendVerificationEmail($request->email, $staff->staff_id);
+            }
         }
 
         DB::table('staff_history')->insert([

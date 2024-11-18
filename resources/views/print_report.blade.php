@@ -286,7 +286,7 @@
                                     $position = 'Junior';
                                     $resident = 'N';
                                     $secondary = 'N';
-                                    $paid_ssnit = ($staff->age >= 60) ? 'N' : 'Y';
+                                    $paid_ssnit = ($staff->pay_tier2 == 0) ? 'N' : 'Y';
                                     $total_allowance = array_sum(getTaxableAllowancesAmount(json_decode($tax->incomes), json_decode($tax->amount_incomes))); //array_sum(json_decode($tax->amount_incomes ?? "[0]"));
                                     $tax_relief = $tax->tax_relief;
                                     $tier_3 = $tax->tier_3;

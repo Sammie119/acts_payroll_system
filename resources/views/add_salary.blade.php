@@ -11,11 +11,11 @@
                             @isset($salary)
                                 <h5>{{ __('Edit salary') }}</h5>
                             @else
-                                <h5>{{ __('Add salary') }}</h5>  
+                                <h5>{{ __('Add salary') }}</h5>
                             @endisset
                         </div>
                         <div class="col-2">
-                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a> 
+                            <a class="btn btn-secondary btn-sm float-end" href="{{ url()->previous() }}">Back</a>
                         </div>
                     </div>
                 </div>
@@ -24,9 +24,9 @@
                     @isset($salary)
                         <form method="POST" action="update_salary">
                     @else
-                        <form method="POST" action="store_salary">  
+                        <form method="POST" action="store_salary">
                     @endisset
-                    
+
                         @csrf
                         @isset($salary)
                             <input type="hidden" name="id" value="{{ $salary->salary_id }}">
@@ -37,7 +37,7 @@
                                 <label class="col-md-2 col-form-label text-md-end">{{ __('Basic Salary') }}</label>
 
                                 <label class="col-md-2 col-form-label text-md-end">{{ __('Tax Relief') }}</label>
-                            
+
                                 <label class="col-md-2 col-form-label text-md-end">{{ __('Tier 3 (%)') }}</label>
                             </div>
 
@@ -46,7 +46,7 @@
 
                                 <div class="col-md-2">
                                     <input type="number" step="0.01" min="1" class="form-control @error('salary') is-invalid @enderror" name="salary" value="{{ $salary->salary }}" required>
-                                    
+
                                     @error('salary')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -55,7 +55,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <input type="number" step="0.01" min="0" class="form-control @error('tax_relief') is-invalid @enderror" name="tax_relief" value="{{ $salary->tax_relief }}" required>
-                                    
+
                                     @error('tax_relief')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -64,7 +64,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <input type="number" id="tier_3" onchange="(checkValue(this))" step="0.01" min="0" class="form-control @error('tier_3') is-invalid @enderror" name="tier_3" value="{{ $salary->tier_3 }}" >
-                                    
+
                                     @error('tier_3')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -103,7 +103,7 @@
                                     </div>
                                 </div>
                             @endforeach
-                        @endisset                    
+                        @endisset
 
                         <div class="row mb-0">
                             {{-- <div class="col-md-6 offset-md-4"> --}}
@@ -121,7 +121,7 @@
 @endsection
 
 <script>
-    
+
     function checkValue(e)
     {
         if(e.value > 16.5){

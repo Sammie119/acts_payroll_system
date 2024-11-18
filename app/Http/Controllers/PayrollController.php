@@ -91,7 +91,7 @@ class PayrollController extends Controller
             'year' => 'required|numeric'
         ]);
 
-        $staff_age = VWStaff::select('age')->where('staff_id', $request->staff_id)->first()->age;
+        $pay_tier2 = VWStaff::select('pay_tier2')->where('staff_id', $request->staff_id)->first()->pay_tier2;
 
         // dd($request->all());
         if($request->has('loan_id') && $request->has('amount_loan')){
@@ -152,13 +152,13 @@ class PayrollController extends Controller
             'tax' => $request->tax,
             'tax_relief' => $request->tax_relief,
             'tier_3' => $request->tier_3,
-            'employer_ssf' => ($staff_age < 60) ? $request->employer_ssf : 0,
-            'employee_ssf' => ($staff_age < 60) ? $request->employee_ssf : 0,
+            'employer_ssf' => ($pay_tier2 == 1) ? $request->employer_ssf : 0,
+            'employee_ssf' => ($pay_tier2 == 1) ? $request->employee_ssf : 0,
             'created_by' => Auth()->user()->id,
             'updated_by' => Auth()->user()->id,
         ]);
 
-        if($staff_age >= 60){
+        if($pay_tier2 == 0){
             $pay->update([
                 'employer_ssf' => 0,
                 'employee_ssf' => 0,
