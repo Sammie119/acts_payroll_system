@@ -227,7 +227,7 @@ class PayrollController extends Controller
                 // dd($request->all(), $pay_dep, $pay_loan, $staff->salary);
 
                 $incomes = floatval(array_sum($pay_dep->amount_incomes ?? [0]));
-                $deductions = floatval(array_sum($pay_dep->amount_deductions ?? [0])) + floatval($pay_dep->tax) + floatval($pay_dep->employee_ssf) + floatval($total_loan_paid);
+                $deductions = floatval(array_sum($pay_dep->amount_deductions ?? [0])) + floatval($pay_dep->tax) + floatval($pay_dep->employee_ssf) + floatval($total_loan_paid) + floatval(getTierThree($staff->staff_id, $basic_salary));
 
                 $gross_income = $basic_salary + $incomes;
                 $net_income = $gross_income - $deductions;

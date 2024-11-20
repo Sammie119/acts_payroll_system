@@ -66,8 +66,8 @@
                                             <td>{{ number_format($amount_incomes, 2) }}</td>
                                             <td>{{ number_format($payment->gross_income, 2) }}</td>
                                             <td>{{ number_format($amount_deductions, 2) }}</td>
-                                            <td>{{ number_format($tier3 = floatval($pay_dep->tier_3 ?? 0.00), 2) }}</td>
-                                            <td>{{ number_format($payment->net_income - $tier3, 2) }}</td>
+                                            <td>{{ number_format(floatval($pay_dep->tier_3 ?? 0.00), 2) }}</td>
+                                            <td>{{ number_format($payment->net_income, 2) }}</td>
                                             <td>{{ $payment->pay_month }}, {{ $payment->pay_year }}</td>
                                             <td>
                                                 <div class="btn-group">

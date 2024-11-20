@@ -123,7 +123,7 @@
                           <tr>
                             <th scope="row">Net Income</th>
                             <td></td>
-                            <td>{{ number_format($pay->net_income - $allowances->tier_3, 2) }}</td>
+                            <td>{{ number_format($pay->net_income, 2) }}</td>
                           </tr>
 
                           <tr>

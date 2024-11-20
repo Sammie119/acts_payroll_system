@@ -126,7 +126,7 @@
                                         'banker' => $staff->banker,
                                         'bank_branch' => $staff->bank_branch,
                                         'bank_account' => $staff->bank_account,
-                                        'net_income' => number_format($staff->net_income - $pay_dep->tier_3, 2),
+                                        'net_income' => number_format($staff->net_income, 2),
                                     ];
                                 @endphp
                                 <tr>
@@ -136,7 +136,7 @@
                                     <td>{{ $staff->banker }}</td>
                                     <td>{{ $staff->bank_branch }}</td>
                                     <td>{{ $staff->bank_account }}</td>
-                                    <td style="text-align: right;">{{ number_format($staff->net_income - $pay_dep->tier_3, 2) }}</td>
+                                    <td style="text-align: right;">{{ number_format($staff->net_income, 2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

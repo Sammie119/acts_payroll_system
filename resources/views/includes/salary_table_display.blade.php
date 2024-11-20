@@ -146,7 +146,7 @@
         <th nowrap style="text-align: left; border-left: 2px solid black; padding-left: 10px;">Net Pay</th>
         <td style=""></td>
         <td style=""></td>
-        <th style="text-align: right">{{ number_format(($staff->pay_tier2 == 1) ? $pay->net_income - $allowances->tier_3 : ($pay->net_income - $allowances->tier_3) + $allowances->employee_ssf, 2) }}</th>
+        <th style="text-align: right">{{ number_format(($staff->pay_tier2 == 1) ? $pay->net_income : $pay->net_income + $allowances->employee_ssf, 2) }}</th>
         <td style=""></td>
     </tr>
     <tr>
