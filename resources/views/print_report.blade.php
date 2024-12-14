@@ -250,7 +250,7 @@
                                 <th>TIN Number</th>
                                 <th>Name of Employee</th>
                                 <th>Position</th>
-                                <th>Non<br>Resident<br>(Y / N)</th>
+                                <th>Residency<br>/Part-Time<br>/Casual</th>
                                 <th style="text-align: right;">Basic Salary</th>
                                 <th>Secondary<br>Employment<br>(Y / N)</th>
                                 <th>Paid<br>SSNIT<br>(Y / N)</th>
@@ -284,7 +284,7 @@
                                         // dd(json_decode($tax->amount_incomes));
 
                                     $position = 'Junior';
-                                    $resident = 'N';
+                                    $resident = 'Resident-Full-Time';
                                     $secondary = 'N';
                                     $paid_ssnit = ($staff->pay_tier2 == 0) ? 'N' : 'Y';
                                     $total_allowance = array_sum(getTaxableAllowancesAmount(json_decode($tax->incomes), json_decode($tax->amount_incomes))); //array_sum(json_decode($tax->amount_incomes ?? "[0]"));
