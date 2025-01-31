@@ -107,10 +107,10 @@ class ReportController extends Controller
             case 'p_fund':
                 $report = 'p_fund';
                 $header = 'Provident Fund '. strtoupper($request->report_month). ', '. $request->report_year;
-                $data = VWTax::where([
-                    ['pay_year', $request->report_year],
-                    ['tier_3', '>', 0]
+                $data = VWSalarySsnit::where([
+                    ['pay_year', $request->report_year]
                 ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$request->report_month'")->orderBy('staff_number')->get();
+
                 break;
 
 //            case 'credit_hire':

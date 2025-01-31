@@ -709,6 +709,7 @@
                 @break
 
             @case('p_fund')
+{{--                {{ dd($data) }}--}}
                 <div class = "data">
                     <table class="table border-secondary table-sm mt-2">
                         <thead>
@@ -716,8 +717,10 @@
                             <th>No.</th>
                             <th>Staff ID</th>
                             <th>Staff Name</th>
-                            <th>Description</th>
-                            <th style="text-align: right;">Amount</th>
+                            <th>Basic Salary</th>
+                            <th>Employer Cont. (12.5%)</th>
+                            <th>Employee Cont.</th>
+                            <th style="text-align: right;">Total Amount</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -726,21 +729,43 @@
                         @endphp
                         @foreach ($data as $key => $staff)
                             @php
-                                $total_fund += $staff->tier_3;
+                            $year = $date['year'];
+                            $month = $date['month'];
+                                $tier = \App\Models\VWTax::select('tier_3')->where([
+                                    ['pay_year', $year],
+                                    ['staff_id', $staff->staff_id]
+                                ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$month'")->orderBy('staff_number')->first();
+
+//                                dd($tier_3->$tier_3);
+                                    $total_fund += (($staff->basic * 0.125) + $tier->tier_3);
+
+                                    $data_array[] = [
+                                        'staff_number' => $staff->staff_number,
+                                        'fullname' => $staff->fullname,
+                                        'basic_salary' => $staff->basic,
+                                        'emp_cont' => $staff->basic * 0.125,
+                                        'staff_cont' => $tier->tier_3,
+                                        'amount' => ($staff->basic * 0.125) + $tier->tier_3
+                                    ];
                             @endphp
                             <tr>
                                 <td>{{ ++$key }}</td>
                                 <td>{{ $staff->staff_number }}</td>
                                 <td>{{ $staff->fullname }}</td>
-                                <td>Provident Fund</td>
-                                <td style="text-align: right;">{{ number_format($staff->tier_3, 2) }}</td>
+                                <td>{{ $staff->basic }}</td>
+                                <td>{{ number_format($emp = $staff->basic * 0.125, 2) }}</td>
+                                <td>{{ number_format($stff = $tier->tier_3, 2) }}</td>
+                                <td style="text-align: right;">{{ number_format($emp + $stff, 2) }}</td>
                             </tr>
                         @endforeach
+                        @php
+                            Illuminate\Support\Facades\Cache::put('p_fund', collect($data_array), now()->addHours(2));
+                        @endphp
                         </tbody>
                         <tfoot>
                         <tr>
                             <th colspan="2" style="text-align: center">GRAND TOTAL</th>
-                            <th colspan="4" style="text-align: right;">{{ number_format($total_fund, 2) }}</th>
+                            <th colspan="5" style="text-align: right;">{{ number_format($total_fund, 2) }}</th>
                         </tr>
                         </tfoot>
                     </table>

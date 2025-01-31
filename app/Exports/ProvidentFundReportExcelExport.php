@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\VWSalarySsnit;
 use App\Models\VWTax;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -29,8 +30,10 @@ class ProvidentFundReportExcelExport implements FromCollection, WithHeadings, Wi
             [
                 'Staff ID',
                 'Staff Name',
-                'Description',
-                'Amount',
+                'Basic Salary',
+                'Employer Contribution (12.5%)',
+                'Employee Contribution',
+                'Total Amount',
             ]
         ];
     }
@@ -58,6 +61,8 @@ class ProvidentFundReportExcelExport implements FromCollection, WithHeadings, Wi
             'B' => 30,
             'C' => 23,
             'D' => 14,
+            'E' => 14,
+            'F' => 14,
         ];
     }
 
@@ -66,6 +71,8 @@ class ProvidentFundReportExcelExport implements FromCollection, WithHeadings, Wi
         return [
             // 'D' => NumberFormat::FORMAT_NUMBER,
             'D' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'E' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'F' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
         ];
     }
 
@@ -74,10 +81,7 @@ class ProvidentFundReportExcelExport implements FromCollection, WithHeadings, Wi
     */
     public function collection()
     {
-        return VWTax::selectRaw("staff_number, fullname, 'Provident Fund', tier_3")->where([
-            ['pay_year', $this->report_year],
-            ['tier_3', '>', 0]
-        ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$this->report_month'")->orderBy('staff_number')->get();
+        return Cache::get('p_fund');
     }
 }
 
