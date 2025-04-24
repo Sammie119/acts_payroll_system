@@ -118,7 +118,7 @@ class PayrollController extends Controller
                     'updated_by' => Auth()->user()->id
                 ));
 
-                $loan_pay = LoanPayment::updateOrCreate([
+                $loan_pay = LoanPayment::firstOrCreate([
                     'loan_id' => $loan_id,
                     'staff_id' => $request->staff_id,
                     'amount' => $loan->amount,
