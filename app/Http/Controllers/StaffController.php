@@ -81,7 +81,7 @@ class StaffController extends Controller
             'insurance_number' => 'required|unique:staff,insurance_number',
             'insurance_expiry' => 'required'
         ]);
-        dd($request->all());
+//        dd($request->all());
         $staff = new Staff;
 
         $staff->staff_number = $request->staff_number;

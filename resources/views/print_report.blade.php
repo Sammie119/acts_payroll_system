@@ -1,5 +1,6 @@
 <!DOCTYPE>
  <html>
+<head>
 
     <title>ACTS | Report</title>
     <link rel="shortcut icon" href="{{ asset('build/assets/images/smmie_logo.ico') }}" type="image/ico">
