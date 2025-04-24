@@ -45,24 +45,37 @@ class SetupSalaryController extends Controller
             'salary' => 'required',
             'tax_relief' => 'nullable',
             'tier_3' => 'nullable',
+            'salary_percentage' => 'nullable|numeric|min:1|max:100',
         ]);
+//        dd(is_null($request['salary_percentage']), $request->all());
+        if(is_null($request['salary_percentage'])){
+            foreach ($request->staff_id as $key => $staff_id) {
 
-        foreach ($request->staff_id as $key => $staff_id) {
+                $salary = new SetupSalary;
 
-            if($request->tier_3[$key] > 16.5){
-                return back()->with('error', 'Tier 3 Maximum is 16.5%');
+                $salary->staff_id = $staff_id;
+                $salary->salary = $request->salary[$key];
+                $salary->tax_relief = $request->tax_relief[$key];
+                $salary->tier_3 = ($request->tier_3[$key] > 16.5) ? 16.5 : $request->tier_3[$key];
+                $salary->created_by = Auth()->user()->id;
+                $salary->updated_by = Auth()->user()->id;
+
+                $salary->save();
             }
+        } else {
+            foreach ($request->staff_id as $key => $staff_id) {
 
-            $salary = new SetupSalary;
+                $salary = new SetupSalary;
 
-            $salary->staff_id = $staff_id;
-            $salary->salary = $request->salary[$key];
-            $salary->tax_relief = $request->tax_relief[$key];
-            $salary->tier_3 = $request->tier_3[$key];
-            $salary->created_by = Auth()->user()->id;
-            $salary->updated_by = Auth()->user()->id;
+                $salary->staff_id = $staff_id;
+                $salary->salary = $request->salary[$key] + ($request->salary[$key] * ($request['salary_percentage']/100));
+                $salary->tax_relief = $request->tax_relief[$key];
+                $salary->tier_3 = ($request->tier_3[$key] > 16.5) ? 16.5 : $request->tier_3[$key];
+                $salary->created_by = Auth()->user()->id;
+                $salary->updated_by = Auth()->user()->id;
 
-            $salary->save();
+                $salary->save();
+            }
         }
 
         return redirect('salary')->with('success', 'Salaries Added Successfully!!!');

@@ -74,6 +74,18 @@
                             </div>
 
                         @else
+                            <div class="row mb-3">
+                                <label class="col-md-5 col-form-label text-md-end">Increase Salary by a Percentage (%)</label>
+
+                                <div class="col-md-6">
+                                    <input type="number" step="0.01" min="0" class="form-control @error('salary_percentage') is-invalid @enderror" name="salary_percentage" value="{{old('salary_percentage')}}">
+                                    @error('salary_percentage')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
                             <div class="row mb-3" style="font-weight: bold">
                                 <label class="col-md-5 col-form-label text-md-end">{{ __('Staff Name') }}</label>
 
