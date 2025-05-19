@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\DownloadPayslipController;
 use App\Http\Controllers\ExportToExcelController;
+use App\Http\Controllers\SalaryGradeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoanController;
+use App\Http\Controllers\SalaryNotchController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
@@ -106,6 +108,26 @@ Route::middleware('auth')->group(function () {
         // Route::get('edit_taxs/{id}', 'editTax')->name('edit_taxs');
         // Route::post('update_taxs', 'updateTax')->name('update_taxs');
         // Route::get('delete_taxs/{id}', 'deleteTax')->name('delete_taxs');
+    });
+
+    Route::controller(SalaryGradeController::class)->group(function () {
+        Route::prefix('grades')->group(function () {
+            Route::get('/', 'index')->name('grades');
+            Route::get('create', 'create')->name('grade.create');
+            Route::post('store', 'store');
+            Route::get('edit/{id}', 'edit');
+            Route::post('edit/grade', 'update');
+            Route::get('delete/{id}', 'destroy');
+        });
+    });
+
+    Route::controller(SalaryNotchController::class)->group(function () {
+        Route::prefix('notches')->group(function () {
+            Route::get('/{grade_id}', 'index');
+            Route::get('edit/{id}', 'edit');
+            Route::post('edit/update', 'update');
+            Route::get('delete/{id}', 'destroy');
+        });
     });
 
     // Export Routes

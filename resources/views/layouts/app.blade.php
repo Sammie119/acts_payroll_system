@@ -84,11 +84,16 @@
                                     {{ request()->is('dropdowns') ? 'active' : '' }} {{ request()->is('dropdowns/*') ? 'active' : '' }}
                                     {{ request()->is('taxs') ? 'active' : '' }}
                                     {{ request()->is('salary') ? 'active' : '' }} {{ request()->is('salary/*') ? 'active' : '' }}
+                                    {{ request()->is('grades/*') ? 'active' : '' }}
+                                    {{ request()->is('notches/*') ? 'active' : '' }}
                                     " href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         Settings
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="{{ route('grades') }}">
+                                            {{ __('Salary Grades') }}
+                                        </a>
                                         <a class="dropdown-item" href="{{ route('salary') }}">
                                             {{ __('Salary Setup') }}
                                         </a>

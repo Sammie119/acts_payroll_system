@@ -167,4 +167,10 @@ use App\Models\SetupSalary;
 
         }
         // return floatval($basic * ($rate_4/100));
+        return 1;
+    }
+
+    function getStaffAge($staff_id)
+    {
+       return VWStaff::where('staff_id', $staff_id)->first()->age;
     }
