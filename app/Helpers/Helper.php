@@ -67,7 +67,7 @@ use App\Models\SetupSalary;
         return 0;
     }
 
-    function getTaxableAllowancesAmount(array $allownces = null, array $amounts = null): array
+    function getTaxableAllowancesAmount(?array $allownces = null, ?array $amounts  = null): array
     {
         $allownces_amount = [];
 
@@ -172,5 +172,10 @@ use App\Models\SetupSalary;
 
     function getStaffAge($staff_id)
     {
-       return VWStaff::where('staff_id', $staff_id)->first()->age;
+       $age = VWStaff::where('staff_id', $staff_id)->first();
+       if($age){
+           return $age->age;
+       }
+
+       return 0;
     }

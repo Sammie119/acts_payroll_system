@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dropdown;
 use App\Models\Loan;
+use App\Models\LoanPaymentCompletion;
 use App\Models\VWStaff;
 use App\Models\LoanPayment;
 use Illuminate\Http\Request;
@@ -167,5 +168,59 @@ class LoanController extends Controller
         $loan_payment = LoanPayment::where([['loan_id', $id], ['months_paid', '!=', 0]])->get();
         $staff = Loan::find($id)->staff_id;
         return view('view_loans', ['loan' => $loan_payment, 'staff' => $staff]);
+    }
+
+    public function completeLoanPayment($id)
+    {
+        $data['loan'] = Loan::find($id);
+        $data['loan_payment'] = LoanPayment::where('loan_id', $id)->orderByDesc('loan_pay_id')->first();
+        return view('add_complete_loan', $data);
+    }
+
+    public function completeLoan(Request $request)
+    {
+        $request->validate([
+            'reason' => ['required'],
+        ]);
+
+        $loan = LoanPaymentCompletion::updateOrCreate([
+            'loan_id' => $request->loan_id,
+            'staff_id' => $request->staff_id,
+        ],
+        [
+            'monthly_payment' => $request->monthly_payment,
+            'amount_paid' => $request->amount_paid,
+            'amount_left' => $request->amount_left,
+            'months_paid' => $request->months_paid,
+            'months_left' => $request->months_left,
+            'reason' => $request->reason,
+            'created_by' => Auth()->user()->id,
+            'updated_by' => Auth()->user()->id,
+        ]);
+
+        if($loan) {
+            $get_loan = Loan::find($request->loan_id);
+            if($get_loan->status === 1){
+                $get_loan->update([
+                    'status' => 2,
+                ]);
+
+                return redirect('loans')->with('success', 'Loan Payment Stopped Successfully!!');
+            } else {
+                $get_loan->update([
+                    'status' => 1,
+                ]);
+
+                return redirect('loans')->with('success', 'Loan Payment Reinstated Successfully!!');
+            }
+        }
+
+        return redirect('loans')->with('error', 'Loan Payment Stopped Unsuccessfully!!');
+    }
+
+    public function manuallyCompletedLoan()
+    {
+        $data['completed'] = LoanPaymentCompletion::orderByDesc('id')->get();
+        return view('completed_loans', $data);
     }
 }

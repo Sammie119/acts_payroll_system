@@ -22,8 +22,11 @@
                     <div class="card card-primary">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-9">
+                            <div class="col-7">
                                 <h5>{{ __('Loans List') }}</h5>
+                            </div>
+                            <div class="col-2">
+                                <a href="{{ route('manuallyCompletedLoans') }}" class="btn btn-danger btn-sm float-end">Completed Loans</a>
                             </div>
                             <div class="col-2">
                                 <input class="form-control" type="text" id="search" style="height: 32px">
@@ -31,7 +34,7 @@
                             <div class="col-1">
                                 <a href="{{ route('loans/create_loan') }}" class="btn btn-primary btn-sm">New Loan</a>
                             </div>
-                        </div>  
+                        </div>
                     </div>
                         <div class="card-body">
                             <table class="table table-striped table-advdruge table-hover">
@@ -66,26 +69,29 @@
                                                 <td>{{ number_format($loan->amount_per_month, 2) }}</td>
                                                 <td>{{ number_format($amnt_paid, 2) }}</td>
                                                 <td>{{ number_format($balance, 2) }}</td>
-                                                <td>{{ $loan->number_of_months - $loan->loan_pay->last()->months_paid }}</td>
+                                                <td>{{ $stop = $loan->number_of_months - $loan->loan_pay->last()->months_paid }}</td>
                                                 <td>{{ getLoanStatus($loan->status) }}</td>
                                                 <td>
                                                     <div class="btn-group">
                                                         <a href="{{ route('loan.payment',[$loan->loan_id]) }}" class="btn btn-info btn-sm" title="View Details">Veiw</a>
                                                         <a href="{{ route('loan.edit',[$loan->loan_id]) }}" class="btn btn-success btn-sm" title="Edit Details">Edit</a>
+                                                        @if ($loan->status !== 2)
+                                                            <a href="{{ route('loan.complete',[$loan->loan_id]) }}" class="btn btn-secondary btn-sm" title="View Details">Stop</a>
+                                                        @endif
                                                         <a href="loans/delete_loan/{{ $loan->loan_id }}" onclick="return confirm('The Selected record will be deleted permanently!!!')" class="btn btn-danger btn-sm" >Del</a>
                                                     </div>
                                                 </td>
                                             </tr>
-                                        @endif 
+                                        @endif
                                     @empty
                                         <tr>
                                             <td colspan="25">No Data Found</td>
-                                        </tr> 
+                                        </tr>
                                     @endforelse
                                 </tbody>
                             </table>
                         </div>
-                    </div>  
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,24 +104,24 @@
         $('#search').focus();
 
         // Table filter
-        $('#search').keyup(function(){  
-            search_table($(this).val());  
-        });  
-        function search_table(value){  
-            $('#employee_table tr').each(function(){  
-                var found = 'false';  
-                $(this).each(function(){  
-                    if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0){  
-                        found = 'true';  
-                    }  
-                });  
-                if(found == 'true'){  
-                    $(this).show();  
-                }  
-                else{  
-                    $(this).hide();  
-                }  
-            });  
+        $('#search').keyup(function(){
+            search_table($(this).val());
+        });
+        function search_table(value){
+            $('#employee_table tr').each(function(){
+                var found = 'false';
+                $(this).each(function(){
+                    if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0){
+                        found = 'true';
+                    }
+                });
+                if(found == 'true'){
+                    $(this).show();
+                }
+                else{
+                    $(this).hide();
+                }
+            });
         }
 
     };

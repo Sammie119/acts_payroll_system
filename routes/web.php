@@ -69,6 +69,11 @@ Route::middleware('auth')->group(function () {
         Route::post('loans/edit_loan/update_loan', 'update');
         Route::get('loans/delete_loan/{id}', 'destroy');
         Route::get('loans/view_loan/{id}', 'viewLoanPayment')->name('loan.payment');
+
+        Route::get('loans/complete/{id}', 'completeLoanPayment')->name('loan.complete');
+        Route::post('/complete_loan_store', 'completeLoan');
+        Route::get('/manuallyCompletedLoans', 'manuallyCompletedLoan')->name('manuallyCompletedLoans');
+
     });
 
     Route::controller(PayrollController::class)->group(function () {
