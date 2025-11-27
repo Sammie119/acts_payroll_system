@@ -431,27 +431,6 @@
                                     <td>TAC Welfare Dues</td>
                                     <td style="text-align: right;">{{ number_format($amount[$index], 2) }}</td>
                                 </tr>
-                            @elseif(in_array('TAC Welfare Dues', json_decode($staff->deductions)))
-                                @php
-                                    $index = array_search('TAC Welfare Dues', json_decode($staff->deductions));
-                                    $amount = json_decode($staff->amount_deductions);
-                                    $total_amount += $amount[$index];
-                                    $key += 1;
-
-                                    $data_array[] = [
-                                        'staff_number' => $staff->staff_number,
-                                        'fullname' => $staff->fullname,
-                                        'description' => 'TAC Welfare Dues',
-                                        'amount' => $amount[$index]
-                                    ];
-                                @endphp
-                                <tr>
-                                    <td>{{ $key }}</td>
-                                    <td>{{ $staff->staff_number }}</td>
-                                    <td>{{ $staff->fullname }}</td>
-                                    <td>TAC Welfare Dues</td>
-                                    <td style="text-align: right;">{{ number_format($amount[$index], 2) }}</td>
-                                </tr>
                             @endif
                         @endforeach
                         @php
