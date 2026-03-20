@@ -24,7 +24,7 @@ class WelfareDuesReportExcelExport implements FromCollection, WithHeadings, With
         $date = strtoupper($this->report_month).', '.$this->report_year;
         return [
             [
-                'WELFARE DUES '.$date
+                'TAC WELFARE DUES '.$date
             ],
             [
                 'Staff ID',

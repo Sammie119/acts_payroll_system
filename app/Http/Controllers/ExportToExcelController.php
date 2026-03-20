@@ -24,7 +24,7 @@ class ExportToExcelController extends Controller
 
     public function exportToCreditUnionSaving($report_month, $report_year)
     {
-        return Excel::download(new CreditUnionSavingReportExcelExport($report_month, $report_year), 'credit_union_savings_'.strtolower($report_month).'_'.$report_year.'.xlsx');
+        return Excel::download(new CreditUnionSavingReportExcelExport($report_month, $report_year), 'download_'.strtolower($report_month).'_'.$report_year.'.xlsx');
     }
 
     public function exportToGRA($report_month, $report_year)
@@ -34,12 +34,12 @@ class ExportToExcelController extends Controller
 
     public function exportToLoans($report_month, $report_year)
     {
-        return Excel::download(new LoansReportExcelExport($report_month, $report_year), 'loans_payments_'.strtolower($report_month).'_'.$report_year.'.xlsx');
+        return Excel::download(new LoansReportExcelExport($report_month, $report_year), 'download_'.strtolower($report_month).'_'.$report_year.'.xlsx');
     }
 
     public function exportToRentAdvance($report_month, $report_year)
     {
-        return Excel::download(new RentAdvanceReportExcelExport($report_month, $report_year), 'rent_advance_payment_'.strtolower($report_month).'_'.$report_year.'.xlsx');
+        return Excel::download(new RentAdvanceReportExcelExport($report_month, $report_year), 'download_'.strtolower($report_month).'_'.$report_year.'.xlsx');
     }
 
     public function exportToTeirOne($report_month, $report_year)
@@ -54,21 +54,21 @@ class ExportToExcelController extends Controller
 
     public function exportToWelfareDues($report_month, $report_year)
     {
-        return Excel::download(new WelfareDuesReportExcelExport($report_month, $report_year), 'welfare_dues_contribution_'.strtolower($report_month).'_'.$report_year.'.xlsx');
+        return Excel::download(new WelfareDuesReportExcelExport($report_month, $report_year), 'download_'.strtolower($report_month).'_'.$report_year.'.xlsx');
     }
 
     public function exportToActsWelfare($report_month, $report_year)
     {
-        return Excel::download(new ActsWelfareReportExcelExport($report_month, $report_year), 'acts_welfare_'.strtolower($report_month).'_'.$report_year.'.xlsx');
+        return Excel::download(new ActsWelfareReportExcelExport($report_month, $report_year), 'adownload_'.strtolower($report_month).'_'.$report_year.'.xlsx');
     }
 
     public function exportToNehemiah($report_month, $report_year)
     {
-        return Excel::download(new NehemiahReportExcelExport($report_month, $report_year), 'nehemiah_'.strtolower($report_month).'_'.$report_year.'.xlsx');
+        return Excel::download(new NehemiahReportExcelExport($report_month, $report_year), 'download_'.strtolower($report_month).'_'.$report_year.'.xlsx');
     }
 
     public function exportToPFund($report_month, $report_year)
     {
-        return Excel::download(new ProvidentFundReportExcelExport($report_month, $report_year), 'provident_fund_'.strtolower($report_month).'_'.$report_year.'.xlsx');
+        return Excel::download(new ProvidentFundReportExcelExport($report_month, $report_year), 'download_'.strtolower($report_month).'_'.$report_year.'.xlsx');
     }
 }

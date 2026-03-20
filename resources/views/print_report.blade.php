@@ -355,6 +355,217 @@
                 </div>
                 @break
 
+            @case('payroll_journal')
+                <div class = "data">
+                    <table class="table border-secondary table-sm mt-2">
+                        <thead>
+                            <tr>
+                                <th>DESCRIPTION</th>
+                                <th style="text-align: right;">DR</th>
+                                <th style="text-align: right;">CR</th>
+                                <th style="text-align: right;">Variance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                // Debit
+                                $basic_salaries = 0;
+                                $ssnit_total = 0;
+                                $arr_allowance = [];
+
+                                // Credit
+                                $employee_ssf = 0;
+                                $employer_ssf = 0;
+                                $tax_peye = 0;
+                                $net_income_salaries = 0;
+                                $provident_fund = 0;
+                                $arr_deductions = [];
+                                $arr_loans = [];
+                            @endphp
+                            @foreach($data as $result)
+                                @php
+//                                    dd($result->tier_3);
+                                    $provident_fund += $result->tier_3;
+                                        // Deductions
+                                        $employee_ssf += $result->employee_ssf;
+                                        $employer_ssf += $result->employer_ssf;
+                                        $tax_peye += $result->tax;
+                                        $net_income_salaries += $result->net_income;
+
+                                        $arr_d = json_decode($result->deductions, true);
+                                        $arr_d_amount = json_decode($result->amount_deductions, true);
+
+                                        foreach ($deductions as $item) {
+
+                                            if(isset($result->deductions)){
+                                                if (in_array($item->dropdown_name, $arr_d)) {
+
+                                                    $index = array_search($item->dropdown_name, $arr_d);
+
+                                                    if (!isset($arr_deductions[$item->dropdown_name])) {
+                                                        $arr_deductions[$item->dropdown_name] = 0;
+                                                    }
+
+                                                    $arr_deductions[$item->dropdown_name] += $arr_d_amount[$index];
+                                                }
+                                            }
+                                        }
+
+                                        $arr_l = json_decode($result->loan_ids, true);
+
+                                        foreach ($loans as $item) {
+//                                            dd($item, $arr_l, isset($result->loan_ids));
+                                            $month = $date['month'];
+                                            $year = $date['year'];
+                                            if(isset($result->loan_ids)){
+                                                $index = \App\Models\VWLoanPayment::where([
+                                                        ['pay_year', $year],
+                                                        ['description', $item->dropdown_name]
+                                                    ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$month'")
+                                                    ->sum('amount_paid');
+//dd($index);
+                                                $arr_loans[$item->dropdown_name] = $index;
+//                                                    ($arr_loans[$item->dropdown_name] ?? 0) + $index;
+//                                                if ($index) {
+//                                                    $arr_loans[$item->dropdown_name] = 0;
+//                                                }
+
+//                                                $arr_loans[$item->dropdown_name] += $index;
+                                            }
+//                                            dd($arr_loans);
+                                        }
+
+                                        // Incomes
+                                        $ssnit_total = $employer_ssf; //$employee_ssf +
+                                        $basic_salaries += $result->basic;
+
+                                        $arr = json_decode($result->incomes, true);
+                                        $arr_amount = json_decode($result->amount_incomes, true);
+
+                                        foreach ($allowance as $item) {
+
+                                            if(isset($result->incomes)){
+                                                if (in_array($item->dropdown_name, $arr)) {
+
+                                                    $index = array_search($item->dropdown_name, $arr);
+
+                                                    if (!isset($arr_allowance[$item->dropdown_name])) {
+                                                        $arr_allowance[$item->dropdown_name] = 0;
+                                                    }
+
+                                                    $arr_allowance[$item->dropdown_name] += $arr_amount[$index];
+                                                }
+                                            }
+                                        }
+    //                                    dd($arr_allowance);
+                                @endphp
+                            @endforeach
+                            @php
+                                $debit_total = array_sum($arr_allowance) + $basic_salaries + $ssnit_total;
+                                $credit_total = array_sum($arr_deductions) + array_sum($arr_loans) + $employee_ssf + $ssnit_total + $tax_peye + $net_income_salaries + $provident_fund;
+
+                                $variance = $debit_total - $credit_total;
+                            @endphp
+{{--                            {{ dd(array_sum($arr_deductions), array_sum($arr_allowance), array_sum($arr_loans)) }}--}}
+                            <tr>
+                                <td>Basic Salaries</td>
+                                <td style="text-align: right;">{{ number_format($basic_salaries, 2) }}</td>
+                                <td style="text-align: right;"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>SSNIT 13% Employer Contribution_Tier 1</td>
+                                <td style="text-align: right;">{{ number_format($ssnit_total, 2) }}</td>
+                                <td style="text-align: right;"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Employer's ssf payout_Tier 1</td>
+                                <td style="text-align: right;"></td>
+                                <td style="text-align: right;">{{ number_format($ssnit_total, 2) }}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Staff ssf payout_Tier 2</td>
+                                <td style="text-align: right;"></td>
+                                <td style="text-align: right;">{{ number_format($employee_ssf, 2) }}</td>
+                                <td></td>
+                            </tr>
+                            @foreach ($allowance as $input)
+                                @if(isset($arr_allowance[$input->dropdown_name]))
+                                    <tr>
+                                        <td>{{ $input->dropdown_name }}</td>
+                                        <td style="text-align: right;">{{ number_format($arr_allowance[$input->dropdown_name], 2) }}</td>
+                                        <td style="text-align: right;"></td>
+                                        <td></td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                            <tr>
+                                <td><br></td>
+                                <td style="text-align: right;"></td>
+                                <td style="text-align: right;"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Income Tax / PAYE</td>
+                                <td style="text-align: right;"></td>
+                                <td style="text-align: right;">{{ number_format($tax_peye, 2) }}</td>
+                                <td></td>
+                            </tr>
+                            @foreach ($deductions as $input)
+                                @if(isset($arr_deductions[$input->dropdown_name]))
+                                    <tr>
+                                        <td>{{ $input->dropdown_name }}</td>
+                                        <td style="text-align: right;"></td>
+                                        <td style="text-align: right;">{{ number_format($arr_deductions[$input->dropdown_name], 2) }}</td>
+                                        <td></td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                            <tr>
+                                <td>Provident Fund</td>
+                                <td style="text-align: right;"></td>
+                                <td style="text-align: right;">{{ number_format($provident_fund, 2) }}</td>
+                                <td></td>
+                            </tr>
+                            @foreach ($loans as $input)
+                                @if($arr_loans[$input->dropdown_name])
+                                    <tr>
+                                        <td>{{ $input->dropdown_name }}</td>
+                                        <td style="text-align: right;"></td>
+                                        <td style="text-align: right;">{{ number_format($arr_loans[$input->dropdown_name], 2) }}</td>
+                                        <td></td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                            <tr>
+                                <td><br></td>
+                                <td style="text-align: right;"></td>
+                                <td style="text-align: right;"></td>
+                                <td></td>
+                            </tr>
+
+                            <tr>
+                                <td>Net Salaries Payable - Bank</td>
+                                <td style="text-align: right;"></td>
+                                <td style="text-align: right;">{{ number_format($net_income_salaries, 2) }}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: center">GRAND TOTAL</th>
+                                <th style="text-align: right;">{{ number_format($debit_total, 2) }}</th>
+                                <th style="text-align: right;">{{ number_format($credit_total, 2) }}</th>
+                                <th style="text-align: right;">{{ number_format($variance, 2) }}</th>
+                            </tr>
+                        </tbody>
+{{--                        @php--}}
+{{--                            Illuminate\Support\Facades\Cache::put('paye_tax', collect($data_array ?? []), now()->addHours(2));--}}
+{{--                        @endphp--}}
+                    </table>
+                </div>
+                @break
+
             @case('welfare')
 {{--                <div class = "data">--}}
 {{--                    <table class="table border-secondary table-sm mt-2">--}}
@@ -447,7 +658,7 @@
                 </div>
                 @break
 
-            @case('credit_union')
+            @case('deductions')
                 <div class = "data">
                     <table class="table border-secondary table-sm mt-2">
                         <thead>
@@ -466,9 +677,9 @@
                                 $data_array = [];
                             @endphp
                             @foreach ($data as $staff)
-                                @if (in_array('Credit Union Saving', json_decode($staff->deductions)))
+                                @if (in_array($description, json_decode($staff->deductions)))
                                     @php
-                                        $index = array_search('Credit Union Saving', json_decode($staff->deductions));
+                                        $index = array_search($description, json_decode($staff->deductions));
                                         $amount = json_decode($staff->amount_deductions);
                                         $total_amount += $amount[$index];
                                         $key += 1;
@@ -476,7 +687,7 @@
                                         $data_array[] = [
                                             'staff_number' => $staff->staff_number,
                                             'fullname' => $staff->fullname,
-                                            'description' => 'Credit Union Saving',
+                                            'description' => $description,
                                             'amount' => $amount[$index]
                                         ];
                                     @endphp
@@ -484,7 +695,7 @@
                                         <td>{{ $key }}</td>
                                         <td>{{ $staff->staff_number }}</td>
                                         <td>{{ $staff->fullname }}</td>
-                                        <td>Credit Union Saving</td>
+                                        <td>{{ $description }}</td>
                                         <td style="text-align: right;">{{ number_format($amount[$index], 2) }}</td>
                                     </tr>
                                 @endif
@@ -503,50 +714,50 @@
                 </div>
                 @break
 
-            @case('rent')
-                <div class = "data">
-                    <table class="table border-secondary table-sm mt-2">
-                        <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th>Staff ID</th>
-                                <th>Staff Name</th>
-                                <th>Description</th>
-                                <th style="text-align: right;">Amount</th>
-                                <th style="text-align: right;">Balance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $total_paid = 0;
-                                $total_balance = 0;
-                            @endphp
-                            @foreach ($data as $key => $staff)
-                                @php
-                                    $total_paid += $staff->amount_paid;
-                                    $balance = $staff->amount - $staff->total_amount_paid;
-                                    $total_balance += $balance;
-                                @endphp
-                                <tr>
-                                    <td>{{ ++$key }}</td>
-                                    <td>{{ $staff->staff_number }}</td>
-                                    <td>{{ $staff->fullname }}</td>
-                                    <td>{{ $staff->description }}</td>
-                                    <td style="text-align: right;">{{ number_format($staff->amount_paid, 2) }}</td>
-                                    <td style="text-align: right;">{{ number_format($balance, 2) }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colspan="2" style="text-align: center">GRAND TOTAL</th>
-                                <th colspan="3" style="text-align: right;">{{ number_format($total_paid, 2) }}</th>
-                                <th colspan="2" style="text-align: right;">{{ number_format($total_balance, 2) }}</th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                @break
+{{--            @case('rent')--}}
+{{--                <div class = "data">--}}
+{{--                    <table class="table border-secondary table-sm mt-2">--}}
+{{--                        <thead>--}}
+{{--                            <tr>--}}
+{{--                                <th>No.</th>--}}
+{{--                                <th>Staff ID</th>--}}
+{{--                                <th>Staff Name</th>--}}
+{{--                                <th>Description</th>--}}
+{{--                                <th style="text-align: right;">Amount</th>--}}
+{{--                                <th style="text-align: right;">Balance</th>--}}
+{{--                            </tr>--}}
+{{--                        </thead>--}}
+{{--                        <tbody>--}}
+{{--                            @php--}}
+{{--                                $total_paid = 0;--}}
+{{--                                $total_balance = 0;--}}
+{{--                            @endphp--}}
+{{--                            @foreach ($data as $key => $staff)--}}
+{{--                                @php--}}
+{{--                                    $total_paid += $staff->amount_paid;--}}
+{{--                                    $balance = $staff->amount - $staff->total_amount_paid;--}}
+{{--                                    $total_balance += $balance;--}}
+{{--                                @endphp--}}
+{{--                                <tr>--}}
+{{--                                    <td>{{ ++$key }}</td>--}}
+{{--                                    <td>{{ $staff->staff_number }}</td>--}}
+{{--                                    <td>{{ $staff->fullname }}</td>--}}
+{{--                                    <td>{{ $staff->description }}</td>--}}
+{{--                                    <td style="text-align: right;">{{ number_format($staff->amount_paid, 2) }}</td>--}}
+{{--                                    <td style="text-align: right;">{{ number_format($balance, 2) }}</td>--}}
+{{--                                </tr>--}}
+{{--                            @endforeach--}}
+{{--                        </tbody>--}}
+{{--                        <tfoot>--}}
+{{--                            <tr>--}}
+{{--                                <th colspan="2" style="text-align: center">GRAND TOTAL</th>--}}
+{{--                                <th colspan="3" style="text-align: right;">{{ number_format($total_paid, 2) }}</th>--}}
+{{--                                <th colspan="2" style="text-align: right;">{{ number_format($total_balance, 2) }}</th>--}}
+{{--                            </tr>--}}
+{{--                        </tfoot>--}}
+{{--                    </table>--}}
+{{--                </div>--}}
+{{--                @break--}}
 
             @case('loans')
                 <div class = "data">
@@ -593,100 +804,100 @@
                 </div>
                 @break
 
-            @case('acts_welfare')
-                <div class = "data">
-                    <table class="table border-secondary table-sm mt-2">
-                        <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th>Staff ID</th>
-                            <th>Staff Name</th>
-                            <th>Position</th>
-                            <th style="text-align: right;">Amount</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @php
-                            $total_acts_welfare = 0;
-                        @endphp
-                        @foreach ($data as $key => $staff)
-                            @php
-                                $total_acts_welfare += $staff->acts_welfare;
-                            @endphp
-                            <tr>
-                                <td>{{ ++$key }}</td>
-                                <td>{{ $staff->staff_number }}</td>
-                                <td>{{ $staff->fullname }}</td>
-                                <td>{{ $staff->position }}</td>
-                                <td style="text-align: right;">{{ number_format($staff->acts_welfare, 2) }}</td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <th colspan="2" style="text-align: center">GRAND TOTAL</th>
-                            <th colspan="4" style="text-align: right;">{{ number_format($total_acts_welfare, 2) }}</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                @break
+{{--            @case('acts_welfare')--}}
+{{--                <div class = "data">--}}
+{{--                    <table class="table border-secondary table-sm mt-2">--}}
+{{--                        <thead>--}}
+{{--                        <tr>--}}
+{{--                            <th>No.</th>--}}
+{{--                            <th>Staff ID</th>--}}
+{{--                            <th>Staff Name</th>--}}
+{{--                            <th>Position</th>--}}
+{{--                            <th style="text-align: right;">Amount</th>--}}
+{{--                        </tr>--}}
+{{--                        </thead>--}}
+{{--                        <tbody>--}}
+{{--                        @php--}}
+{{--                            $total_acts_welfare = 0;--}}
+{{--                        @endphp--}}
+{{--                        @foreach ($data as $key => $staff)--}}
+{{--                            @php--}}
+{{--                                $total_acts_welfare += $staff->acts_welfare;--}}
+{{--                            @endphp--}}
+{{--                            <tr>--}}
+{{--                                <td>{{ ++$key }}</td>--}}
+{{--                                <td>{{ $staff->staff_number }}</td>--}}
+{{--                                <td>{{ $staff->fullname }}</td>--}}
+{{--                                <td>{{ $staff->position }}</td>--}}
+{{--                                <td style="text-align: right;">{{ number_format($staff->acts_welfare, 2) }}</td>--}}
+{{--                            </tr>--}}
+{{--                        @endforeach--}}
+{{--                        </tbody>--}}
+{{--                        <tfoot>--}}
+{{--                        <tr>--}}
+{{--                            <th colspan="2" style="text-align: center">GRAND TOTAL</th>--}}
+{{--                            <th colspan="4" style="text-align: right;">{{ number_format($total_acts_welfare, 2) }}</th>--}}
+{{--                        </tr>--}}
+{{--                        </tfoot>--}}
+{{--                    </table>--}}
+{{--                </div>--}}
+{{--                @break--}}
 
-            @case('nehemiah')
-                <div class = "data">
-                    <table class="table border-secondary table-sm mt-2">
-                        <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th>Staff ID</th>
-                            <th>Staff Name</th>
-                            <th>Description</th>
-                            <th style="text-align: right;">Amount</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @php
-                            $total_amount = 0;
-                            $key = 0;
-                            $data_array = [];
-                        @endphp
-                        @foreach ($data as $staff)
-                            @if (in_array('Nehemiah Project', json_decode($staff->deductions)))
-                                @php
-                                    $index = array_search('Nehemiah Project', json_decode($staff->deductions));
-                                    $amount = json_decode($staff->amount_deductions);
-                                    $total_amount += $amount[$index];
-                                    $key += 1;
+{{--            @case('nehemiah')--}}
+{{--                <div class = "data">--}}
+{{--                    <table class="table border-secondary table-sm mt-2">--}}
+{{--                        <thead>--}}
+{{--                        <tr>--}}
+{{--                            <th>No.</th>--}}
+{{--                            <th>Staff ID</th>--}}
+{{--                            <th>Staff Name</th>--}}
+{{--                            <th>Description</th>--}}
+{{--                            <th style="text-align: right;">Amount</th>--}}
+{{--                        </tr>--}}
+{{--                        </thead>--}}
+{{--                        <tbody>--}}
+{{--                        @php--}}
+{{--                            $total_amount = 0;--}}
+{{--                            $key = 0;--}}
+{{--                            $data_array = [];--}}
+{{--                        @endphp--}}
+{{--                        @foreach ($data as $staff)--}}
+{{--                            @if (in_array('Nehemiah Project', json_decode($staff->deductions)))--}}
+{{--                                @php--}}
+{{--                                    $index = array_search('Nehemiah Project', json_decode($staff->deductions));--}}
+{{--                                    $amount = json_decode($staff->amount_deductions);--}}
+{{--                                    $total_amount += $amount[$index];--}}
+{{--                                    $key += 1;--}}
 
-                                    $data_array[] = [
-                                        'staff_number' => $staff->staff_number,
-                                        'fullname' => $staff->fullname,
-                                        'description' => 'Nehemiah Project',
-                                        'amount' => $amount[$index]
-                                    ];
-                                @endphp
-                                <tr>
-                                    <td>{{ $key }}</td>
-                                    <td>{{ $staff->staff_number }}</td>
-                                    <td>{{ $staff->fullname }}</td>
-                                    <td>Nehemiah Project</td>
-                                    <td style="text-align: right;">{{ number_format($amount[$index], 2) }}</td>
-                                </tr>
-                            @endif
-                        @endforeach
-                        @php
-                            Illuminate\Support\Facades\Cache::put('nehemiah_project', collect($data_array ?? []), now()->addHours(2));
-                        @endphp
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <th colspan="2" style="text-align: center">GRAND TOTAL</th>
-                            <th colspan="3" style="text-align: right;">{{ number_format($total_amount, 2) }}</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                @break
+{{--                                    $data_array[] = [--}}
+{{--                                        'staff_number' => $staff->staff_number,--}}
+{{--                                        'fullname' => $staff->fullname,--}}
+{{--                                        'description' => 'Nehemiah Project',--}}
+{{--                                        'amount' => $amount[$index]--}}
+{{--                                    ];--}}
+{{--                                @endphp--}}
+{{--                                <tr>--}}
+{{--                                    <td>{{ $key }}</td>--}}
+{{--                                    <td>{{ $staff->staff_number }}</td>--}}
+{{--                                    <td>{{ $staff->fullname }}</td>--}}
+{{--                                    <td>Nehemiah Project</td>--}}
+{{--                                    <td style="text-align: right;">{{ number_format($amount[$index], 2) }}</td>--}}
+{{--                                </tr>--}}
+{{--                            @endif--}}
+{{--                        @endforeach--}}
+{{--                        @php--}}
+{{--                            Illuminate\Support\Facades\Cache::put('nehemiah_project', collect($data_array ?? []), now()->addHours(2));--}}
+{{--                        @endphp--}}
+{{--                        </tbody>--}}
+{{--                        <tfoot>--}}
+{{--                        <tr>--}}
+{{--                            <th colspan="2" style="text-align: center">GRAND TOTAL</th>--}}
+{{--                            <th colspan="3" style="text-align: right;">{{ number_format($total_amount, 2) }}</th>--}}
+{{--                        </tr>--}}
+{{--                        </tfoot>--}}
+{{--                    </table>--}}
+{{--                </div>--}}
+{{--                @break--}}
 
             @case('p_fund')
 {{--                {{ dd($data) }}--}}
@@ -775,29 +986,29 @@
                 <a href="{{ route('exprt_to_paye_tax', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
                 @break
 
-            @case('welfare')
-                <a href="{{ route('exprt_to_welfare', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
-                @break
+{{--            @case('welfare')--}}
+{{--                <a href="{{ route('exprt_to_welfare', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>--}}
+{{--                @break--}}
 
-            @case('credit_union')
+            @case('deductions')
                 <a href="{{ route('exprt_to_credit_union', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
                 @break
 
-            @case('rent')
-                <a href="{{ route('exprt_to_rent', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
-                @break
+{{--            @case('rent')--}}
+{{--                <a href="{{ route('exprt_to_rent', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>--}}
+{{--                @break--}}
 
             @case('loans')
                 <a href="{{ route('exprt_to_loans', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
                 @break
 
-            @case('acts_welfare')
-                <a href="{{ route('exprt_to_act_welfare', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
-                @break
+{{--            @case('acts_welfare')--}}
+{{--                <a href="{{ route('exprt_to_act_welfare', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>--}}
+{{--                @break--}}
 
-            @case('nehemiah')
-                <a href="{{ route('exprt_to_nehemiah', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>
-                @break
+{{--            @case('nehemiah')--}}
+{{--                <a href="{{ route('exprt_to_nehemiah', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>--}}
+{{--                @break--}}
 
             @case('p_fund')
                 <a href="{{ route('exprt_to_p_fund', [$date['month'], $date['year']]) }}" class="noprint btn btn-outline-dark">Export</a>

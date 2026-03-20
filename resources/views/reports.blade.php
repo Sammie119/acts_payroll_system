@@ -22,14 +22,18 @@
                                     <option value="tier_1">Tier 1</option>
                                     <option value="tier_2">Tier 2</option>
                                     <option value="paye_tax">Income Tax/PAYE</option>
-                                    <option value="welfare">Welfare Dues Contributions</option>
-                                    <option value="credit_union">Credit Union Savings Contributions</option>
-                                    <option value="rent">Rent Advance</option>
-                                    <option value="p_fund">Provident Fund</option>
+                                    <option value="payroll_journal">Payroll Journal</option>
+                                    @foreach($reports as $report)
+                                        <option value="{{ $report->dropdown_id }}">{{ $report->dropdown_name }} ({{ $report->category_id === 2 ? 'Deduction' : 'Loan' }})</option>
+                                    @endforeach
+{{--                                    <option value="welfare">TAC Welfare Dues Contributions</option>--}}
+{{--                                    <option value="credit_union">Credit Union Savings Contributions</option>--}}
+{{--                                    <option value="rent">Rent Advance</option>--}}
+{{--                                    <option value="p_fund">Provident Fund</option>--}}
 {{--                                    <option value="credit_hire">Credit Union Hire Purchase</option>--}}
-                                    <option value="nehemiah">Nehemiah Project</option>
-                                    <option value="acts_welfare">ACTS Welfare</option>
-                                    <option value="loans">Other Loans</option>
+{{--                                    <option value="nehemiah">Nehemiah Project</option>--}}
+{{--                                    <option value="acts_welfare">ACTS Welfare</option>--}}
+{{--                                    <option value="loans">Other Loans</option>--}}
                                 </select>
                             </div>
                         </div>
