@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dropdown;
 use App\Models\VWLoanPayment;
+use App\Models\VWPayrollOutPut;
 use App\Models\VWSalarySsnit;
 use App\Models\VWStaff;
 use App\Models\VWTax;
@@ -83,7 +84,7 @@ class ReportController extends Controller
                     $input['loans'] = Dropdown::where('category_id', 3)->get();
                     $report = 'payroll_journal';
                     $header = 'PAYROLL JOURNAL FOR '. strtoupper($request->report_month). ', '. $request->report_year;
-                    $data = DB::table('vw_payroll_output')->where([
+                    $data = VWPayrollOutPut::where([
                         ['pay_month', $request->report_month],
                         ['pay_year', $request->report_year]
                     ])->orderBy('staff_id')->get();
@@ -97,7 +98,7 @@ class ReportController extends Controller
                 if($dropdown_type->dropdown_name == 'Provident Fund'){
                     $report = 'p_fund';
                     $header = 'Provident Fund '. strtoupper($request->report_month). ', '. $request->report_year;
-                    $data = VWSalarySsnit::where([
+                    $data = VWPayrollOutPut::where([
                         ['pay_year', $request->report_year]
                     ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$request->report_month'")->orderBy('staff_number')->get();
                 } else {

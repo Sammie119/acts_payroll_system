@@ -384,11 +384,22 @@
                             @endphp
                             @foreach($data as $result)
                                 @php
-//                                    dd($result->tier_3);
+//                                    dd($result);
                                     $provident_fund += $result->tier_3;
                                         // Deductions
-                                        $employee_ssf += $result->employee_ssf;
-                                        $employer_ssf += $result->employer_ssf;
+                                        $employee_ssf += \App\Models\PayrollDependecy::select('employee_ssf')->where([
+                                                            ['pay_year', $result->pay_year],
+                                                            ['staff_id', $result->staff_id],
+                                                            ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$result->pay_month'")
+                                                            ->first()->employee_ssf;
+//                                        dd($result, $employee_ssf);
+//                                                          $result->employee_ssf;
+                                        $employer_ssf += \App\Models\PayrollDependecy::select('employer_ssf')->where([
+                                                            ['pay_year', $result->pay_year],
+                                                            ['staff_id', $result->staff_id],
+                                                            ])->whereRaw("pay_month collate utf8mb4_unicode_ci = '$result->pay_month'")
+                                                            ->first()->employer_ssf;
+//                                        $result->employer_ssf;
                                         $tax_peye += $result->tax;
                                         $net_income_salaries += $result->net_income;
 
@@ -919,7 +930,7 @@
                             $total_fund = 0;
                         @endphp
                         @foreach ($data as $key => $staff)
-                            @if(getStaffAge($staff->staff_id) <= 60)
+                            @if($staff->employee_ssf > 0)
                                 @php
                                     $year = $date['year'];
                                     $month = $date['month'];

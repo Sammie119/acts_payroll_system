@@ -179,3 +179,15 @@ use App\Models\SetupSalary;
 
        return 0;
     }
+
+    function getTier1($basic)
+    {
+        $tax = floatval(TaxSSNIT::select('tier_1')->orderByDesc('id')->first()->tier_1);
+        return floatval($basic * ($tax/100));
+    }
+
+    function getTier2($basic)
+    {
+        $tax = floatval(TaxSSNIT::select('tier_2')->orderByDesc('id')->first()->tier_2);
+        return floatval($basic * ($tax/100));
+    }

@@ -91,6 +91,8 @@ class SettingsController extends Controller
             'rate_5' => $request->rate_5,
             'ssf_employer' => $request->ssf_employer,
             'ssf_employee' => $request->ssf_employee,
+            'tier_1' => $request->tier_1,
+            'tier_2' => $request->tier_2,
         ]);
 
         return back()->with('success', 'Tax Saved Successfully!!');
